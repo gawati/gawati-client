@@ -7,6 +7,8 @@ import {
   Dropdown
 } from 'reactstrap';
 
+import avatar from '../img/avatar.png';
+
 class TopNavDropdown extends React.Component {
 
   constructor(props) {
@@ -28,7 +30,7 @@ class TopNavDropdown extends React.Component {
     return (
       <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle nav>
-          <img src={'img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
+          <img src={ avatar } className="img-avatar" alt="admin"/>
         </DropdownToggle>
         <DropdownMenu right>
           <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
