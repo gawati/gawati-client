@@ -1,0 +1,18 @@
+{"docTypes": [
+    {
+        "akn-type": "act",
+        "akn-name": "act",
+        "category": "legislation",  
+        "by-country": [
+            {
+            "code": "bj",
+            "name": "act"
+            }
+        ]
+    },
+    {
+        "akn-type": "judgment",
+        "category": "case law"
+    }
+]
+}

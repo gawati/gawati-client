@@ -1,0 +1,63 @@
+{"profiles": {"profile": [
+        {
+            "name": "code",
+            "server": [
+                {
+                    "name": "portalServer",
+                    "host": "localhost",
+                    "base": "gwportal"
+                },
+                {
+                    "name": "documentServer",
+                    "host": "http://localhost",
+                    "base": "/"
+                }
+            ]
+        },
+        {
+            "name": "dev",
+            "server": [
+                {
+                    "name": "portalServer",
+                    "host": "my.gawati.local",
+                    "base": "portal"
+                },
+                {
+                    "name": "documentServer",
+                    "host": "https://my.gawati.local",
+                    "base": "/"
+                }
+            ]
+        },
+        {
+            "name": "deploy",
+            "server": [
+                {
+                    "name": "portalServer",
+                    "host": "lexafrica.akomantoso.com",
+                    "base": "portal"
+                },
+                {
+                    "name": "documentServer",
+                    "host": "http://lexafrica.akomantoso.com",
+                    "base": "/"
+                }
+            ]
+        },
+        {
+            "name": "all",
+            "server": [
+                {
+                    "name": "portalServer",
+                    "host": "alldev.gawati.org",
+                    "base": "portal"
+                },
+                {
+                    "name": "documentServer",
+                    "host": "https://alldev.gawati.org",
+                    "base": "/"
+                }
+            ]
+        }
+    ]}
+}

@@ -1,0 +1,17 @@
+{
+    "langs": [
+        {
+            "lang": "en",
+            "default": true,
+            "content": "english"
+        },
+        {
+            "lang": "fr",
+            "content": "français"
+        },
+        {
+            "lang": "pt",
+            "content": "português"
+        }
+    ]
+}
