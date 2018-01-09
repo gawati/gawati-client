@@ -9,6 +9,7 @@ import TopNav from './TopNav';
 import SideBar from './sidebar/SideBar';
 import Breadcrumb from './Breadcrumb';
 import Dashboard from '../views/Dashboard';
+import Login from '../views/pages/Login/Login';
 import {PropsRoute} from '../utils/routeshelper';
 
 
@@ -19,7 +20,7 @@ class Root extends React.Component {
             <div className="app">
                 <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
                 <div className="app-body">
-                <SideBar {...this.props}/>
+                <SideBar path="*" {...this.props}/>
                 <main className="main">
                     <Breadcrumb />
                     <Container fluid>
@@ -29,7 +30,7 @@ class Root extends React.Component {
                         </Switch>
                      </Container>
                 </main>
-                <Aside />
+                {/*<Aside />*/}
             </div>
             <PropsRoute path="*" component={ FooterNav } i18n={ i18n } />
             </div>

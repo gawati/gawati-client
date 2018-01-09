@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './i18n';
-import { HashRouter } from 'react-router-dom';
+import { Switch, Route, HashRouter } from 'react-router-dom';
 
 //import 'bootstrap/dist/css/bootstrap-reboot.css';
 //import 'bootstrap/dist/css/bootstrap.css';
@@ -15,13 +16,23 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'simple-line-icons/css/simple-line-icons.css';
 
 
-import './css/custom.css';
+//import './css/custom.css';
 //import './css/custom-media.css';
+
+// Views 
+import Register from './views/pages/Register/Register';
+import Login from './views/pages/Login/Login';
+import Dashboard from './views/Dashboard';
 
 
 ReactDOM.render(
     <HashRouter>
-        <App />
+        <Switch>
+            <Route path="/register" name="Register" component={Register} />
+            <Route path="/login" name="Login" component={Login} />
+            <Route path="/dashboard" name="App" component={App} />
+            <Route path="/" name="App" component={App} />
+        </Switch>
     </HashRouter>, 
     document.getElementById('root')
 );

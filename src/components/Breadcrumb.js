@@ -1,9 +1,13 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-/* import {Breadcrumb, BreadcrumbItem} from 'reactstrap'; */
+import {Breadcrumb, BreadcrumbItem} from 'reactstrap'; 
+import {getRoute} from '../utils/routeshelper';
+
 
 /* 
 const findRouteName = url => routes[url];
+*/
+
 
 const getPaths = (pathname) => {
   const paths = ['/'];
@@ -18,7 +22,7 @@ const getPaths = (pathname) => {
   return paths;
 };
 
-const BreadcrumbsItem = ({...rest, match}) => {
+/* const BreadcrumbsItem = ({...rest, match}) => {
   const routeName = findRouteName(match.url);
   if (routeName) {
     return (
@@ -36,18 +40,19 @@ const BreadcrumbsItem = ({...rest, match}) => {
     );
   }
   return null;
-};
- */
+}; */
+ 
 const Breadcrumbs = ({...rest, location : {pathname}, match}) => {
-    /*
   const paths = getPaths(pathname);
-  const items = paths.map((path, i) => <Route key={i++} path={path} component={BreadcrumbsItem}/>);
+  //const items = paths.map((path, i) => <Route key={i++} path={path} component={BreadcrumbsItem}/>);
+  console.log( " rest,  pathname, match ", rest, pathname, match);
+  const items = [] ; 
+
   return (
     <Breadcrumb>
-      {items}
+      <BreadcrumbItem>Home</BreadcrumbItem>  
     </Breadcrumb>
-  ); */
-  return (<div></div>);
+  ); 
 };
 
 export default props => (

@@ -76,9 +76,9 @@ class TopNav extends React.Component {
           </NavItem>
           <TopNavDropdown/>
         </Nav>
-        <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
+{/*         <NavbarToggler className="d-md-down-none" onClick={this.asideToggle}>
           <span className="navbar-toggler-icon"></span>
-        </NavbarToggler>        
+        </NavbarToggler>    */}     
       </header>
     );
   }

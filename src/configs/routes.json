@@ -1,38 +1,17 @@
 {"routes":[
     {
-        "route": "/content/_lang/:lang/_page/:page*",
-        "name": "content"
+        "route": "/",
+        "name": "root",
+        "label": "Home"
     },
     {
-        "route": "/doc/_lang/:lang/_iri/:iri*",
-        "name": "doc-iri"
+        "route": "/login",
+        "name": "non-logged-in-root",
+        "label": "Login"
     },
     {
-        "route": "/filter/_lang/:lang/_count/:count/_from/:from/_to/:to/_q/:q*",
-        "name": "filter"
-    },
-    {
-        "route": "/recent/_lang/:lang/_count/:count/_from/:from/_to/:to",
-        "name": "recent"
-    },
-    {
-        "route": "/search/_lang/:lang/_count/:count/_from/:from/_to/:to/_bycountry/:country*",
-        "name": "search-country"
-    },
-    {
-        "route": "/search/_lang/:lang/_count/:count/_from/:from/_to/:to/_byyear/:year*",
-        "name": "search-year"
-    },
-    {
-        "route": "/search/_lang/:lang/_count/:count/_from/:from/_to/:to/_bylang/:doclang*",
-        "name": "search-doclang"
-    },
-    {
-        "route": "/search/_lang/:lang/_count/:count/_from/:from/_to/:to/_bysubject/:kw*",
-        "name": "search-keyword"
-    },
-    {
-        "route": "/themes/_lang/:lang/_themes/:themes/_count/:count/_from/:from/_to/:to*",
-        "name": "themes"
+        "route": "/dashboard",
+        "name": "logged-in-root",
+        "label": "Dashboard"
     }
 ]}
