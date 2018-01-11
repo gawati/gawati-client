@@ -10,6 +10,7 @@ import SideBar from './sidebar/SideBar';
 import Breadcrumb from './Breadcrumb';
 import Dashboard from '../views/Dashboard';
 import Login from '../views/pages/Login/Login';
+import InputForm from '../views/forms/InputForm';
 import {PropsRoute} from '../utils/routeshelper';
 
 
@@ -26,6 +27,7 @@ class Root extends React.Component {
                     <Container fluid>
                         <Switch>
                             <PropsRoute path="/dashboard" name="Dashboard" component={Dashboard} i18n={i18n} />
+                            <PropsRoute path="/document/add" name="InputForm" component={InputForm} i18n={i18n} />
                             <Redirect from="/" to="/dashboard"/>
                         </Switch>
                      </Container>

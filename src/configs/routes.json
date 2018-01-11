@@ -13,5 +13,10 @@
         "route": "/dashboard",
         "name": "logged-in-root",
         "label": "Dashboard"
+    },
+    {
+        "route": "/document/add",
+        "name": "document-add",
+        "label": "Add Document"
     }
 ]}

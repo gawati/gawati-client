@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Table, Progress} from 'reactstrap';
+import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 import { apiGetCall } from '../api';
 import {Aux} from '../utils/generalhelper';
@@ -68,14 +68,20 @@ class Dashboard extends Component {
         <Row>
           <Col xs="12" sm="12" lg="12">   
           <br />   
-      <Table hover responsive className="table-outline mb-0 d-none d-sm-table">
+          {/*  className="table-outline mb-0 d-none d-sm-table"  */}
+          <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i> Documents
+              </CardHeader>
+              <CardBody>
+      <Table hover responsive>
         <thead className="thead-light">
           <tr>
             <th className="text-center">State</th>
             <th>Title</th>
             <th className="text-center">Language</th>
             <th>Workflow</th>
-            <th>Country</th>
+            <th className="text-center">Country</th>
           </tr>
         </thead>
         <tbody>
@@ -83,7 +89,7 @@ class Dashboard extends Component {
             docs.map(
               (doc, index) => {
                 return (
-                  <tr>
+                  <tr key={ `docs-${doc.docNumber}`}>
                     <td className="text-center">
                       <StateColumn doc={doc} />
                     </td>
@@ -328,6 +334,30 @@ class Dashboard extends Component {
               </tr> */}
             </tbody>
           </Table>
+          <div className="text-center">
+            <Pagination>
+                <PaginationItem>
+                  <PaginationLink previous href="#"></PaginationLink>
+                </PaginationItem>
+                <PaginationItem active>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">2</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">4</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink next href="#"></PaginationLink>
+                </PaginationItem>
+              </Pagination>
+            </div>
+            </CardBody>
+            </Card>
          </Col>
         </Row>
       </div>
