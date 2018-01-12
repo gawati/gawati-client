@@ -71,76 +71,13 @@
                 }
             ]
         },
-        {
-            "alpha3b": "fry",
-            "alpha2": "fy",
-            "desc": {
-                "lang": "eng",
-                "content": "Western Frisian"
-            }
-        },
+  
         {
             "alpha3b": "ful",
             "alpha2": "ff",
             "desc": {
                 "lang": "eng",
                 "content": "Fulah"
-            }
-        },
-        {
-            "alpha3b": "geo",
-            "alpha2": "ka",
-            "desc": {
-                "lang": "eng",
-                "content": "Georgian"
-            }
-        },
-        {
-            "alpha3b": "ger",
-            "alpha2": "de",
-            "desc": {
-                "lang": "eng",
-                "content": "German"
-            }
-        },
-        {
-            "alpha3b": "gla",
-            "alpha2": "gd",
-            "desc": {
-                "lang": "eng",
-                "content": "Gaelic; Scottish Gaelic"
-            }
-        },
-        {
-            "alpha3b": "gle",
-            "alpha2": "ga",
-            "desc": {
-                "lang": "eng",
-                "content": "Irish"
-            }
-        },
-        {
-            "alpha3b": "glg",
-            "alpha2": "gl",
-            "desc": {
-                "lang": "eng",
-                "content": "Galician"
-            }
-        },
-        {
-            "alpha3b": "glv",
-            "alpha2": "gv",
-            "desc": {
-                "lang": "eng",
-                "content": "Manx"
-            }
-        },
-        {
-            "alpha3b": "gre",
-            "alpha2": "el",
-            "desc": {
-                "lang": "eng",
-                "content": "Greek, Modern (1453-)"
             }
         },
         {

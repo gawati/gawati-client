@@ -78,6 +78,8 @@ export const getDocType = (findType) => getDocTypes().find(dType => dType['akn-t
 
 export const getLangCodeAlpha3b = (alpha3b) => languageCodes.langs.lang.find(lingo => lingo['alpha3b'] === alpha3b ) ;
 
+export const getLangs = () => languageCodes.langs ; 
+
 export const getLangDesc = (alpha3b) => {
     let langAlpha = getLangCodeAlpha3b(alpha3b);
     if (langAlpha !== undefined) {

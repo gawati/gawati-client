@@ -1,24 +1,31 @@
 import React from 'react';
-import {Form, Card, CardHeader, CardBlock, CardBody, CardFooter, Row, Col, FormGroup, Label, Input, Button} from 'reactstrap';
+import {Form, FormFeedback, Card, CardHeader, CardBlock, CardBody, CardFooter, Row, Col, FormGroup, Label, Input, Button} from 'reactstrap';
 import { Formik } from 'formik';
+import Yup from 'yup';
 
 import StdDiv from '../../components/StdDiv';
 import InputDate from '../../components/InputDate';
+import { lang } from 'moment';
+import { getLangs } from '../../utils/generalhelper';
+import FieldDocLanguage from './FieldDocLanguage2';
 
-const FieldDocLanguage = ({onChange}) =>
-  <FormGroup>
-  <Label htmlFor="docLang">Language</Label>
-  <Input type="select" name="docLang" onChange={onChange} defaultValue="" id="doclang" required>
-    <option value="" disabled >Select a Language</option>
-    <option value="eng">English</option>
-    <option value="fra">French</option>
-    <option value="por">Portoguese</option>
-    <option value="spa">Spanish</option>
-    <option value="mul">Multilingual</option>
-  </Input>
-  </FormGroup>;
+const FieldError = ({error}) => {
+  console.log(" FIELD ERROR ", error );
+  if (error) {
+    console.log(" HERE SXSS");
+    return (
+      <FormFeedback>{error}</FormFeedback>
+    );
+  } else {
+    return null;
+  }
+}
 
-const FieldDocType = ({onChange}) =>
+
+
+
+
+const FieldDocType = ({onChange, value}) =>
   <FormGroup>
   <Label htmlFor="docType">Document Type</Label>
   <Input type="select" defaultValue=""  onChange={onChange} name="docType" id="doctype" required>
@@ -30,10 +37,10 @@ const FieldDocType = ({onChange}) =>
   </Input>
   </FormGroup>;
 
-const FieldDocCountry = ({onChange}) =>
+const FieldDocCountry = ({onChange, value}) =>
   <FormGroup>
   <Label htmlFor="docCountry">Country</Label>
-  <Input type="select" defaultValue=""  onChange={onChange} name="docCountry" id="country" required>
+  <Input type="select" defaultValue={value}  onChange={onChange} name="docCountry" id="country" required>
   <option value="" disabled >Select a Country</option>
     <option value="ke">Kenya</option>
     <option value="tz">Tanzania</option>
@@ -42,22 +49,23 @@ const FieldDocCountry = ({onChange}) =>
   </Input>
   </FormGroup>;
 
-const FieldDocTitle = ({onChange}) =>
+const FieldDocTitle = ({onChange, value, error}) =>
   <FormGroup>
     <Label htmlFor="docTitle">Title</Label>
-    <Input type="text" name="docTitle"  onChange={onChange} id="doctitle" placeholder="Enter the Title of the document" required/>
+    <Input type="text" name="docTitle" value={value} onChange={onChange} id="doctitle" placeholder="Enter the Title of the document" required/>
+    <FieldError error={error} />
   </FormGroup>;
 
-const FieldDocOfficialDate = ({onChange}) =>
+const FieldDocOfficialDate = ({onChange, value}) =>
   <FormGroup>
     <Label htmlFor="docOfficialDate">Official Date</Label>
-    <InputDate name="docOfficialDate" onChange={onChange} initialValue={ null } required />
+    <InputDate name="docOfficialDate" onChange={onChange} initialValue={ value } required />
   </FormGroup>;
 
-const FieldDocNumber = ({onChange}) =>
+const FieldDocNumber = ({onChange, value}) =>
   <FormGroup>
     <Label htmlFor="docNumber">Document Number</Label>
-    <Input type="text" id="docNumber"  onChange={onChange} placeholder="Enter the official document number" required/>
+    <Input type="text" id="docNumber" value={value} onChange={onChange} placeholder="Enter the official document number" required/>
   </FormGroup> ;
 
 
@@ -84,11 +92,11 @@ class IdentityMetadata extends React.Component {
 
     }
 
-    handleSubmit = (event) => {
+/*     handleSubmit = (event) => {
       event.preventDefault();
       this.FORM_FIELD_NAMES.map( 
         name => console.log(` FIELD ${name}  ${event.target[name].value} `) );
-    }
+    } */
 
     handleDefaultChange = (event) => {
       console.log(" CHANGE ", event.target);
@@ -99,46 +107,90 @@ class IdentityMetadata extends React.Component {
 
     render() {
         return (
-      <Form onSubmit={this.handleSubmit} noValidate>
-        <Card>
-            <CardHeader>
-                <strong>Document Identity</strong>
-                <small> Form</small>
-            </CardHeader>
-            <CardBody>
-            <Row>
-                <Col xs="4">
-                    <FieldDocLanguage onChange={this.handleDefaultChange} />
-                  </Col>
-                  <Col xs="4">
-                      <FieldDocType onChange={this.handleDefaultChange} />
-                  </Col>
-                  <Col xs="4">
-                      <FieldDocCountry onChange={this.handleDefaultChange} />
-                  </Col>
-                </Row>              
+          <div>
+    <Formik 
+        
+        initialValues={
+          {
+            docLang: '',
+            docType: '',
+            docCountry: '',
+            docTitle: '',
+            docOfficialDate: new Date(),
+            docNumber: ''
+          }
+        }
+        
+        validationSchema={
+          Yup.object().shape(
+            {
+             /*  docLanguage: Yup.string()
+                .required("Language code is required !"), */
+/*               docType: Yup.string().required(" Document Type is required "),
+              docCountry: Yup.string().required(" Country is required") , */
+              docTitle: Yup.string().required(" Title is required ") /*,
+              docOfficialDate: Yup.string().required(" Official Date is required "),
+              docNumber: Yup.string().required(" Document number is required ") */
+            }
+          )
+        }  
+
+        onSubmit={
+          (values, {setSubmitting, setErrors})=>  {
+              setSubmitting(false);
+              console.log(" VALUES = ", values);
+          }
+        }
+
+        render={
+          ({values, touched, dirty, errors, handleSubmit, handleReset, handleChange, setFieldValue, setFieldTouched, isSubmitting}) => {
+            console.log( " ERRORS ", errors);
+            return (
+            <Form onSubmit={handleSubmit} noValidate>
+            <Card>
+                <CardHeader>
+                    <strong>Document Identity</strong>
+                    <small> Form</small>
+                </CardHeader>
+                <CardBody>
                 <Row>
-                  <Col xs="12">
-                      <FieldDocTitle onChange={this.handleDefaultChange} />
-                  </Col>
-                </Row>
-                 <Row>
-                  <Col xs="6">
-                      <FieldDocOfficialDate onChange={this.handleDefaultChange} />
-                  </Col>
-                  <Col xs="6">
-                      <FieldDocNumber onChange={this.handleDefaultChange} />
-                  </Col>
-                </Row>
-            </CardBody>
-            <CardFooter>
-                <Button type="submit" disabled={this.state.error} size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Next</Button>
-                { " " }
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
-              </CardFooter>
-        </Card>
-       </Form>
-        );
+                    <Col xs="4">
+                        <FieldDocLanguage onChange={setFieldValue}  onBlur={setFieldTouched} touched={touched.docLang} value={values.docLang}  />
+                      </Col>
+                      <Col xs="4">
+                          <FieldDocType onChange={handleChange}  value={values.docType} />
+                      </Col>
+                      <Col xs="4">
+                          <FieldDocCountry onChange={handleChange}   value={values.docCountry} />
+                      </Col>
+                    </Row>              
+                    <Row>
+                      <Col xs="12">
+                          <FieldDocTitle error={touched.docTitle && errors.docTitle} onChange={handleChange}   value={values.docTitle}  />
+                      </Col>
+                    </Row>
+                     <Row>
+                      <Col xs="6">
+                          <FieldDocOfficialDate  onChange={handleChange}  value={values.docOfficialDate}  />
+                      </Col>
+                      <Col xs="6">
+                          <FieldDocNumber  onChange={handleChange} value={values.docNumber} />
+                      </Col>
+                    </Row>
+                </CardBody>
+                <CardFooter>
+                    <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Next</Button>
+                    { " " }
+                    <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                  </CardFooter>
+            </Card>
+           </Form>
+            );
+          }
+        }
+        />
+        </div>
+      );
     }
 }
 
