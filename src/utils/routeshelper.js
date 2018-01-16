@@ -55,7 +55,6 @@ export const convertEncodedStringToObject = (aString) => JSON.parse(decodeURICom
 
 const renderMergedProps = (component, ...rest) => {
     const finalProps = Object.assign({}, ...rest);
-    console.log(" MERGED PROPS ", finalProps);
     return (
       React.createElement(component, finalProps)
     );

@@ -24,7 +24,7 @@ class FieldDocLanguage extends React.Component {
                 };
             }
         ); 
-      console.log(" LANGS  ", this.langs);
+
     }
 
     handleChange = (value) => 
@@ -38,7 +38,7 @@ class FieldDocLanguage extends React.Component {
     render() {
     
       const {onChange, onBlur, value, error} = this.props ; 
-      console.log(" FIELD DOC LANGUAGE  ", value, error);
+     
       return (
         <FormControl className={ formControlErrorClass(error)}>
         <Label htmlFor="docLang">Language</Label>

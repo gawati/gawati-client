@@ -4,16 +4,18 @@ import { Formik } from 'formik';
 import Yup from 'yup';
 import classnames from 'classnames';
 
-import StdDiv from '../../components/StdDiv';
-import InputDate from '../../components/InputDate';
 import { lang } from 'moment';
 import { getLangs, isEmpty } from '../../utils/generalhelper';
+import {aknIri, normalizeDocNumber} from '../../utils/urihelper';
+
+
+import StdDiv from '../../components/StdDiv';
+import InputDate from '../../components/InputDate';
 import FieldDocLanguage from './FieldDocLanguage2';
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
+
 import '../../css/IdentityMetadata.css';
-
-
 
 
 const FieldDocType = ({onChange, value, error}) => {
@@ -21,11 +23,11 @@ const FieldDocType = ({onChange, value, error}) => {
   <FormControl className={ formControlErrorClass(error) }>
     <Label htmlFor="docType">Document Type</Label>
     <Input type="select" defaultValue=""  onChange={onChange} name="docType" id="doctype" required>
-    <option value="" disabled >Select a Document Type</option>
-      <option value="legislation">Legislation</option>
-      <option value="constitution">Constitution</option>
-      <option value="bill">Bill</option>
-      <option value="judgement">Judgement</option>
+    <option value="" key="blank">Select a Document Type</option>
+      <option value="legislation" key="legisalation">Legislation</option>
+      <option value="constitution" key="constitution" >Constitution</option>
+      <option value="bill"  key="bill">Bill</option>
+      <option value="judgement" key="judgement">Judgement</option>
     </Input>
     <FieldError error={error} />
   </FormControl>
@@ -37,11 +39,11 @@ const FieldDocCountry = ({onChange, value, error}) => {
     <FormControl className={ formControlErrorClass(error) }>
       <Label htmlFor="docCountry">Country</Label>
       <Input type="select" defaultValue={value}  onChange={onChange} name="docCountry" id="country" required>
-      <option value="" disabled >Select a Country</option>
-        <option value="ke">Kenya</option>
-        <option value="tz">Tanzania</option>
-        <option value="ng">Nigeria</option>
-        <option value="ao">Angola</option>
+      <option value="">Select a Country</option>
+        <option value="ke" key="country-ke">Kenya</option>
+        <option value="tz" value="country-tz">Tanzania</option>
+        <option value="ng" value="country-ng">Nigeria</option>
+        <option value="ao" value="country-ao">Angola</option>
       </Input>
       <FieldError error={error} />
     </FormControl>
@@ -68,10 +70,21 @@ const FieldDocOfficialDate = ({onChange, onBlur, value, error}) => {
   );
 }
 
-const FieldIri = () => {
+/**
+ *  `/akn/${docCountry}/${docOfficialDate}/${docNumberNormalized}/${docLang}@/!${docPart}`
+ */
+const displayIri = ({docCountry, docOfficialDate, docNumber, docLang, docPart }) => {
+  const docNumberNormalized = normalizeDocNumber(docNumber);
+  console.log( " DOC DATE ==== ", docOfficialDate);
+  return aknIri(docCountry, docOfficialDate, docNumberNormalized, docLang, docPart)
+}
+
+const FieldIri = ({form}) => {
   return (
     <div className="form-group">
-      <p className="form-control-static"><b>Document IRI:</b> /akn/ke/test </p>    
+      <p className="form-control-static"><b>Document IRI:</b> {
+        aknIri()
+      } </p>    
     </div>
   );
 }
@@ -101,14 +114,7 @@ constructor(props) {
         i.e. docTitle has to have a corresponding 
         <input name="docTitle" .... /> in the form
         */ 
-        form: {
-          docLang: {value: {} , error: null },
-          docType: {value: '', error: null },
-          docCountry: {value: '', error: null },
-          docTitle: {value: '', error: null},
-          docOfficialDate: {value: '', error: null },
-          docNumber: {value: '', error: null }
-        }
+        form: this.formInitialState()
       };
       /** 
        * This provides validation of each field value using Yup
@@ -138,10 +144,30 @@ constructor(props) {
         },
         docNumber: {
           validate: Yup.string().required(" Document number is required ")
+        }, 
+        docPart: {
+          validate: Yup.string()
         }
       };
+      // bindings
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleReset = this.handleReset.bind(this);
     }
 
+    formInitialState = () => {
+      return (
+        {
+          docLang: {value: {} , error: null },
+          docType: {value: '', error: null },
+          docCountry: {value: '', error: null },
+          docTitle: {value: '', error: null},
+          docOfficialDate: {value: '', error: null },
+          docNumber: {value: '', error: null },
+          docPart: {value: 'main', error: null }
+        }
+      );
+    };
+    
     /**
      * Checks if a form has errors
      * Returns an object with field names as keys which 
@@ -185,6 +211,10 @@ constructor(props) {
       });
     };
 
+    /**
+     * Validates the value of the passed in field name
+     * using the Yup validator specified in the validationSchema
+     */
     validateFormField = (fieldName, fieldValue) => {
       this.validationSchema[fieldName].validate
         .validate(fieldValue)
@@ -196,11 +226,32 @@ constructor(props) {
         });  
     }
 
+    /**
+     * Check the errors in the form on load
+     */
     componentDidMount(){
+      this.validateFormFields();
+    }
+
+    validateFormFields() {
       const {form} = this.state ; 
       for (let field in form) {
+        // !+FUTURE_FIX(kohsah, 2018-01-16) aggregate state and set it in one shot
         this.validateFormField(field, form[field].value);
       }
+    }
+    
+    handleSubmit(event) {
+      event.preventDefault();
+      this.setState({isSubmitting: true});
+      setTimeout(function() { this.setState({isSubmitting: false}); }.bind(this), 3000);
+    }
+
+    handleReset(event) {
+      event.preventDefault();
+      this.setState({
+        form: this.formInitialState()
+      });
     }
 
     render() {
@@ -209,7 +260,7 @@ constructor(props) {
       const formValid = isEmpty(errors);
       return (
         <div>
-            <Form  noValidate>
+            <Form  onSubmit={this.handleSubmit} noValidate>
             <Card>
                 <CardHeader>
                     <strong>Document Identity</strong>
@@ -220,7 +271,7 @@ constructor(props) {
                     <Col xs="4">
                       </Col>
                       <Col xs="4">
-                          <FieldIri />
+                          <FieldIri form={form} />
                       </Col>
                       <Col xs="4">
                       </Col>
@@ -303,7 +354,7 @@ constructor(props) {
                 <CardFooter>
                     <Button type="submit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Next</Button>
                     { " " }
-                    <Button type="reset" size="sm" color="danger" ><i className="fa fa-ban"></i> Reset</Button>
+                    <Button type="reset" size="sm" color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
                   </CardFooter>
             </Card>
           </Form>
