@@ -27,7 +27,7 @@ class FieldDocLanguage extends React.Component {
       console.log(" LANGS  ", this.langs);
     }
 
-    handleChange = (value) =>
+    handleChange = (value) => 
         this.props.onChange('docLang', value)
     ;
     
@@ -48,7 +48,8 @@ class FieldDocLanguage extends React.Component {
           options={this.langs}
           multi={false}
           onChange={this.handleChange}
-          onBlur={this.handleBlur}
+          //onChange={this.handleChange}
+          //onBlur={this.handleBlur}
           value={this.props.value}
           closeOnSelect={true}
         />
@@ -60,8 +61,7 @@ class FieldDocLanguage extends React.Component {
           <option value="spa">Spanish</option>
           <option value="mul">Multilingual</option>
         </Input> */}
-         {!!this.props.error &&
-        this.props.touched &&  (
+         {!!this.props.error &&  (
             <FieldError error={error} />
         )}
         </FormControl>

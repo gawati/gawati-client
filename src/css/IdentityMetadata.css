@@ -1,8 +1,16 @@
-.error .form-control {
+/* Border for regular form inputs */
+/* .error .form-control {
+    border-color: red;
+} */
+/* Border of react-select */
+/*
+.error {
     border-color: red;
 }
+*/
 
-.error .label {
+.error .form-control-label {
+    font-weight:bold;
     color: red;
 }
   

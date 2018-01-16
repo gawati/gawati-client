@@ -13,13 +13,13 @@ class InputDate extends React.Component {
     }
 
     handleChange = (value) => {
+        console.log(" docOfficialDate ON CHANGE ", value);
         this.props.onChange('docOfficialDate', value);
-        console.log(" VALUE CHANGE DATE ", value);
     }
 
-    handleBlur = () => 
-        this.props.onBlur('docOfficialDate', true);
-    ;
+    //handleBlur = () => 
+    //   this.props.onBlur('docOfficialDate', true);
+    //;
 
     render() {
         const {name, value} = this.props;
@@ -34,7 +34,7 @@ class InputDate extends React.Component {
                 value={value}
                 placeholder={ 'Enter date in the format "2016/12/30"'}
                 onChange={this.handleChange}
-                onBlur={this.handleBlur}
+                //onBlur={this.handleBlur}
           />
         );
     }

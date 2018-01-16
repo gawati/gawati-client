@@ -59,7 +59,6 @@ const FieldDocTitle = ({onChange, value, error}) => {
 };
 
 const FieldDocOfficialDate = ({onChange, onBlur, value, error}) => {
-  console.log(" official date error ", error);
   return (
    <FormControl className={ formControlErrorClass(error) }>
     <Label htmlFor="docOfficialDate">Official Date</Label>
@@ -71,8 +70,8 @@ const FieldDocOfficialDate = ({onChange, onBlur, value, error}) => {
 
 const FieldIri = () => {
   return (
-    <div class="form-group">
-      <p class="form-control-static"><b>Document IRI:</b> /akn/ke/test </p>    
+    <div className="form-group">
+      <p className="form-control-static"><b>Document IRI:</b> /akn/ke/test </p>    
     </div>
   );
 }
@@ -88,120 +87,228 @@ const FieldDocNumber = ({onChange, value, error}) =>
 
 
 class IdentityMetadata extends React.Component {
-
-    constructor(props) {
+/**
+ * Creates an instance of IdentityMetadata.
+ * @param {any} props 
+ * @memberof IdentityMetadata
+ */
+constructor(props) {
       super(props);
       this.state = {
-        errorMsgs: [],
-        error: false
-      }
+        isSubmitting: false,
+        /* 
+        form has field names as state values 
+        i.e. docTitle has to have a corresponding 
+        <input name="docTitle" .... /> in the form
+        */ 
+        form: {
+          docLang: {value: {} , error: null },
+          docType: {value: '', error: null },
+          docCountry: {value: '', error: null },
+          docTitle: {value: '', error: null},
+          docOfficialDate: {value: '', error: null },
+          docNumber: {value: '', error: null }
+        }
+      };
+      /** 
+       * This provides validation of each field value using Yup
+       * The validator function is declared in Yup syntax here, and
+       * applied in the onChange of the field. 
+       */
+      this.validationSchema = {
+        docLang: {
+          validate:  Yup.object()
+                        .shape({
+                            label: Yup.string().required(), 
+                            value: Yup.string().required("You must select a language")
+                        })
+                        .required(" Enter a language") 
+        }, 
+        docType: {
+          validate:  Yup.string().required(" You must select a document type")
+        },
+        docCountry: {
+          validate:  Yup.string().required(" You must select a country")
+        },
+        docTitle: {
+          validate:  Yup.string().required(" Title is required ")
+        },
+        docOfficialDate: {
+          validate: Yup.date(" Official date is required").typeError(" You need to enter a date")
+        },
+        docNumber: {
+          validate: Yup.string().required(" Document number is required ")
+        }
+      };
     }
 
-    handleDefaultChange = (event) => {
-      console.log(" CHANGE ", event.target);
-      if (!event.target.value) {
-        this.setState({error: true});
+    /**
+     * Checks if a form has errors
+     * Returns an object with field names as keys which 
+     * have errors.
+     */
+    formHasErrors = () => {
+      const {form} = this.state;
+      let errors = {};
+      for (let field in form) {
+        if ( form[field].error !== null ) {
+          errors[field] = form[field];
+        }
+      }
+      return errors;
+    }
+    ;
+
+    setFieldValue = (fieldName, value) => 
+      this.setState({
+        form: {
+          ...this.state.form, 
+          [fieldName]: {
+            ...this.state.form[fieldName], 
+            value: value,
+            error: null
+          }
+        }
+      })
+      ;
+
+    setFieldError = (fieldName, err) => {
+      this.setState({
+        form: {
+          ...this.state.form, 
+          [fieldName]: {
+            ...this.state.form[fieldName], 
+            value: err.value === null ? '': err.value,
+            error: err.message
+          }
+        }
+      });
+    };
+
+    validateFormField = (fieldName, fieldValue) => {
+      this.validationSchema[fieldName].validate
+        .validate(fieldValue)
+          .then((value) => {
+            this.setFieldValue(fieldName, value);
+          })                                  
+        .catch((err)=> {
+          this.setFieldError(fieldName, err);
+        });  
+    }
+
+    componentDidMount(){
+      const {form} = this.state ; 
+      for (let field in form) {
+        this.validateFormField(field, form[field].value);
       }
     }
 
     render() {
-        return (
-          <div>
-            <Formik 
-                initialValues={
-                  {
-                    docLang: '',
-                    docType: '',
-                    docCountry: '',
-                    docTitle: '',
-                    docOfficialDate: null,
-                    docNumber: ''
-                  }
-                }
-                
-                validationSchema={
-                  Yup.object().shape(
-                    {
-                      //"docLang.label": Yup.string(),
-                      //"docLang.value": Yup.string().required(" You need to select a language"),
-                      docLang: Yup.object()
-                        .shape({label: Yup.string(), value: Yup.string()})
-                          .test('is-lang', 'You must select a language', value => { return value.value !== undefined } ),
-                      docType: Yup.string().required(" You must select a document type"),
-                      docCountry: Yup.string().required(" You must select a country"),
-                      docTitle: Yup.string().required(" Title is required "),
-                      docOfficialDate: Yup.date(" Official date is required").typeError(" You need to enter a date"),
-                      docNumber: Yup.string().required(" Document number is required ")
-                    }
-                  )
-                }
-
-                onSubmit={
-                  (values, {setSubmitting, setErrors})=>  {
-                      setSubmitting(false);
-                      console.log(" VALUES = ", values);
-                  }
-                }
-
-                render={
-                  ({values, touched, dirty, errors, handleSubmit, handleReset, handleChange, setFieldValue, setFieldTouched, isSubmitting}) => {
-                    //const submittingErrors =  isSubmitting || isEmpty(errors) ; 
-                    //console.log( " ERRORS ", errors, submittingErrors);
-                    return (
-                    <Form onSubmit={handleSubmit} noValidate>
-                    <Card>
-                        <CardHeader>
-                            <strong>Document Identity</strong>
-                            <small> Form</small>
-                        </CardHeader>
-                        <CardBody>
-                        <Row>
-                            <Col xs="4">
-                              </Col>
-                              <Col xs="4">
-                                  <FieldIri />
-                              </Col>
-                              <Col xs="4">
-                              </Col>
-                            </Row>
-                            <Row>
-                            <Col xs="4">
-                                <FieldDocLanguage name="docLang" error={errors.docLang} onChange={setFieldValue}  onBlur={setFieldTouched} touched={touched.docLang} value={values.docLang}  />
-                              </Col>
-                              <Col xs="4">
-                                  <FieldDocType  error={touched.docType && errors.docType} onChange={handleChange}  value={values.docType} />
-                              </Col>
-                              <Col xs="4">
-                                  <FieldDocCountry  error={touched.docCountry && errors.docCountry} onChange={handleChange}   value={values.docCountry} />
-                              </Col>
-                            </Row>              
-                            <Row>
-                              <Col xs="12">
-                                  <FieldDocTitle error={touched.docTitle && errors.docTitle} onChange={handleChange}   value={values.docTitle}  />
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col xs="6">
-                                  <FieldDocOfficialDate  error={touched.docOfficialDate && errors.docOfficialDate} onChange={setFieldValue} onBlur={setFieldTouched} touched={touched.docOfficialDate} value={values.docOfficialDate}  />
-                              </Col>
-                              <Col xs="6">
-                                  <FieldDocNumber  error={touched.docNumber && errors.docNumber}  onChange={handleChange} value={values.docNumber} />
-                              </Col>
-                            </Row>
-                        </CardBody>
-                        <CardFooter>
-                            <Button type="submit" disabled={ isSubmitting } size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Next</Button>
-                            { " " }
-                            <Button type="reset" size="sm" color="danger" onClick={handleReset} ><i className="fa fa-ban"></i> Reset</Button>
-                          </CardFooter>
-                    </Card>
-                  </Form>
-                    );
-                  }
-                }
-          />
-        </div>
-      );
+      const {isSubmitting, form} = this.state ; 
+      const errors = this.formHasErrors();
+      const formValid = isEmpty(errors);
+      return (
+        <div>
+            <Form  noValidate>
+            <Card>
+                <CardHeader>
+                    <strong>Document Identity</strong>
+                    <small> Form</small>
+                </CardHeader>
+                <CardBody>
+                <Row>
+                    <Col xs="4">
+                      </Col>
+                      <Col xs="4">
+                          <FieldIri />
+                      </Col>
+                      <Col xs="4">
+                      </Col>
+                    </Row>
+                    <Row>
+                    <Col xs="4">
+                        { 
+                          /* There is no real onChange event here - we just called it like that its just a parent caller
+                            used by the Component implementation to set the value in the state */ 
+                        }
+                        <FieldDocLanguage name="docLang" 
+                          onChange={
+                              (field, value) => {
+                                // we set an empty object as the default for validation since 
+                                // we have specified an object as neccessary for the schema.
+                               this.validateFormField(field, value === null ? {}: value);
+                              }
+                           }
+                          value={form.docLang.value}
+                          error={errors.docLang}
+                           />
+                      </Col>
+                      <Col xs="4">
+                          <FieldDocType name="docType"
+                            value={form.docType.value} 
+                            onChange={
+                              (evt)=> {
+                                this.validateFormField('docType', evt.target.value);
+                              }
+                            }  
+                            error={errors.docType}
+                            />
+                      </Col>
+                      <Col xs="4">
+                          <FieldDocCountry value={form.docCountry.value} 
+                            onChange={
+                              (evt)=> {
+                                this.validateFormField('docCountry', evt.target.value);
+                              }
+                            }  
+                            error={errors.docCountry}
+                          />
+                      </Col>
+                    </Row>              
+                    <Row>
+                      <Col xs="12">
+                          <FieldDocTitle value={form.docTitle.value}
+                            onChange={
+                              (evt)=> {
+                                  this.validateFormField('docTitle', evt.target.value);
+                                }
+                              }
+                            error={errors.docTitle}
+                          />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col xs="6">
+                          <FieldDocOfficialDate  value={form.docOfficialDate.value} 
+                            onChange={
+                              (field, value)=> {
+                                this.validateFormField(field, value);
+                              }
+                            }
+                            error={errors.docOfficialDate}
+                          />
+                      </Col>
+                      <Col xs="6">
+                          <FieldDocNumber value={form.docNumber.value}
+                            onChange={
+                              (evt)=> {
+                                this.validateFormField('docNumber', evt.target.value);
+                              }
+                            }
+                            error={errors.docNumber}
+                          />
+                      </Col>
+                    </Row>
+                </CardBody>
+                <CardFooter>
+                    <Button type="submit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Next</Button>
+                    { " " }
+                    <Button type="reset" size="sm" color="danger" ><i className="fa fa-ban"></i> Reset</Button>
+                  </CardFooter>
+            </Card>
+          </Form>
+      </div>
+    );
     }
 }
 
