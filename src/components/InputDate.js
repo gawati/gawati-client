@@ -12,17 +12,29 @@ class InputDate extends React.Component {
         };
     }
 
+    handleChange = (value) => {
+        this.props.onChange('docOfficialDate', value);
+        console.log(" VALUE CHANGE DATE ", value);
+    }
+
+    handleBlur = () => 
+        this.props.onBlur('docOfficialDate', true);
+    ;
+
     render() {
-        const {value} = this.state ; 
-        const {name} = this.props;
+        const {name, value} = this.props;
+        console.log( " VALUE DATE  = ",value);
         return (
             <DateTimePicker
                 name={name}
-                value={value}
+                id={name}
+                defaultValue={value}
                 format="YYYY-MM-DD"
                 time={false}
+                value={value}
                 placeholder={ 'Enter date in the format "2016/12/30"'}
-                onChange={value => this.setState({value})}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
           />
         );
     }

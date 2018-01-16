@@ -3,6 +3,9 @@ import { getLangs, coerceIntoArray } from '../../utils/generalhelper';
 import { FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import { FieldError } from './FieldError';
+import {FormControl, formControlErrorClass} from './FormControl';
+import '../../css/IdentityMetadata.css';
 
 class FieldDocLanguage extends React.Component {
     constructor(props) {
@@ -34,13 +37,13 @@ class FieldDocLanguage extends React.Component {
   
     render() {
     
-      const {onChange, value} = this.props ; 
-      //console.log(" LANGS  ", this.langs);
+      const {onChange, onBlur, value, error} = this.props ; 
+      console.log(" FIELD DOC LANGUAGE  ", value, error);
       return (
-        <FormGroup>
+        <FormControl className={ formControlErrorClass(error)}>
         <Label htmlFor="docLang">Language</Label>
         <Select
-          id="doclang"
+          id="docLang"
           name={this.props.name}
           options={this.langs}
           multi={false}
@@ -57,7 +60,11 @@ class FieldDocLanguage extends React.Component {
           <option value="spa">Spanish</option>
           <option value="mul">Multilingual</option>
         </Input> */}
-        </FormGroup>
+         {!!this.props.error &&
+        this.props.touched &&  (
+            <FieldError error={error} />
+        )}
+        </FormControl>
       ) ; 
     }
   }
