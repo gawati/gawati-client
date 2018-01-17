@@ -47,8 +47,7 @@
     "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
     "pack": "build --dir",
-    "dist": "npm run build && build",
-    "postinstall": "install-app-deps"
+    "dist": "npm run build && build"
   },
   "build": {
     "appId": "org.gawati.client-app",
