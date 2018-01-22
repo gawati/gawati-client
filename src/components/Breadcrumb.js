@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap'; 
-import {getRoute} from '../utils/routeshelper';
+
 
 
 /* 
@@ -9,18 +9,16 @@ const findRouteName = url => routes[url];
 */
 
 
-const getPaths = (pathname) => {
+/* const getPaths = (pathname) => {
   const paths = ['/'];
-
   if (pathname === '/') return paths;
-
-  pathname.split('/').reduce((prev, curr, index) => {
+  return pathname.split('/').reduce((prev, curr, index) => {
     const currPath = `${prev}/${curr}`;
     paths.push(currPath);
     return currPath;
   });
-  return paths;
-};
+  //return paths;
+}; */
 
 /* const BreadcrumbsItem = ({...rest, match}) => {
   const routeName = findRouteName(match.url);
@@ -43,11 +41,7 @@ const getPaths = (pathname) => {
 }; */
  
 const Breadcrumbs = ({...rest, location : {pathname}, match}) => {
-  const paths = getPaths(pathname);
-  //const items = paths.map((path, i) => <Route key={i++} path={path} component={BreadcrumbsItem}/>);
-  console.log( " rest,  pathname, match ", rest, pathname, match);
-  const items = [] ; 
-
+  //const paths = getPaths(pathname);
   return (
     <Breadcrumb>
       <BreadcrumbItem>Home</BreadcrumbItem>  

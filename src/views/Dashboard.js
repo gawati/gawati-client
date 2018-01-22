@@ -3,7 +3,7 @@ import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, C
 import axios from 'axios';
 import { apiGetCall } from '../api';
 import {Aux} from '../utils/generalhelper';
-import {displayDate, humanDate} from '../utils/datehelper';
+import {humanDate} from '../utils/datehelper';
 
 export const StateColumn = ({ doc }) => 
   <div>{doc.state.label}</div>

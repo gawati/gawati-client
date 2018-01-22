@@ -169,3 +169,6 @@ export const isInt = (value) =>  {
     x = parseFloat(value);
     return (x | 0) === x;
 };
+
+export const isInvalidValue = (value) =>  
+    value === undefined || value === null || value === "" ;

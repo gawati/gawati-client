@@ -90,7 +90,7 @@ class SideBar extends React.Component {
     const navDropdown = (item, key) => {
       return (
         <li key={key} className={activeRoute(item.url, props)}>
-          <a className="nav-link nav-dropdown-toggle" href="javascript:;" 
+          <a className={ `nav-link nav-dropdown-toggle` } 
             onClick={handleClick.bind(this)}>
             <i className={item.icon}></i>{item.name}
           </a>

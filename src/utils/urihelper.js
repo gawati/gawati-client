@@ -1,13 +1,15 @@
 
-export const aknIri = (docCountry, docOfficialDate, docNumberNormalized, docLang, docPart) => 
-    `/akn/${docCountry}/${docOfficialDate}/${docNumberNormalized}/${docLang}@/!${docPart}`
+export const aknIri = (docCountry, docType, docOfficialDate, docNumberNormalized, docLang, docPart) => {
+    return `/akn/${docCountry}/${docType}/${docOfficialDate}/${docNumberNormalized}/${docLang}@/!${docPart}` ;
+}
 ;
 
-export const normalizeDocNumber = (docNumber) =>
-    docNumber
+export const normalizeDocNumber = (docNumber) => {
+return docNumber
         .trim()
-        .replace(/\s\s+/g, '_')
-        .replace(/\.;,/g, '')
-        .replace(/\//g, '-')
-    ;
+        .replace(/\s+/g, '_')
+        .replace(/[.;,?]/g, '')
+        .replace(/[\\/]/g, '-')
+        .replace(/[+!@#$%^&*()]/g, '') ;
+};
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { getLangs, coerceIntoArray } from '../../utils/generalhelper';
-import { FormGroup, Label, Input } from 'reactstrap';
+import { Label } from 'reactstrap';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import { FieldError } from './FieldError';
@@ -37,20 +37,20 @@ class FieldDocLanguage extends React.Component {
   
     render() {
     
-      const {onChange, onBlur, value, error} = this.props ; 
+      const {name, value, error} = this.props ; 
      
       return (
         <FormControl className={ formControlErrorClass(error)}>
         <Label htmlFor="docLang">Language</Label>
         <Select
           id="docLang"
-          name={this.props.name}
+          name={name}
           options={this.langs}
           multi={false}
           onChange={this.handleChange}
           //onChange={this.handleChange}
           //onBlur={this.handleBlur}
-          value={this.props.value}
+          value={value}
           closeOnSelect={true}
         />
 {/*         <Input type="select" name="docLang" onChange={onChange} defaultValue={value} id="doclang" required>
