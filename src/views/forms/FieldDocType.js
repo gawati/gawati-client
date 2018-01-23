@@ -2,21 +2,55 @@ import React from 'react';
 import {Label, Input} from 'reactstrap'; 
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
+import {getDocTypes} from '../../utils/doctypeshelper';
 
-const FieldDocType = ({onChange, value, error}) => {
-    return (
-    <FormControl className={ formControlErrorClass(error) }>
-      <Label htmlFor="docType">Document Type</Label>
-      <Input type="select" defaultValue=""  onChange={onChange} name="docType" id="doctype" required>
-      <option value="" key="blank">Select a Document Type</option>
-        <option value="legislation" key="legisalation">Legislation</option>
-        <option value="constitution" key="constitution" >Constitution</option>
-        <option value="bill"  key="bill">Bill</option>
-        <option value="judgement" key="judgement">Judgement</option>
-      </Input>
-      <FieldError error={error} />
-    </FormControl>
-    );
+class FieldDocType extends React.Component {
+
+  state = {
+    docTypes: []
   };
+
+  componentDidMount() {
+    this.setState({docTypes: getDocTypes()});
+  }
+
+/*
+    {
+        "aknDoctype": "act",
+        "aknDocTag": "act",
+        "localTypeName": "Act",
+        "localTypeNameNormalized": "act",
+        "category": "legislation"
+    },
+    */  
+
+/**
+ * 
+ * 
+ * @returns 
+ * @memberof FieldDocType
+ */
+render() {
+    const {onChange, value, error} = this.props;
+    return (
+      <FormControl className={ formControlErrorClass(error) }>
+        <Label htmlFor="docType">Document Type</Label>
+        <Input type="select" defaultValue={value}  onChange={onChange} name="docType" id="doctype" required>
+        <option value="" key="blank">Select a Document Type</option> {
+          this.state.docTypes.map( (docType) => 
+            <option value={docType.localTypeNameNormalized} 
+              data-akntype={docType.aknType} 
+              key={docType.localTypeNameNormalized}>
+              {docType.localTypeName}
+            </option>
+          )
+        }
+        </Input>
+        <FieldError error={error} />
+      </FormControl>
+      );
+  }
+
+};
 
 export default FieldDocType ;

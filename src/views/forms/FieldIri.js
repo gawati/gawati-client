@@ -2,7 +2,7 @@ import React from 'react';
 import {Label, Input} from 'reactstrap';
 
 import { isInvalidValue } from '../../utils/generalhelper';
-import { aknIri, normalizeDocNumber } from '../../utils/urihelper';
+import { aknIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
 import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import {FormControl, formControlErrorClass} from './FormControl';
@@ -10,17 +10,26 @@ import {FormControl, formControlErrorClass} from './FormControl';
 /**
  *  `/akn/${docCountry}/${docType}/${docOfficialDate}/${docNumberNormalized}/${docLang}@/!${docPart}`
  */
-const displayIri = ({docCountry, docType, docOfficialDate, docNumber, docLang, docPart }) => {
-    const unknown = "[unknown]"; 
-    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart ; 
-    iriType = isInvalidValue(docType.value) ? unknown : docType.value ;
+const displayIri = ({docCountry, docType, docAknType, docOfficialDate, docNumber, docLang, docPart }) => {
+    const unknown = unknownIriComponent(); 
+    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
+    iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
+    iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
     iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
     iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
     iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
     iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
     iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
   
-    return aknIri(iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart);
+    return aknIri(
+      iriCountry, 
+      iriType, 
+      iriSubType, 
+      iriOfficialDate, 
+      iriNumber, 
+      iriLang, 
+      iriPart
+    );
   }
 
   

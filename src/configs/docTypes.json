@@ -1,17 +1,16 @@
 {"docTypes": [
     {
-        "akn-type": "act",
-        "akn-name": "act",
-        "category": "legislation",  
-        "by-country": [
-            {
-            "code": "bj",
-            "name": "act"
-            }
-        ]
+        "aknType": "act",
+        "aknDocTag": "act",
+        "localTypeName": "Act",
+        "localTypeNameNormalized": "legge",
+        "category": "legislation"
     },
     {
-        "akn-type": "judgment",
+        "aknType": "judgment",
+        "aknDocTag": "judgment",
+        "localTypeName": "Judgement",
+        "localTypeNameNormalized": "courtjudgment",
         "category": "case law"
     }
 ]

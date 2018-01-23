@@ -5,6 +5,10 @@ import Yup from 'yup';
 import axios from 'axios';
 
 import { isEmpty } from '../../utils/generalhelper';
+import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
+import { isInvalidValue } from '../../utils/generalhelper';
+import { aknIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
+import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';
@@ -53,6 +57,9 @@ constructor(props) {
         docType: {
           validate:  Yup.string().required(" You must select a document type")
         },
+        docAknType: {
+          validate: Yup.string().required("You must select a akn doc Type")
+        },
         docCountry: {
           validate:  Yup.string().required(" You must select a country")
         },
@@ -77,11 +84,37 @@ constructor(props) {
       this.handleReset = this.handleReset.bind(this);
     }
 
+    generateIRI = ({docCountry, docType, docAknType, docOfficialDate, docNumber, docLang, docPart }) => {
+      const unknown = unknownIriComponent(); 
+      var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
+      iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
+      iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
+      iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
+      iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
+      iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
+      iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
+      iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
+      return aknIri(
+        iriCountry, 
+        iriType, 
+        iriSubType, 
+        iriOfficialDate, 
+        iriNumber, 
+        iriLang, 
+        iriPart
+      );
+    };
+
+    updateIriValue = () => {
+      this.setFieldValue("docIri", this.generateIRI(this.state.form));
+    }
+      
     formInitialState = () => {
       return (
         {
           docLang: {value: {} , error: null },
           docType: {value: '', error: null },
+          docAknType: {value: '', error: null },
           docCountry: {value: '', error: null },
           docTitle: {value: '', error: null},
           docOfficialDate: {value: '', error: null },
@@ -140,6 +173,7 @@ constructor(props) {
      * using the Yup validator specified in the validationSchema
      */
     validateFormField = (fieldName, fieldValue) => {
+      console.log( " VALIDATING ", fieldName, fieldValue);
       this.validationSchema[fieldName].validate
         .validate(fieldValue)
           .then((value) => {
@@ -201,6 +235,7 @@ constructor(props) {
 
     render() {
       const {isSubmitting, form} = this.state ; 
+      console.log(" FORM INFO ", form);
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
       return (
@@ -227,6 +262,7 @@ constructor(props) {
                               onChange={
                                 (evt)=> {
                                   this.validateFormField('docCountry', evt.target.value);
+                                  this.updateIriValue();
                                 }
                               }  
                               error={errors.docCountry}
@@ -237,11 +273,17 @@ constructor(props) {
                             value={form.docType.value} 
                             onChange={
                               (evt)=> {
-                                this.validateFormField('docType', evt.target.value);
-                              }
+                                const fieldValue = evt.target.value ;
+                                this.validateFormField('docType',fieldValue);
+                                this.validateFormField(
+                                  'docAknType',  
+                                  fieldValue !== "" ? getDocTypeFromLocalType(fieldValue).aknType : ""
+                                );
+                                this.updateIriValue();                              }
                             }  
                             error={errors.docType}
                             />
+                          <input type="hidden" name="docAknType" value={form.docAknType.value} error={errors.docAknType} />
                       </Col>
                       <Col xs="4">
                        { 
@@ -254,6 +296,7 @@ constructor(props) {
                                 // we set an empty object as the default for validation since 
                                 // we have specified an object as neccessary for the schema.
                                this.validateFormField(field, value === null ? {}: value);
+                               this.updateIriValue();
                               }
                            }
                           value={form.docLang.value}
@@ -268,6 +311,7 @@ constructor(props) {
                             onChange={
                               (field, value)=> {
                                 this.validateFormField(field, value);
+                                this.updateIriValue();
                               }
                             }
                             error={errors.docOfficialDate}
@@ -278,6 +322,7 @@ constructor(props) {
                             onChange={
                               (evt)=> {
                                 this.validateFormField('docNumber', evt.target.value);
+                                this.updateIriValue();
                               }
                             }
                             error={errors.docNumber}
