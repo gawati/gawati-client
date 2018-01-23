@@ -7,17 +7,16 @@
   },
   "private": true,
   "license": "AGPLV3",
+  "proxy": "http://localhost",
   "dependencies": {
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0-beta.3",
     "classnames": "^2.2.5",
     "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
-    "formik": "^0.10.5",
     "i18next": "^10.2.2",
     "i18next-browser-languagedetector": "^2.1.0",
     "i18next-xhr-backend": "^1.5.1",
-    "material-ui": "^1.0.0-beta.26",
     "moment": "^2.20.1",
     "node-sass-chokidar": "0.0.3",
     "pouchdb": "^6.4.1",
@@ -47,8 +46,7 @@
     "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
     "pack": "build --dir",
-    "dist": "npm run build && build",
-    "postinstall": "install-app-deps"
+    "dist": "npm run build && build"
   },
   "build": {
     "appId": "org.gawati.client-app",
@@ -60,7 +58,7 @@
     }
   },
   "devDependencies": {
-    "electron": "^1.7.10",
-    "electron-builder": "^19.50.0"
+    "electron": "^1.7.11",
+    "electron-builder": "^19.55.1"
   }
 }

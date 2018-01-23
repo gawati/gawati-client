@@ -22,7 +22,7 @@ import 'simple-line-icons/css/simple-line-icons.css';
 // Views 
 import Register from './views/pages/Register/Register';
 import Login from './views/pages/Login/Login';
-import Dashboard from './views/Dashboard';
+
 import './globalize';
 
 ReactDOM.render(

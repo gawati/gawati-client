@@ -52,7 +52,7 @@ class TopNavDropdown extends React.Component {
   }
 
   render() {
-    const {...attributes} = this.props;
+    //const {...attributes} = this.props;
     return (
       this.dropAccnt()
     );

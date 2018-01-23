@@ -1,102 +1,22 @@
 import React from 'react';
-import {Form, FormFeedback, Card, CardHeader, CardBlock, CardBody, CardFooter, Row, Col, FormGroup, Label, Input, Button} from 'reactstrap';
-import { Formik } from 'formik';
+import {Form, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 import Yup from 'yup';
-import classnames from 'classnames';
 
-import { lang } from 'moment';
-import { getLangs, isEmpty } from '../../utils/generalhelper';
-import {aknIri, normalizeDocNumber} from '../../utils/urihelper';
+import axios from 'axios';
 
+import { isEmpty } from '../../utils/generalhelper';
 
-import StdDiv from '../../components/StdDiv';
-import InputDate from '../../components/InputDate';
 import FieldDocLanguage from './FieldDocLanguage2';
-import {FormControl, formControlErrorClass} from './FormControl';
-import {FieldError} from './FieldError';
+import FieldIri from './FieldIri';
+import FieldDocCountry from './FieldDocCountry';
+import FieldDocNumber from './FieldDocNumber';
+import FieldDocTitle from './FieldDocTitle';
+import FieldDocType from './FieldDocType';
+import FieldDocOfficialDate from './FieldDocOfficialDate';
 
 import '../../css/IdentityMetadata.css';
+import { apiUrl } from '../../api';
 
-
-const FieldDocType = ({onChange, value, error}) => {
-  return (
-  <FormControl className={ formControlErrorClass(error) }>
-    <Label htmlFor="docType">Document Type</Label>
-    <Input type="select" defaultValue=""  onChange={onChange} name="docType" id="doctype" required>
-    <option value="" key="blank">Select a Document Type</option>
-      <option value="legislation" key="legisalation">Legislation</option>
-      <option value="constitution" key="constitution" >Constitution</option>
-      <option value="bill"  key="bill">Bill</option>
-      <option value="judgement" key="judgement">Judgement</option>
-    </Input>
-    <FieldError error={error} />
-  </FormControl>
-  );
-};
- 
-const FieldDocCountry = ({onChange, value, error}) => {
-  return (
-    <FormControl className={ formControlErrorClass(error) }>
-      <Label htmlFor="docCountry">Country</Label>
-      <Input type="select" defaultValue={value}  onChange={onChange} name="docCountry" id="country" required>
-      <option value="">Select a Country</option>
-        <option value="ke" key="country-ke">Kenya</option>
-        <option value="tz" value="country-tz">Tanzania</option>
-        <option value="ng" value="country-ng">Nigeria</option>
-        <option value="ao" value="country-ao">Angola</option>
-      </Input>
-      <FieldError error={error} />
-    </FormControl>
-  );
-}
-
-const FieldDocTitle = ({onChange, value, error}) => {
-  return (
-    <FormControl className={ formControlErrorClass(error) }>
-      <Label htmlFor="docTitle">Title</Label>
-      <Input type="text" name="docTitle" value={value} onChange={onChange} id="doctitle" placeholder="Enter the Title of the document" required/>
-      <FieldError error={error} />
-    </FormControl>
-  )
-};
-
-const FieldDocOfficialDate = ({onChange, onBlur, value, error}) => {
-  return (
-   <FormControl className={ formControlErrorClass(error) }>
-    <Label htmlFor="docOfficialDate">Official Date</Label>
-    <InputDate name="docOfficialDate" onChange={onChange}  onBlur={onBlur} initialValue={ value } required />
-    <FieldError error={error} />
-  </FormControl>
-  );
-}
-
-/**
- *  `/akn/${docCountry}/${docOfficialDate}/${docNumberNormalized}/${docLang}@/!${docPart}`
- */
-const displayIri = ({docCountry, docOfficialDate, docNumber, docLang, docPart }) => {
-  const docNumberNormalized = normalizeDocNumber(docNumber);
-  console.log( " DOC DATE ==== ", docOfficialDate);
-  return aknIri(docCountry, docOfficialDate, docNumberNormalized, docLang, docPart)
-}
-
-const FieldIri = ({form}) => {
-  return (
-    <div className="form-group">
-      <p className="form-control-static"><b>Document IRI:</b> {
-        aknIri()
-      } </p>    
-    </div>
-  );
-}
-
-const FieldDocNumber = ({onChange, value, error}) =>
-  <FormControl className={ formControlErrorClass(error) }>
-    <Label htmlFor="docNumber">Document Number</Label>
-    <Input type="text" id="docNumber" value={value} 
-      onChange={onChange} 
-      placeholder="Enter the official document number" required/>
-    <FieldError error={error} />
-  </FormControl> ;
 
 
 class IdentityMetadata extends React.Component {
@@ -147,6 +67,9 @@ constructor(props) {
         }, 
         docPart: {
           validate: Yup.string()
+        },
+        docIri: {
+          validate: Yup.string()
         }
       };
       // bindings
@@ -163,7 +86,8 @@ constructor(props) {
           docTitle: {value: '', error: null},
           docOfficialDate: {value: '', error: null },
           docNumber: {value: '', error: null },
-          docPart: {value: 'main', error: null }
+          docPart: {value: 'main', error: null },
+          docIri : {value: '', error: null }
         }
       );
     };
@@ -244,7 +168,28 @@ constructor(props) {
     handleSubmit(event) {
       event.preventDefault();
       this.setState({isSubmitting: true});
-      setTimeout(function() { this.setState({isSubmitting: false}); }.bind(this), 3000);
+     
+      axios.post(
+        apiUrl('document-add'), {
+          data: this.state.form
+        }
+        )
+      .then(
+        (response) => {
+          this.setState({isSubmitting: false});
+          console.log(" Response ", response);
+        }
+      )
+      .catch(
+        (err) => {
+          this.setState({isSubmitting: false});
+          console.log(" ERR ", err);
+        }
+      );
+
+      //      setTimeout(function() { 
+//       this.setState({isSubmitting: false}); 
+//      }.bind(this), 3000);
     }
 
     handleReset(event) {
@@ -268,17 +213,38 @@ constructor(props) {
                 </CardHeader>
                 <CardBody>
                 <Row>
-                    <Col xs="4">
+                    <Col xs="3">
                       </Col>
-                      <Col xs="4">
-                          <FieldIri form={form} />
+                      <Col xs="6">
+                          <FieldIri form={form} formValid={formValid} />
                       </Col>
-                      <Col xs="4">
+                      <Col xs="3">
                       </Col>
                     </Row>
                     <Row>
                     <Col xs="4">
-                        { 
+                      <FieldDocCountry value={form.docCountry.value} 
+                              onChange={
+                                (evt)=> {
+                                  this.validateFormField('docCountry', evt.target.value);
+                                }
+                              }  
+                              error={errors.docCountry}
+                            />
+                      </Col>
+                      <Col xs="4">
+                          <FieldDocType name="docType"
+                            value={form.docType.value} 
+                            onChange={
+                              (evt)=> {
+                                this.validateFormField('docType', evt.target.value);
+                              }
+                            }  
+                            error={errors.docType}
+                            />
+                      </Col>
+                      <Col xs="4">
+                       { 
                           /* There is no real onChange event here - we just called it like that its just a parent caller
                             used by the Component implementation to set the value in the state */ 
                         }
@@ -294,40 +260,8 @@ constructor(props) {
                           error={errors.docLang}
                            />
                       </Col>
-                      <Col xs="4">
-                          <FieldDocType name="docType"
-                            value={form.docType.value} 
-                            onChange={
-                              (evt)=> {
-                                this.validateFormField('docType', evt.target.value);
-                              }
-                            }  
-                            error={errors.docType}
-                            />
-                      </Col>
-                      <Col xs="4">
-                          <FieldDocCountry value={form.docCountry.value} 
-                            onChange={
-                              (evt)=> {
-                                this.validateFormField('docCountry', evt.target.value);
-                              }
-                            }  
-                            error={errors.docCountry}
-                          />
-                      </Col>
                     </Row>              
-                    <Row>
-                      <Col xs="12">
-                          <FieldDocTitle value={form.docTitle.value}
-                            onChange={
-                              (evt)=> {
-                                  this.validateFormField('docTitle', evt.target.value);
-                                }
-                              }
-                            error={errors.docTitle}
-                          />
-                      </Col>
-                    </Row>
+ 
                     <Row>
                       <Col xs="6">
                           <FieldDocOfficialDate  value={form.docOfficialDate.value} 
@@ -347,6 +281,18 @@ constructor(props) {
                               }
                             }
                             error={errors.docNumber}
+                          />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col xs="12">
+                          <FieldDocTitle value={form.docTitle.value}
+                            onChange={
+                              (evt)=> {
+                                  this.validateFormField('docTitle', evt.target.value);
+                                }
+                              }
+                            error={errors.docTitle}
                           />
                       </Col>
                     </Row>
