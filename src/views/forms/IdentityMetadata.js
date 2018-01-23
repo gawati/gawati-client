@@ -15,6 +15,7 @@ import FieldDocType from './FieldDocType';
 import FieldDocOfficialDate from './FieldDocOfficialDate';
 
 import '../../css/IdentityMetadata.css';
+import { apiUrl } from '../../api';
 
 
 
@@ -167,15 +168,16 @@ constructor(props) {
     handleSubmit(event) {
       event.preventDefault();
       this.setState({isSubmitting: true});
+     
       axios.post(
-          "/gw/client/document/add/", {
+        apiUrl('document-add'), {
           data: this.state.form
         }
         )
       .then(
         (response) => {
           this.setState({isSubmitting: false});
-          console.log(" RESPOONSE ", response);
+          console.log(" Response ", response);
         }
       )
       .catch(
