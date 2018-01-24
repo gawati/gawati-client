@@ -7,7 +7,7 @@ import axios from 'axios';
 import { isEmpty } from '../../utils/generalhelper';
 import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
 import { isInvalidValue } from '../../utils/generalhelper';
-import { aknIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
+import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
 import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
@@ -94,12 +94,14 @@ constructor(props) {
       iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
       iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
       iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
-      return aknIri(
-        iriCountry, 
-        iriType, 
-        iriSubType, 
-        iriOfficialDate, 
-        iriNumber, 
+      return aknExprIri(
+        aknWorkIri(
+          iriCountry, 
+          iriType, 
+          iriSubType, 
+          iriOfficialDate, 
+          iriNumber
+        ),
         iriLang, 
         iriPart
       );
@@ -204,7 +206,8 @@ constructor(props) {
       this.setState({isSubmitting: true});
      
       axios.post(
-        apiUrl('document-add'), {
+        apiUrl('document-add')
+        , {
           data: this.state.form
         }
         )
@@ -252,6 +255,7 @@ constructor(props) {
                       </Col>
                       <Col xs="6">
                           <FieldIri form={form} formValid={formValid} />
+                          <input type="hidden" name="docPart" value="main" />
                       </Col>
                       <Col xs="3">
                       </Col>

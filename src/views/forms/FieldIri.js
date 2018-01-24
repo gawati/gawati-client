@@ -2,7 +2,7 @@ import React from 'react';
 import {Label, Input} from 'reactstrap';
 
 import { isInvalidValue } from '../../utils/generalhelper';
-import { aknIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
+import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
 import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import {FormControl, formControlErrorClass} from './FormControl';
@@ -21,12 +21,14 @@ const displayIri = ({docCountry, docType, docAknType, docOfficialDate, docNumber
     iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
     iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
   
-    return aknIri(
-      iriCountry, 
-      iriType, 
-      iriSubType, 
-      iriOfficialDate, 
-      iriNumber, 
+    return aknExprIri(
+      aknWorkIri(
+        iriCountry, 
+        iriType, 
+        iriSubType, 
+        iriOfficialDate, 
+        iriNumber
+      ), 
       iriLang, 
       iriPart
     );
