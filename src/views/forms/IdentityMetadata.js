@@ -22,7 +22,7 @@ import FieldDocPart from './FieldDocPart';
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 
-
+import {error} from '../../utils/notifhelper';
 
 class IdentityMetadata extends React.Component {
 /**
@@ -234,6 +234,7 @@ constructor(props) {
 
     handleReset(event) {
       event.preventDefault();
+      console.log(" Calling Alert info");
       this.setState({
         form: this.formInitialState()
       });
@@ -241,7 +242,6 @@ constructor(props) {
 
     render() {
       const {isSubmitting, form} = this.state ; 
-      console.log(" FORM INFO ", form);
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
       return (

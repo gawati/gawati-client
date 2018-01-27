@@ -12,7 +12,7 @@ import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import InputForm from '../views/forms/InputForm';
 import {PropsRoute} from '../utils/routeshelper';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 class Root extends React.Component {
     render() {
@@ -35,6 +35,7 @@ class Root extends React.Component {
                 {/*<Aside />*/}
             </div>
             <PropsRoute path="*" component={ FooterNav } i18n={ i18n } />
+            <ToastContainer />
             </div>
         );
     }
