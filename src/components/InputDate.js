@@ -13,7 +13,6 @@ class InputDate extends React.Component {
     }
 
     handleChange = (value) => {
-        console.log(" docOfficialDate ON CHANGE ", value);
         this.props.onChange('docOfficialDate', value);
     }
 
@@ -23,7 +22,6 @@ class InputDate extends React.Component {
 
     render() {
         const {name, value} = this.props;
-        console.log( " VALUE DATE  = ",value);
         return (
             <DateTimePicker
                 name={name}

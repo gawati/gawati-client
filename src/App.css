@@ -12,7 +12,7 @@
  * Copyright 2011-2017 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-
+@import url(react-s-alert/dist/s-alert-default.css);
 :root {
   --blue: #20a8d8;
   --indigo: #6610f2;

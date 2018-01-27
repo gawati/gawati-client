@@ -25,6 +25,7 @@
     "react-i18next": "^7.3.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-s-alert": "^1.4.1",
     "react-scripts": "1.0.17",
     "react-select": "^1.2.0",
     "react-tabs": "^2.1.1",

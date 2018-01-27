@@ -17,6 +17,7 @@ import FieldDocNumber from './FieldDocNumber';
 import FieldDocTitle from './FieldDocTitle';
 import FieldDocType from './FieldDocType';
 import FieldDocOfficialDate from './FieldDocOfficialDate';
+import FieldDocPart from './FieldDocPart';
 
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
@@ -73,7 +74,7 @@ constructor(props) {
           validate: Yup.string().required(" Document number is required ")
         }, 
         docPart: {
-          validate: Yup.string()
+          validate: Yup.string().required("Document part is required")
         },
         docIri: {
           validate: Yup.string()
@@ -86,6 +87,7 @@ constructor(props) {
 
     generateIRI = ({docCountry, docType, docAknType, docOfficialDate, docNumber, docLang, docPart }) => {
       const unknown = unknownIriComponent(); 
+      console.log(" generateIRI docPart", docPart);
       var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
       iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
       iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
@@ -121,7 +123,7 @@ constructor(props) {
           docTitle: {value: '', error: null},
           docOfficialDate: {value: '', error: null },
           docNumber: {value: '', error: null },
-          docPart: {value: 'main', error: null },
+          docPart: {value: '', error: null },
           docIri : {value: '', error: null }
         }
       );
@@ -175,13 +177,14 @@ constructor(props) {
      * using the Yup validator specified in the validationSchema
      */
     validateFormField = (fieldName, fieldValue) => {
-      console.log( " VALIDATING ", fieldName, fieldValue);
+      //console.log( " VALIDATING ", fieldName, fieldValue);
       this.validationSchema[fieldName].validate
         .validate(fieldValue)
           .then((value) => {
             this.setFieldValue(fieldName, value);
           })                                  
         .catch((err)=> {
+          console.log(" FIELD ERROR ", fieldName, err);
           this.setFieldError(fieldName, err);
         });  
     }
@@ -255,7 +258,6 @@ constructor(props) {
                       </Col>
                       <Col xs="6">
                           <FieldIri form={form} formValid={formValid} />
-                          <input type="hidden" name="docPart" value="main" />
                       </Col>
                       <Col xs="3">
                       </Col>
@@ -310,7 +312,7 @@ constructor(props) {
                     </Row>              
  
                     <Row>
-                      <Col xs="6">
+                      <Col xs="4">
                           <FieldDocOfficialDate  value={form.docOfficialDate.value} 
                             onChange={
                               (field, value)=> {
@@ -321,7 +323,7 @@ constructor(props) {
                             error={errors.docOfficialDate}
                           />
                       </Col>
-                      <Col xs="6">
+                      <Col xs="4">
                           <FieldDocNumber value={form.docNumber.value}
                             onChange={
                               (evt)=> {
@@ -331,6 +333,19 @@ constructor(props) {
                             }
                             error={errors.docNumber}
                           />
+                      </Col>
+                      <Col xs="4">
+                            <FieldDocPart value={form.docPart.value}
+                              onChange={
+                                (evt)=> {
+                                  const val = evt.target.value ; 
+                                  console.log(" PART onChange = ", val);
+                                  this.validateFormField('docPart', val);
+                                  this.updateIriValue();
+                                }
+                              }
+                              error={errors.docPart}
+                            />
                       </Col>
                     </Row>
                     <Row>
