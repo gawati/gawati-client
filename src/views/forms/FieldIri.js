@@ -12,7 +12,7 @@ import {FormControl, formControlErrorClass} from './FormControl';
  */
 const displayIri = ({docCountry, docType, docAknType, docOfficialDate, docNumber, docLang, docPart }) => {
     const unknown = unknownIriComponent(); 
-    console.log(" displayIRI docPart ", docPart);
+    //console.log(" displayIRI docPart ", docPart);
     var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
     iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
     iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;

@@ -11,8 +11,10 @@ import Breadcrumb from './Breadcrumb';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import InputForm from '../views/forms/InputForm';
+import EditForm from '../views/forms/EditForm';
+
 import {PropsRoute} from '../utils/routeshelper';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 class Root extends React.Component {
     render() {
@@ -27,6 +29,7 @@ class Root extends React.Component {
                     <Container fluid>
                         <Switch>
                             <PropsRoute path="/dashboard" name="Dashboard" component={Dashboard} i18n={i18n} />
+                            <PropsRoute path="/document/open/_lang/:lang/_iri/:iri*" name="EditForm" component={EditForm} i18n={i18n} />
                             <PropsRoute path="/document/add" name="InputForm" component={InputForm} i18n={i18n} />
                             <Redirect from="/" to="/dashboard"/>
                         </Switch>

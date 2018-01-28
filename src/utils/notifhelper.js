@@ -1,6 +1,6 @@
 import {toast} from 'react-toastify';
 
-export const success = ( msg ) => {
+export const notifySuccess = ( msg ) => {
     toast.success(msg, {
         hideProgressBar: true,
         position: toast.POSITION.TOP_CENTER
@@ -8,7 +8,7 @@ export const success = ( msg ) => {
 };
 
 
-export const error = ( msg ) => {
+export const notifyError = ( msg ) => {
     toast.error(msg, {
         hideProgressBar: true,
         position: toast.POSITION.TOP_CENTER
@@ -16,7 +16,7 @@ export const error = ( msg ) => {
 };
 
 
-export const warning = ( msg ) => {
+export const notifyWarning = ( msg ) => {
     toast.warning(msg, {
         hideProgressBar: true,
         position: toast.POSITION.TOP_RIGHT

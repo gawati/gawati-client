@@ -22,7 +22,8 @@ import FieldDocPart from './FieldDocPart';
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 
-import {error} from '../../utils/notifhelper';
+import { notifySuccess, notifyError} from '../../utils/notifhelper';
+
 
 class IdentityMetadata extends React.Component {
 /**
@@ -34,6 +35,7 @@ constructor(props) {
       super(props);
       this.state = {
         isSubmitting: false,
+        mode: props.mode,
         /* 
         form has field names as state values 
         i.e. docTitle has to have a corresponding 
@@ -85,9 +87,11 @@ constructor(props) {
       this.handleReset = this.handleReset.bind(this);
     }
 
+    
+
+
     generateIRI = ({docCountry, docType, docAknType, docOfficialDate, docNumber, docLang, docPart }) => {
       const unknown = unknownIriComponent(); 
-      console.log(" generateIRI docPart", docPart);
       var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
       iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
       iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
@@ -184,7 +188,7 @@ constructor(props) {
             this.setFieldValue(fieldName, value);
           })                                  
         .catch((err)=> {
-          console.log(" FIELD ERROR ", fieldName, err);
+          //console.log(" FIELD ERROR ", fieldName, err);
           this.setFieldError(fieldName, err);
         });  
     }
@@ -193,8 +197,20 @@ constructor(props) {
      * Check the errors in the form on load
      */
     componentDidMount(){
-      this.validateFormFields();
+      const {mode} = this.props;
+      if (mode === "edit") {
+          // load iri date
+          this.loadFormWithDocument();
+      } else {
+        // add mode ... validate empty form
+        this.validateFormFields();
+      }
     }
+
+    loadFormWithDocument = () => {
+      const {iri} = this.props ; 
+      console.log(" IRI ", iri );
+    };
 
     validateFormFields() {
       const {form} = this.state ; 
@@ -207,7 +223,8 @@ constructor(props) {
     handleSubmit(event) {
       event.preventDefault();
       this.setState({isSubmitting: true});
-     
+      let frm = this.state.form; 
+      console.log(" FORM ", frm);
       axios.post(
         apiUrl('document-add')
         , {
@@ -217,7 +234,15 @@ constructor(props) {
       .then(
         (response) => {
           this.setState({isSubmitting: false});
-          console.log(" Response ", response);
+          const {success, error} = response.data ; 
+          if (success) {
+            let {code, message} = success ; 
+            notifySuccess( `${code} - Document was saved ${message}`);
+          }  
+          if (error) {
+            let {code, message} = error ;
+            notifyError( `${code} - ${message} `);
+          } 
         }
       )
       .catch(

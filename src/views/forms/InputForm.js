@@ -18,7 +18,7 @@ class InputForm extends React.Component {
     render() {
         return (
             <StdDiv>
-                <IdentityMetadata />
+                <IdentityMetadata mode="add" />
             </StdDiv>
         );
     }
