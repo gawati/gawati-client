@@ -1,10 +1,10 @@
 import React from 'react';
 import {Form, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
-import Yup from 'yup';
 
 import axios from 'axios';
+import moment from 'moment';
 
-import { isEmpty } from '../../utils/generalhelper';
+import { isEmpty, getLangDesc } from '../../utils/generalhelper';
 import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
 import { isInvalidValue } from '../../utils/generalhelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
@@ -18,6 +18,8 @@ import FieldDocTitle from './FieldDocTitle';
 import FieldDocType from './FieldDocType';
 import FieldDocOfficialDate from './FieldDocOfficialDate';
 import FieldDocPart from './FieldDocPart';
+
+import {formInitialState, validationSchema} from './identityMetadata.formConfig';
 
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
@@ -41,47 +43,14 @@ constructor(props) {
         i.e. docTitle has to have a corresponding 
         <input name="docTitle" .... /> in the form
         */ 
-        form: this.formInitialState()
+        form: formInitialState()
       };
       /** 
        * This provides validation of each field value using Yup
        * The validator function is declared in Yup syntax here, and
        * applied in the onChange of the field. 
        */
-      this.validationSchema = {
-        docLang: {
-          validate:  Yup.object()
-                        .shape({
-                            label: Yup.string().required(), 
-                            value: Yup.string().required("You must select a language")
-                        })
-                        .required(" Enter a language") 
-        }, 
-        docType: {
-          validate:  Yup.string().required(" You must select a document type")
-        },
-        docAknType: {
-          validate: Yup.string().required("You must select a akn doc Type")
-        },
-        docCountry: {
-          validate:  Yup.string().required(" You must select a country")
-        },
-        docTitle: {
-          validate:  Yup.string().required(" Title is required ")
-        },
-        docOfficialDate: {
-          validate: Yup.date(" Official date is required").typeError(" You need to enter a date")
-        },
-        docNumber: {
-          validate: Yup.string().required(" Document number is required ")
-        }, 
-        docPart: {
-          validate: Yup.string().required("Document part is required")
-        },
-        docIri: {
-          validate: Yup.string()
-        }
-      };
+      this.validationSchema = validationSchema();
       // bindings
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleReset = this.handleReset.bind(this);
@@ -117,22 +86,6 @@ constructor(props) {
       this.setFieldValue("docIri", this.generateIRI(this.state.form));
     }
       
-    formInitialState = () => {
-      return (
-        {
-          docLang: {value: {} , error: null },
-          docType: {value: '', error: null },
-          docAknType: {value: '', error: null },
-          docCountry: {value: '', error: null },
-          docTitle: {value: '', error: null},
-          docOfficialDate: {value: '', error: null },
-          docNumber: {value: '', error: null },
-          docPart: {value: '', error: null },
-          docIri : {value: '', error: null }
-        }
-      );
-    };
-    
     /**
      * Checks if a form has errors
      * Returns an object with field names as keys which 
@@ -193,6 +146,53 @@ constructor(props) {
         });  
     }
 
+
+    getFormStateFromAknDocument = (aknDoc) => {
+      const aknTypeValue = Object.keys(aknDoc)[0];
+      const docAknType = this.stateObject(aknTypeValue);
+      const xmlDoc = aknDoc[aknTypeValue];
+      console.log(" XML DOC = ", xmlDoc);
+      const docType = this.stateObject(xmlDoc.name) ;
+      const langValue = xmlDoc.meta.identification.FRBRExpression.FRBRlanguage.language;
+      const docLang = this.stateObject({ 
+        value: langValue, 
+        label: getLangDesc(langValue).content
+      });
+      const countryValue = xmlDoc.meta.identification.FRBRWork.FRBRcountry.value;
+      const docCountry = this.stateObject(countryValue);
+      const docTitle = this.stateObject(xmlDoc.meta.publication.showAs);
+      const docOfficialDate = this.stateObject(
+        moment(xmlDoc.meta.identification.FRBRExpression.FRBRdate.date, "YYYY-MM-DD", true).toDate()
+      );
+      const docNumber = this.stateObject(xmlDoc.meta.identification.FRBRWork.FRBRnumber.showAs);
+      const docPart =this.stateObject( xmlDoc.meta.proprietary.gawati.docPart);
+      const docIri = this.stateObject(xmlDoc.meta.identification.FRBRExpression.FRBRthis.value);
+      return {
+        docLang: docLang,
+        docType: docType,
+        docAknType: docAknType,
+        docCountry: docCountry,
+        docTitle: docTitle,
+        docOfficialDate: docOfficialDate,
+        docNumber: docNumber,
+        docPart: docPart,
+        docIri: docIri
+      };
+      /*
+      {
+        docLang: {value: {value:       } , error: null },
+        docType: {value: '', error: null },
+        docAknType: {value: '', error: null },
+        docCountry: {value: '', error: null },
+        docTitle: {value: '', error: null},
+        docOfficialDate: {value: '', error: null },
+        docNumber: {value: '', error: null },
+        docPart: {value: '', error: null },
+        docIri : {value: '', error: null }
+      }
+      */      
+    }
+
     /**
      * Check the errors in the form on load
      */
@@ -207,9 +207,40 @@ constructor(props) {
       }
     }
 
+    stateObject = (value) => {
+      return {
+        value: value, 
+        error: null
+      };
+    };
+
     loadFormWithDocument = () => {
-      const {iri} = this.props ; 
-      console.log(" IRI ", iri );
+      let {iri} = this.props ; 
+      this.setState({isSubmitting: true});
+      iri = iri.startsWith("/") ? iri : `/${iri}` ;
+      axios.post(
+        apiUrl('document-open'), {
+          data: {"iri": iri}
+        }
+        )
+      .then(
+        (response) => {
+            const aknDoc = response.data.akomaNtoso; 
+            const formState = this.getFormStateFromAknDocument(aknDoc);
+            console.log(" FORM STATE ON LOAD ", formState);
+            this.setState({
+              isSubmitting: false,
+              form: formState
+            });
+            console.log(" RESPONSE : ", formState);
+        }
+      )
+      .catch(
+        (err) => {
+          this.setState({isSubmitting: false});
+          console.log(" ERRR ", err);
+        }
+      );
     };
 
     validateFormFields() {
@@ -267,8 +298,10 @@ constructor(props) {
 
     render() {
       const {isSubmitting, form} = this.state ; 
+      const {mode} = this.props ;
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
+      console.log(" FORM ON RENDER = ", form, form.docCountry.value);
       return (
         <div>
             <Form  onSubmit={this.handleSubmit} noValidate>
@@ -282,14 +315,14 @@ constructor(props) {
                     <Col xs="3">
                       </Col>
                       <Col xs="6">
-                          <FieldIri form={form} formValid={formValid} />
+                          <FieldIri form={form} formValid={formValid}  />
                       </Col>
                       <Col xs="3">
                       </Col>
                     </Row>
                     <Row>
                     <Col xs="4">
-                      <FieldDocCountry value={form.docCountry.value} 
+                      <FieldDocCountry value={form.docCountry.value} readOnly={ mode === "edit" }
                               onChange={
                                 (evt)=> {
                                   this.validateFormField('docCountry', evt.target.value);
@@ -302,6 +335,7 @@ constructor(props) {
                       <Col xs="4">
                           <FieldDocType name="docType"
                             value={form.docType.value} 
+                            readOnly={ mode === "edit" }
                             onChange={
                               (evt)=> {
                                 const fieldValue = evt.target.value ;
@@ -322,6 +356,7 @@ constructor(props) {
                             used by the Component implementation to set the value in the state */ 
                         }
                         <FieldDocLanguage name="docLang" 
+                          readOnly={ mode === "edit" }
                           onChange={
                               (field, value) => {
                                 // we set an empty object as the default for validation since 
@@ -339,6 +374,7 @@ constructor(props) {
                     <Row>
                       <Col xs="4">
                           <FieldDocOfficialDate  value={form.docOfficialDate.value} 
+                            readOnly={ mode === "edit" }
                             onChange={
                               (field, value)=> {
                                 this.validateFormField(field, value);
@@ -350,6 +386,7 @@ constructor(props) {
                       </Col>
                       <Col xs="4">
                           <FieldDocNumber value={form.docNumber.value}
+                            readOnly={ mode === "edit" }
                             onChange={
                               (evt)=> {
                                 this.validateFormField('docNumber', evt.target.value);
@@ -361,6 +398,7 @@ constructor(props) {
                       </Col>
                       <Col xs="4">
                             <FieldDocPart value={form.docPart.value}
+                              readOnly={ mode === "edit" }
                               onChange={
                                 (evt)=> {
                                   const val = evt.target.value ; 
@@ -376,6 +414,7 @@ constructor(props) {
                     <Row>
                       <Col xs="12">
                           <FieldDocTitle value={form.docTitle.value}
+                            readOnly={ mode === "edit" }
                             onChange={
                               (evt)=> {
                                   this.validateFormField('docTitle', evt.target.value);

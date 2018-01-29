@@ -21,11 +21,11 @@ class FieldDocPart extends React.Component {
  * @memberof FieldDocType
  */
     render() {
-        const {onChange, value, error} = this.props;
+        const {onChange, value, error, readOnly} = this.props;
         return (
         <FormControl className={ formControlErrorClass(error) }>
             <Label htmlFor="docPart">Document Part</Label>
-            <Input type="select" defaultValue={value}  onChange={onChange} name="docPart" id="docpart" required>
+            <Input type="select" value={value} readOnly={ readOnly }  onChange={onChange} name="docPart" id="docpart" required>
             <option value="" key="blank">Select a Document Part</option> {
             this.state.docParts.map( (docPart) => 
                 <option value={docPart.partName} 

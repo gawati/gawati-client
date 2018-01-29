@@ -5,7 +5,8 @@ const GAWATI_CLIENT_APIS = {
     base_iri : '/gw/client',
     apis : {
         'docs': 'docs.json',
-        'document-add': '/document/add/'
+        'document-add': '/document/add/',
+        'document-open': '/document/load/'
     }
 };
 

@@ -35,7 +35,7 @@ render() {
     return (
       <FormControl className={ formControlErrorClass(error) }>
         <Label htmlFor="docType">Document Type</Label>
-        <Input type="select" defaultValue={value}  onChange={onChange} name="docType" id="doctype" required>
+        <Input type="select" value={value}  onChange={onChange} name="docType" id="doctype" required>
         <option value="" key="blank">Select a Document Type</option> {
           this.state.docTypes.map( (docType) => 
             <option value={docType.localTypeNameNormalized} 

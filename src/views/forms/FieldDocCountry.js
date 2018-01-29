@@ -8,7 +8,7 @@ const FieldDocCountry = ({onChange, value, error}) => {
     return (
       <FormControl className={ formControlErrorClass(error) }>
         <Label htmlFor="docCountry">Country</Label>
-        <Input type="select" defaultValue={value}  onChange={onChange} name="docCountry" id="country" required>
+        <Input type="select" value={value}  onChange={onChange} name="docCountry" id="country" required>
         <option value="">Select a Country</option>
           <option value="ke" key="country-ke">Kenya</option>
           <option value="tz" key="country-tz">Tanzania</option>
