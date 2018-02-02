@@ -37,7 +37,7 @@ class FieldDocLanguage extends React.Component {
   
     render() {
     
-      const {name, value, error} = this.props ; 
+      const {name, readOnly, value, error} = this.props ; 
      
       return (
         <FormControl className={ formControlErrorClass(error)}>
@@ -47,6 +47,7 @@ class FieldDocLanguage extends React.Component {
           name={name}
           options={this.langs}
           multi={false}
+          disabled={readOnly}
           onChange={this.handleChange}
           //onChange={this.handleChange}
           //onBlur={this.handleBlur}

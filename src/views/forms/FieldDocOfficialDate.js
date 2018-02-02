@@ -4,12 +4,12 @@ import InputDate from '../../components/InputDate';
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
 
-const FieldDocOfficialDate = ({onChange, onBlur, value, error}) => {
+const FieldDocOfficialDate = ({onChange, onBlur, readOnly, value, error}) => {
 
     return (
      <FormControl className={ formControlErrorClass(error) }>
       <Label htmlFor="docOfficialDate">Official Date</Label>
-      <InputDate name="docOfficialDate" onChange={onChange}  onBlur={onBlur} value={ value } required />
+      <InputDate name="docOfficialDate" onChange={onChange}  onBlur={onBlur} readOnly={readOnly} value={ value } required />
       <FieldError error={error} />
     </FormControl>
     );

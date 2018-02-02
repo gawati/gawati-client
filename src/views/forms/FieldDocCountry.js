@@ -4,11 +4,11 @@ import {Input, Label} from 'reactstrap';
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
 
-const FieldDocCountry = ({onChange, value, error}) => {
+const FieldDocCountry = ({onChange, readOnly, value, error}) => {
     return (
       <FormControl className={ formControlErrorClass(error) }>
         <Label htmlFor="docCountry">Country</Label>
-        <Input type="select" value={value}  onChange={onChange} name="docCountry" id="country" required>
+        <Input type="select" value={value} disabled={ readOnly } onChange={onChange} name="docCountry" id="country" required>
         <option value="">Select a Country</option>
           <option value="ke" key="country-ke">Kenya</option>
           <option value="tz" key="country-tz">Tanzania</option>

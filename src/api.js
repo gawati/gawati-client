@@ -6,7 +6,8 @@ const GAWATI_CLIENT_APIS = {
     apis : {
         'docs': 'docs.json',
         'document-add': '/document/add/',
-        'document-open': '/document/load/'
+        'document-open': '/document/load/',
+        'document-edit': '/document/edit/'
     }
 };
 

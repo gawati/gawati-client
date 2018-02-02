@@ -31,11 +31,11 @@ class FieldDocType extends React.Component {
  * @memberof FieldDocType
  */
 render() {
-    const {onChange, value, error} = this.props;
+    const {onChange, readOnly, value, error} = this.props;
     return (
       <FormControl className={ formControlErrorClass(error) }>
         <Label htmlFor="docType">Document Type</Label>
-        <Input type="select" value={value}  onChange={onChange} name="docType" id="doctype" required>
+        <Input type="select" value={value} disabled={ readOnly } onChange={onChange} name="docType" id="doctype" required>
         <option value="" key="blank">Select a Document Type</option> {
           this.state.docTypes.map( (docType) => 
             <option value={docType.localTypeNameNormalized} 

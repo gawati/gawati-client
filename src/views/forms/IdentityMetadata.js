@@ -24,8 +24,7 @@ import {formInitialState, validationSchema} from './identityMetadata.formConfig'
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 
-import { notifySuccess, notifyError} from '../../utils/notifhelper';
-
+import {handleSuccess, handleApiException} from './identityMetadata.handlers';
 
 class IdentityMetadata extends React.Component {
 /**
@@ -54,6 +53,8 @@ constructor(props) {
       // bindings
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleReset = this.handleReset.bind(this);
+/*       this.apiException = this.apiException.bind(this);
+      this.successResponse = this.successResponse.bind(this); */
     }
 
     
@@ -225,14 +226,15 @@ constructor(props) {
         )
       .then(
         (response) => {
-            const aknDoc = response.data.akomaNtoso; 
-            const formState = this.getFormStateFromAknDocument(aknDoc);
-            console.log(" FORM STATE ON LOAD ", formState);
+            //console.log(" response.data ", response);
+            let aknDoc = response.data; 
+            aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
+            console.log(" AKN DOC ", aknDoc);
+            //const formState = this.getFormStateFromAknDocument(aknDoc);
             this.setState({
               isSubmitting: false,
-              form: formState
+              form: aknDoc
             });
-            console.log(" RESPONSE : ", formState);
         }
       )
       .catch(
@@ -255,37 +257,69 @@ constructor(props) {
       event.preventDefault();
       this.setState({isSubmitting: true});
       let frm = this.state.form; 
+      const {mode} = this.props;
       console.log(" FORM ", frm);
+      if (mode === "edit") {
+        console.log(" SUbmitting in edit mode ");   
+        this.handleSubmitEdit();     
+      }
+      if (mode === "add") {
+        this.handleSubmitAdd();
+      }
+    }
+
+/*     successResponse(response) {
+        this.setState({isSubmitting: false});
+        console.log(" RESPONSE SUCCESS ", response.data);
+        const {success, error} = response.data ; 
+        if (success) {
+          let {code, message} = success ; 
+          notifySuccess( `${code} - Document was saved ${message}`);
+        }  
+        if (error) {
+          let {code, message} = error ;
+          notifyError( `${code} - ${message} `);
+        } 
+    } */
+
+    handleSubmitEdit() {
       axios.post(
-        apiUrl('document-add')
-        , {
+        apiUrl('document-edit'), {
+          data: this.state.form
+        }
+      )
+      .then(
+        (response) => {
+          this.setState({isSubmitting: false});
+          handleSuccess(response.data);
+        }
+      )
+      .catch(
+        (err) => {
+          this.setState({isSubmitting: false});
+          handleApiException(err);
+        }
+      );         
+    }
+
+    handleSubmitAdd() {
+      axios.post(
+        apiUrl('document-add'), {
           data: this.state.form
         }
         )
       .then(
         (response) => {
           this.setState({isSubmitting: false});
-          const {success, error} = response.data ; 
-          if (success) {
-            let {code, message} = success ; 
-            notifySuccess( `${code} - Document was saved ${message}`);
-          }  
-          if (error) {
-            let {code, message} = error ;
-            notifyError( `${code} - ${message} `);
-          } 
+          handleSuccess(response.data);
         }
       )
       .catch(
         (err) => {
           this.setState({isSubmitting: false});
-          console.log(" ERR ", err);
+          handleApiException(err);
         }
-      );
-
-      //      setTimeout(function() { 
-//       this.setState({isSubmitting: false}); 
-//      }.bind(this), 3000);
+      );      
     }
 
     handleReset(event) {
@@ -301,7 +335,6 @@ constructor(props) {
       const {mode} = this.props ;
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
-      console.log(" FORM ON RENDER = ", form, form.docCountry.value);
       return (
         <div>
             <Form  onSubmit={this.handleSubmit} noValidate>
@@ -414,7 +447,6 @@ constructor(props) {
                     <Row>
                       <Col xs="12">
                           <FieldDocTitle value={form.docTitle.value}
-                            readOnly={ mode === "edit" }
                             onChange={
                               (evt)=> {
                                   this.validateFormField('docTitle', evt.target.value);
@@ -428,7 +460,7 @@ constructor(props) {
                 <CardFooter>
                     <Button type="submit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Next</Button>
                     { " " }
-                    <Button type="reset" size="sm" color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
+                    <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
                   </CardFooter>
             </Card>
           </Form>

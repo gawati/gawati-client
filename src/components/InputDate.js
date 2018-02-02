@@ -21,11 +21,12 @@ class InputDate extends React.Component {
     //;
 
     render() {
-        const {name, value} = this.props;
+        const {name, readOnly, value} = this.props;
         return (
             <DateTimePicker
                 name={name}
                 id={name}
+                disabled={readOnly}
                 defaultValue={value}
                 format="YYYY-MM-DD"
                 time={false}
