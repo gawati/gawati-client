@@ -4,7 +4,7 @@ import {Form, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 're
 import axios from 'axios';
 import moment from 'moment';
 
-import { isEmpty, getLangDesc } from '../../utils/generalhelper';
+import { isEmpty } from '../../utils/generalhelper';
 import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
 import { isInvalidValue } from '../../utils/generalhelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
@@ -53,8 +53,6 @@ constructor(props) {
       // bindings
       this.handleSubmit = this.handleSubmit.bind(this);
       this.handleReset = this.handleReset.bind(this);
-/*       this.apiException = this.apiException.bind(this);
-      this.successResponse = this.successResponse.bind(this); */
     }
 
     
@@ -148,52 +146,6 @@ constructor(props) {
     }
 
 
-    getFormStateFromAknDocument = (aknDoc) => {
-      const aknTypeValue = Object.keys(aknDoc)[0];
-      const docAknType = this.stateObject(aknTypeValue);
-      const xmlDoc = aknDoc[aknTypeValue];
-      console.log(" XML DOC = ", xmlDoc);
-      const docType = this.stateObject(xmlDoc.name) ;
-      const langValue = xmlDoc.meta.identification.FRBRExpression.FRBRlanguage.language;
-      const docLang = this.stateObject({ 
-        value: langValue, 
-        label: getLangDesc(langValue).content
-      });
-      const countryValue = xmlDoc.meta.identification.FRBRWork.FRBRcountry.value;
-      const docCountry = this.stateObject(countryValue);
-      const docTitle = this.stateObject(xmlDoc.meta.publication.showAs);
-      const docOfficialDate = this.stateObject(
-        moment(xmlDoc.meta.identification.FRBRExpression.FRBRdate.date, "YYYY-MM-DD", true).toDate()
-      );
-      const docNumber = this.stateObject(xmlDoc.meta.identification.FRBRWork.FRBRnumber.showAs);
-      const docPart =this.stateObject( xmlDoc.meta.proprietary.gawati.docPart);
-      const docIri = this.stateObject(xmlDoc.meta.identification.FRBRExpression.FRBRthis.value);
-      return {
-        docLang: docLang,
-        docType: docType,
-        docAknType: docAknType,
-        docCountry: docCountry,
-        docTitle: docTitle,
-        docOfficialDate: docOfficialDate,
-        docNumber: docNumber,
-        docPart: docPart,
-        docIri: docIri
-      };
-      /*
-      {
-        docLang: {value: {value:       } , error: null },
-        docType: {value: '', error: null },
-        docAknType: {value: '', error: null },
-        docCountry: {value: '', error: null },
-        docTitle: {value: '', error: null},
-        docOfficialDate: {value: '', error: null },
-        docNumber: {value: '', error: null },
-        docPart: {value: '', error: null },
-        docIri : {value: '', error: null }
-      }
-      */      
-    }
-
     /**
      * Check the errors in the form on load
      */
@@ -229,8 +181,6 @@ constructor(props) {
             //console.log(" response.data ", response);
             let aknDoc = response.data; 
             aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
-            console.log(" AKN DOC ", aknDoc);
-            //const formState = this.getFormStateFromAknDocument(aknDoc);
             this.setState({
               isSubmitting: false,
               form: aknDoc
@@ -240,7 +190,7 @@ constructor(props) {
       .catch(
         (err) => {
           this.setState({isSubmitting: false});
-          console.log(" ERRR ", err);
+          handleApiException(err);
         }
       );
     };

@@ -1,29 +1,32 @@
 import React, { Component } from 'react';
 import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
-import { apiGetCall } from '../api';
+
+import { handleApiException } from './dashboard.handlers';
+
+import { apiGetCall, apiUrl } from '../api';
 import {Aux} from '../utils/generalhelper';
 import {humanDate} from '../utils/datehelper';
 
 export const StateColumn = ({ doc }) => 
-  <div>{doc.state.label}</div>
+  <div>{ "draft" }</div>
 ;
 
 export const TitleAndDateColumn = ({doc}) => 
   <Aux>
-    <div>{doc.title}</div>
+    <div>{doc.docTitle.value}</div>
     <div className="small text-muted">
-      modified: { humanDate(doc.modifiedDate) }
+      modified: { humanDate(doc.docOfficialDate.value) }
     </div>
   </Aux>
 ;
 
 export const DocLangColumn = ({ doc }) => 
-  <div>{doc.docLang.name}</div>
+  <div>{doc.docLang.value.label}</div>
 ;
 
 export const DocCountryColumn = ({ doc }) => 
-  <div>{doc.country.name}</div>
+  <div>{doc.docCountry.value}</div>
 ;
 
 
@@ -38,7 +41,26 @@ class Dashboard extends Component {
   }
   
   getDocs = () => {
-     let apiDocs = apiGetCall('docs', {});
+    axios.post(
+      apiUrl('documents'), {
+        data: {"docTypes": "all"}
+      }
+      )
+    .then(
+      (response) => {
+          //console.log(" response.data ", response);
+          this.setState({docs: response.data.documents });
+        }
+    )
+    .catch(
+      (err) => {
+        handleApiException(err);
+      }
+    );
+  };
+
+  getDocs2 = () => {
+     let apiDocs = apiGetCall('documents', {});
      axios.get(apiDocs)
      .then(
         (response) => {
@@ -89,7 +111,7 @@ class Dashboard extends Component {
             docs.map(
               (doc, index) => {
                 return (
-                  <tr key={ `docs-${doc.docNumber}`}>
+                  <tr key={ `docs-${doc.docIri.value}`}>
                     <td className="text-center">
                       <StateColumn doc={doc} />
                     </td>
