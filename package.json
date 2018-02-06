@@ -1,6 +1,7 @@
 {
   "name": "gawati-client",
   "version": "0.1.0",
+  "gawati-version": "1.0.7",
   "author": {
     "name": "Ashok Hariharan",
     "email": "ashok+github@hariharan.org.in"
@@ -46,7 +47,8 @@
     "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
     "pack": "build --dir",
-    "dist": "npm run build && build"
+    "dist": "npm run build && build",
+    "vars": "env | grep npm_package_ | grep -v npm_lifecycle_script"
   },
   "build": {
     "appId": "org.gawati.client-app",
