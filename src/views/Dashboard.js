@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
@@ -7,19 +8,32 @@ import { handleApiException } from './dashboard.handlers';
 import { apiGetCall, apiUrl } from '../api';
 import {Aux} from '../utils/generalhelper';
 import {humanDate} from '../utils/datehelper';
+import { setInRoute } from '../utils/routeshelper';
 
 export const StateColumn = ({ doc }) => 
   <div>{ "draft" }</div>
 ;
 
-export const TitleAndDateColumn = ({doc}) => 
-  <Aux>
-    <div>{doc.docTitle.value}</div>
-    <div className="small text-muted">
-      modified: { humanDate(doc.docOfficialDate.value) }
-    </div>
-  </Aux>
-;
+export const TitleAndDateColumn = ({docPkg}) =>  {
+  const {created, modified} = docPkg;
+  const doc = docPkg.akomaNtoso;
+  let linkIri = doc.docIri.value.startsWith("/") ? doc.docIri.value.slice(1): doc.docIri.value ; 
+  let navLinkTo = setInRoute(
+      "document-open", 
+      {"lang": "en", "iri": linkIri }
+  );
+  return (
+    <Aux>
+      <div>
+        <NavLink to={ navLinkTo }>{doc.docTitle.value}</NavLink>
+      </div>
+      <div className="small text-muted">
+        created: { humanDate(created)} / modified: { humanDate(modified) }
+      </div>
+    </Aux>
+  )
+  ;
+};
 
 export const DocLangColumn = ({ doc }) => 
   <div>{doc.docLang.value.label}</div>
@@ -109,14 +123,16 @@ class Dashboard extends Component {
         <tbody>
           {
             docs.map(
-              (doc, index) => {
+              (docPkg, index) => {
+                let doc = docPkg.akomaNtoso;
+                let {created, modified} = docPkg;
                 return (
                   <tr key={ `docs-${doc.docIri.value}`}>
                     <td className="text-center">
                       <StateColumn doc={doc} />
                     </td>
                     <td>
-                      <TitleAndDateColumn doc={doc} />
+                      <TitleAndDateColumn docPkg={docPkg} />
                     </td>
                 
                     <td className="text-center">

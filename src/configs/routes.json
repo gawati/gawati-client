@@ -18,5 +18,10 @@
         "route": "/document/add",
         "name": "document-add",
         "label": "Add Document"
+    },
+    {
+        "route": "/document/open/_lang/:lang/_iri/:iri",
+        "name": "document-open",
+        "label": "Open document"
     }
 ]}
