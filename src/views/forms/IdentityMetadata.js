@@ -179,7 +179,7 @@ constructor(props) {
       .then(
         (response) => {
             //console.log(" response.data ", response);
-            let aknDoc = response.data; 
+            let aknDoc = response.data.akomaNtoso; 
             aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
             this.setState({
               isSubmitting: false,
