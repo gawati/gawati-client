@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import { Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -14,7 +14,6 @@ import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';
 import FieldDocCountry from './FieldDocCountry';
 import FieldDocNumber from './FieldDocNumber';
-import FieldDocTitle from './FieldDocTitle';
 import FieldDocType from './FieldDocType';
 import FieldDocOfficialDate from './FieldDocOfficialDate';
 import FieldDocPart from './FieldDocPart';
@@ -26,12 +25,9 @@ import {formInitialState, validationSchema} from './identityMetadata.formConfig'
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 
-/**
- * Handlers for this form
- */
-import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityMetadata.handlers';
+import {handleSuccess, handleApiException} from './identityMetadata.handlers';
 
-class IdentityMetadata extends React.Component {
+class EmbeddedDocuments extends React.Component {
 /**
  * Creates an instance of IdentityMetadata.
  * @param {any} props 
@@ -40,7 +36,6 @@ class IdentityMetadata extends React.Component {
 constructor(props) {
       super(props);
       this.state = {
-        isNext: false,
         isSubmitting: false,
         mode: props.mode,
         /* 
@@ -216,15 +211,13 @@ constructor(props) {
       console.log(" WAS NEXT CLICKED = ", nextClicked);
       const {mode} = this.props;
       if (mode === "edit") {
-         handleSubmitEdit(this)
-          .then( (response) => {
-            if (nextClicked) {
-              this.setState({isNext: true});
-            }
+        this.handleSubmitEdit()
+          .then( (val) => {
+            console.log(" next Clicekd ", nextClicked);
           })
       }
       if (mode === "add") {
-        handleSubmitAdd();
+        this.handleSubmitAdd();
       }
       console.log(" NEXT CLICKED ", this.wasNextClicked());
     }
@@ -247,7 +240,61 @@ constructor(props) {
       return nextClicked ; 
     }
 
+/*     successResponse(response) {
+        this.setState({isSubmitting: false});
+        console.log(" RESPONSE SUCCESS ", response.data);
+        const {success, error} = response.data ; 
+        if (success) {
+          let {code, message} = success ; 
+          notifySuccess( `${code} - Document was saved ${message}`);
+        }  
+        if (error) {
+          let {code, message} = error ;
+          notifyError( `${code} - ${message} `);
+        } 
+    } */
 
+    handleSubmitEdit() {
+      const request = axios.post(
+        apiUrl('document-edit'), {
+          data: this.state.form
+        }
+      );
+      request
+        .then(
+          (response) => {
+            this.setState({isSubmitting: false});
+            handleSuccess(response.data);
+          }
+        )
+        .catch(
+          (err) => {
+            this.setState({isSubmitting: false});
+            handleApiException(err);
+          }
+        );
+      return request;         
+    }
+
+    handleSubmitAdd() {
+      axios.post(
+        apiUrl('document-add'), {
+          data: this.state.form
+        }
+        )
+      .then(
+        (response) => {
+          this.setState({isSubmitting: false});
+          handleSuccess(response.data);
+        }
+      )
+      .catch(
+        (err) => {
+          this.setState({isSubmitting: false});
+          handleApiException(err);
+        }
+      );      
+    }
 
     handleReset(event) {
       event.preventDefault();
@@ -259,20 +306,16 @@ constructor(props) {
     }
 
     render() {
-      const {isSubmitting, isNext, form} = this.state ; 
+      const {isSubmitting, form} = this.state ; 
       const {mode} = this.props ;
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
-      if (isNext && formValid) {
-        console.log("is Next , formValid ", isNext, formValid);
-        return <div> {isNext} {formValid} </div>
-      }
       return (
         <div >
             <StatefulForm ref="identityForm" onSubmit={this.handleSubmit} noValidate>
             <Card>
                 <CardHeader>
-                    <strong>Document Identity</strong>
+                    <strong>Components</strong>
                     <small> Form</small>
                 </CardHeader>
                 <CardBody>
@@ -376,20 +419,11 @@ constructor(props) {
                             />
                       </Col>
                     </Row>
-                    <Row>
-                      <Col xs="12">
-                          <FieldDocTitle value={form.docTitle.value}
-                            onChange={
-                              (evt)=> {
-                                  this.validateFormField('docTitle', evt.target.value);
-                                }
-                              }
-                            error={errors.docTitle}
-                          />
-                      </Col>
-                    </Row>
+
                 </CardBody>
                 <CardFooter>
+                    <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
+                    { " " }
                     <Button type="submit" name="btnNext" size="sm" 
                       color="primary" disabled={isSubmitting || !formValid}
                       onClick={ 
@@ -398,10 +432,8 @@ constructor(props) {
                          }
                        }
                       >
-                      <i className="fa fa-chevron-right"></i> Next - Components
+                      <i className="fa fa-chevron-right"></i> Next
                     </Button>
-                    { " " }
-                    <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
                     { " " }
                     <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
                   </CardFooter>
@@ -413,4 +445,4 @@ constructor(props) {
 }
 
 
-export default IdentityMetadata;
+export default EmbeddedDocuments;

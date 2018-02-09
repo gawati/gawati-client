@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
 
 import {  Container } from 'reactstrap';
 
@@ -10,7 +10,6 @@ import SideBar from './sidebar/SideBar';
 import Breadcrumb from './Breadcrumb';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
-import InputForm from '../views/forms/InputForm';
 import EditForm from '../views/forms/EditForm';
 
 import {PropsRoute} from '../utils/routeshelper';
@@ -28,10 +27,16 @@ class Root extends React.Component {
                     <Breadcrumb />
                     <Container fluid>
                         <Switch>
-                            <PropsRoute path="/dashboard" name="Dashboard" component={Dashboard} i18n={i18n} />
-                            <PropsRoute path="/document/open/_lang/:lang/_iri/:iri*" name="EditForm" component={EditForm} i18n={i18n} />
-                            <PropsRoute path="/document/add" name="InputForm" component={InputForm} i18n={i18n} />
+                            <Route exact path="/dashboard">
+                                <Redirect to="/dashboard/_lang/en" />
+                            </Route>
+                            <PropsRoute path="/dashboard/_lang/:lang" name="Dashboard" component={Dashboard} i18n={i18n} />
+                            <PropsRoute path="/document/open/ident/_lang/:lang/_iri/:iri*" 
+                                name="EditForm" component={EditForm} mode="edit" i18n={i18n} />
+                            <PropsRoute path="/document/add/_lang/:lang" 
+                                name="InputForm" component={EditForm} mode="add" i18n={i18n} />
                             <Redirect from="/" to="/dashboard"/>
+
                         </Switch>
                      </Container>
                 </main>

@@ -20,8 +20,13 @@
         "label": "Add Document"
     },
     {
-        "route": "/document/open/_lang/:lang/_iri/:iri",
-        "name": "document-open",
-        "label": "Open document"
+        "route": "/document/open/ident/_lang/:lang/_iri/:iri",
+        "name": "document-ident-open",
+        "label": "Document Identity"
+    },
+    {
+        "route": "/document/open/comp/_lang/:lang/_iri/:iri",
+        "name": "document-comp-open",
+        "label": "Document Components"
     }
 ]}

@@ -2,6 +2,14 @@ import moment from 'moment';
 
 export const displayDate = (date) => moment(date).format('MMMM D YYYY') ;
 
+export const displayXmlDateTime = (dateTime) => {
+  let date = moment(dateTime);
+  let datePart = date.utc().format('MMMM D YYYY');
+  let timePart = date.utc().format('HH:mm');
+  return `${datePart} at ${timePart}`;
+};
+
+
 export const humanDate = (date) => moment(date).fromNow() ;
 
 export const iriDate = (date) => moment(date).format("YYYY-MM-DD");

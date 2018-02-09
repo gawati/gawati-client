@@ -7,28 +7,36 @@ import { handleApiException } from './dashboard.handlers';
 
 import { apiGetCall, apiUrl } from '../api';
 import {Aux} from '../utils/generalhelper';
-import {humanDate} from '../utils/datehelper';
+import {humanDate, displayXmlDateTime} from '../utils/datehelper';
 import { setInRoute } from '../utils/routeshelper';
 
 export const StateColumn = ({ doc }) => 
   <div>{ "draft" }</div>
 ;
 
+const showCreatedAndModified = (created, modified) => {
+  return (created === modified) ?
+        `created: ${ displayXmlDateTime(created) }` : 
+        `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
+};
+
 export const TitleAndDateColumn = ({docPkg}) =>  {
   const {created, modified} = docPkg;
   const doc = docPkg.akomaNtoso;
   let linkIri = doc.docIri.value.startsWith("/") ? doc.docIri.value.slice(1): doc.docIri.value ; 
   let navLinkTo = setInRoute(
-      "document-open", 
+      "document-ident-open", 
       {"lang": "en", "iri": linkIri }
   );
+
+  
   return (
     <Aux>
       <div>
         <NavLink to={ navLinkTo }>{doc.docTitle.value}</NavLink>
       </div>
       <div className="small text-muted">
-        created: { humanDate(created)} / modified: { humanDate(modified) }
+       { showCreatedAndModified(created, modified) }
       </div>
     </Aux>
   )
@@ -125,7 +133,6 @@ class Dashboard extends Component {
             docs.map(
               (docPkg, index) => {
                 let doc = docPkg.akomaNtoso;
-                let {created, modified} = docPkg;
                 return (
                   <tr key={ `docs-${doc.docIri.value}`}>
                     <td className="text-center">
