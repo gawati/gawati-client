@@ -12,12 +12,13 @@ import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import EditForm from '../views/forms/EditForm';
 
-import {PropsRoute} from '../utils/routeshelper';
+import {PropsRoute, getRoute} from '../utils/routeshelper';
 import { ToastContainer } from 'react-toastify';
 
 class Root extends React.Component {
     render() {
         const {i18n} = this.props;
+        console.log(" MAGTCH PARAM ", this.props.match, getRoute("document-ident-open"));
         return (
             <div className="app">
                 <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
@@ -30,12 +31,19 @@ class Root extends React.Component {
                             <Route exact path="/dashboard">
                                 <Redirect to="/dashboard/_lang/en" />
                             </Route>
-                            <PropsRoute path="/dashboard/_lang/:lang" name="Dashboard" component={Dashboard} i18n={i18n} />
-                            <PropsRoute path="/document/open/ident/_lang/:lang/_iri/:iri*" 
+                            <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
+
+                            <PropsRoute path={ getRoute("document-ident-open") }
                                 name="EditForm" component={EditForm} mode="edit" i18n={i18n} />
-                            <PropsRoute path="/document/add/_lang/:lang" 
+
+
+                            <PropsRoute path={ getRoute("document-add") } 
                                 name="InputForm" component={EditForm} mode="add" i18n={i18n} />
-                            <Redirect from="/" to="/dashboard"/>
+
+                            <PropsRoute path={ getRoute("document-comp-open") } 
+                                    name="EditCompForm" component={EditForm} mode="edit" i18n={i18n} />
+
+                             <Redirect from="/" to="/dashboard"/>
 
                         </Switch>
                      </Container>

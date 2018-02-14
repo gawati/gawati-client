@@ -106,7 +106,6 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
-    console.log(" RENDER ", docs);
     return (
       <div className="animated fadeIn">
         <Row>

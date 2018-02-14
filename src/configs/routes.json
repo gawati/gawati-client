@@ -10,17 +10,17 @@
         "label": "Login"
     },
     {
-        "route": "/dashboard",
+        "route": "/dashboard/_lang/:lang",
         "name": "logged-in-root",
         "label": "Dashboard"
     },
     {
-        "route": "/document/add",
+        "route": "/document/add/_lang/:lang",
         "name": "document-add",
         "label": "Add Document"
     },
     {
-        "route": "/document/open/ident/_lang/:lang/_iri/:iri",
+        "route": "/document/open/ident/_lang/:lang/_iri/:iri*",
         "name": "document-ident-open",
         "label": "Document Identity"
     },

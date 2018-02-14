@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import axios from 'axios';
@@ -30,6 +31,7 @@ import { apiUrl } from '../../api';
  * Handlers for this form
  */
 import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityMetadata.handlers';
+import EmbeddedDocuments from './EmbeddedDocuments';
 
 class IdentityMetadata extends React.Component {
 /**
@@ -265,7 +267,8 @@ constructor(props) {
       const formValid = isEmpty(errors);
       if (isNext && formValid) {
         console.log("is Next , formValid ", isNext, formValid);
-        return <div> {isNext} {formValid} </div>
+        return 
+            <Redirect to="/dashboard"/>
       }
       return (
         <div >
