@@ -28,6 +28,7 @@ class Root extends React.Component {
                     <Breadcrumb />
                     <Container fluid>
                         <Switch>
+
                             <Route exact path="/dashboard">
                                 <Redirect to="/dashboard/_lang/en" />
                             </Route>
@@ -35,7 +36,6 @@ class Root extends React.Component {
 
                             <PropsRoute path={ getRoute("document-ident-open") }
                                 name="EditForm" component={EditForm} mode="edit" i18n={i18n} />
-
 
                             <PropsRoute path={ getRoute("document-add") } 
                                 name="InputForm" component={EditForm} mode="add" i18n={i18n} />

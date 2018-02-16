@@ -2,12 +2,11 @@ import querystring from 'querystring';
 import {dataProxyServer} from './constants';
 
 const GAWATI_CLIENT_APIS = {
-    base_iri : '/gw/client',
     apis : {
-        'documents': '/documents/',
-        'document-add': '/document/add/',
-        'document-open': '/document/load/',
-        'document-edit': '/document/edit/'
+        'documents': '/gwc/documents',
+        'document-add': '/gwc/document/add',
+        'document-open': '/gwc/document/load',
+        'document-edit': '/gwc/document/edit'
     }
 };
 

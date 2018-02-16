@@ -9,6 +9,7 @@ import { isEmpty } from '../../utils/generalhelper';
 import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
 import { isInvalidValue } from '../../utils/generalhelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
+import { getRoute, setInRoute } from '../../utils/routeshelper';
 import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
@@ -39,7 +40,7 @@ class IdentityMetadata extends React.Component {
  * @param {any} props 
  * @memberof IdentityMetadata
  */
-constructor(props) {
+  constructor(props) {
       super(props);
       this.state = {
         isNext: false,
@@ -186,13 +187,17 @@ constructor(props) {
         )
       .then(
         (response) => {
-            //console.log(" response.data ", response);
-            let aknDoc = response.data.akomaNtoso; 
-            aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
-            this.setState({
-              isSubmitting: false,
-              form: aknDoc
-            });
+            const {error, akomaNtoso} = response.data;
+            if (error) {
+              this.setState({ documentLoadError: true });
+            } else {
+              let aknDoc = akomaNtoso; 
+              aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
+              this.setState({
+                isSubmitting: false,
+                form: aknDoc
+              });
+            } 
         }
       )
       .catch(
@@ -261,15 +266,25 @@ constructor(props) {
     }
 
     render() {
-      const {isSubmitting, isNext, form} = this.state ; 
-      const {mode} = this.props ;
+      const {isSubmitting, isNext, form, documentLoadError} = this.state ; 
+      const {mode, match} = this.props ;
       const errors = this.formHasErrors();
       const formValid = isEmpty(errors);
+      if (documentLoadError === true) {
+        return (
+          <div>
+            <h1>Document Not Found </h1>
+          </div>
+        );
+      } else
       if (isNext && formValid) {
-        console.log("is Next , formValid ", isNext, formValid);
-        return 
-            <Redirect to="/dashboard"/>
-      }
+        const {iri, lang} = match.params; 
+        let nextRoute = setInRoute("document-comp-open", {iri, lang});
+        return (
+          <Redirect to={ nextRoute } />
+        );
+      } 
+      else
       return (
         <div >
             <StatefulForm ref="identityForm" onSubmit={this.handleSubmit} noValidate>
