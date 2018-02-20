@@ -30,3 +30,6 @@ export const info = ( msg ) => {
     });
 };
 
+export const handleApiException = (err) => {
+    console.log(" Error while adding ", err);
+};

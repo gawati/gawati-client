@@ -4,7 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { apiUrl } from '../../api';
-
+import { handleApiException } from '../../utils/notifhelper';
 
 /**
  * Higher Order Component for shared form functions.
@@ -56,10 +56,10 @@ function loadbaseForm() {
             )
             .catch(
               (err) => {
-                //handleApiException(err);
+                handleApiException(err);
               }
             );
-          
+          console.log(" THIS>STATE>FORM ", this.state.form);
           return loadForm;  
         };
 

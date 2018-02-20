@@ -6,13 +6,14 @@ const GAWATI_CLIENT_APIS = {
         'documents': '/gwc/documents',
         'document-add': '/gwc/document/add',
         'document-open': '/gwc/document/load',
-        'document-edit': '/gwc/document/edit'
+        'document-edit': '/gwc/document/edit',
+        'document-upload': '/gwc/document/upload'
     }
 };
 
 export function apiUrl(apiName) {
     if (GAWATI_CLIENT_APIS.apis.hasOwnProperty(apiName)) {
-        return dataProxyServer() + GAWATI_CLIENT_APIS.base_iri + GAWATI_CLIENT_APIS.apis[apiName] ;
+        return dataProxyServer() + GAWATI_CLIENT_APIS.apis[apiName] ;
     } else {
         console.log(" Unknown API call ", apiName);
         return false;

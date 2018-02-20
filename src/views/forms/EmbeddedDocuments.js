@@ -2,22 +2,19 @@ import React from 'react';
 import { Label, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import axios from 'axios';
-import moment from 'moment';
+
 
 import { isEmpty } from '../../utils/generalhelper';
-import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
-import { isInvalidValue } from '../../utils/generalhelper';
-import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
-import { iriDate, isValidDate } from '../../utils/datehelper';
 
-import FieldIri from './FieldIri';
+
 
 import StatefulForm from './StatefulForm';
-
+import loadbaseForm from './baseFormHOC';
 
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 import FileUpload from './FileUpload';
+import {dataProxyServer} from '../../constants';
 import uuid from 'uuid';
 
 class EmbeddedDocuments extends React.Component {
@@ -37,9 +34,20 @@ class EmbeddedDocuments extends React.Component {
         i.e. docTitle has to have a corresponding 
         <input name="docTitle" .... /> in the form
         */ 
-        form: {} ,
         docs: [  ]
       };
+      /*     
+      docs =  [{
+          "key": key, 
+          "file": null, 
+          "fileName": '',
+          "title": '',
+          "fileType": ''
+      } ] ;
+
+      */
+      //this.uploadControls = [];
+      console.log(" PROPS>IRI", this.props.iri, this.props.match);
       /** 
        * This provides validation of each field value using Yup
        * The validator function is declared in Yup syntax here, and
@@ -48,7 +56,7 @@ class EmbeddedDocuments extends React.Component {
       this.validationSchema = {} ; //validationSchema();
       // bindings
       this.handleAddMore = this.handleAddMore.bind(this);
-      //this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
       //this.handleReset = this.handleReset.bind(this);
     }
 
@@ -59,45 +67,106 @@ class EmbeddedDocuments extends React.Component {
      * Check the errors in the form on load
      */
     componentDidMount(){
-      const promise = this.loadFormWithDocument();
+      // get the iri 
+      const { iri } = this.props.match.params;
+      this.setState({ isSubmitting: true });
+      // load the form state in the HOC which in turn sets the form prop
+      this.props.loadFormWithDocument( iri )
+            .then( (response) => {
+                // the form prop should be set correctly here
+                console.log(" FORM PROPS CDM = ", this.props.form);
+                this.setState({ isSubmitting: false });
+            });
     }
 
 
 
-    loadFormWithDocument = () => {
-      let {lang, iri} = this.props ; 
-      //this.setState({isSubmitting: true});
-      iri = iri.startsWith("/") ? iri : `/${iri}` ;
-      let docOpen = axios.post(
-          apiUrl('document-open'), {
-            data: {"iri": iri}
+    handleSubmit(event) {
+        event.preventDefault();
+        console.log (" EVENT> TARGET ", this.docsForm, event.target);
+        let formData = new FormData(event.target);
+        console.log(" FORM DATA = ", formData);
+        var data = new FormData();
+        
+        this.state.docs.forEach( (doc, index) => {
+            console.log(` ITEM  ${index} `, doc);
+            /*
+              "key": key, 
+              "file": null, 
+              "fileName": '',
+              "title": '',
+              "fileType": ''
+            */
+            data.append(`file_${index}`, doc.file);
+            data.append(`fileName_${index}`, doc.fileName);
+            data.append(`title_${index}`, doc.title);
+            data.append(`fileType_${index}`, doc.fileType);
+            data.append(`key_${index}`, doc.key);
+        });
+
+        // add document metadata to submit formData
+        for (let field in this.props.form) {
+           let formField = this.props.form[field];
+           data.append(field, formField.value);
+        }
+        axios.post(
+          dataProxyServer() + '/gwc/document/upload', data, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
           }
-        );
-      docOpen
+          )
         .then(
           (response) => {
-              //console.log(" response.data ", response);
-              let aknDoc = response.data.akomaNtoso; 
-              aknDoc.docOfficialDate.value = moment(aknDoc.docOfficialDate.value, "YYYY-MM-DD", true).toDate();
-              //this.setState({
-              //  isSubmitting: false,
-              //  form: aknDoc
-              //});
+            this.setState({isSubmitting: false});
+            console.log(" RESPONSE >  DATA ", response.data);
+            //handleSuccess(response.data);
           }
         )
         .catch(
           (err) => {
             this.setState({isSubmitting: false});
+            console.log(" ERROR RESPONSE ", err);
             //handleApiException(err);
           }
         );
-      return docOpen;
+
+        /*
+        data.append("file", event.target.files[0]);
+        data.append("mimeType", event.target.docAttType.value);
+        data.append("title", event.target.docAttTitle.value);
+        data.append("name", event.target.files[0].name);
+        console.log(" EVENT > TARGET > DATA ", data);
+        axios.post(
+          apiUrl('document-upload'), {
+            data: data
+          }
+          )
+        .then(
+          (response) => {
+            this.setState({isSubmitting: false});
+            console.log(" RESPONSE >  DATA ", response.data);
+            //handleSuccess(response.data);
+          }
+        )
+        .catch(
+          (err) => {
+            this.setState({isSubmitting: false});
+            console.log(" ERROR RESPONSE ", err);
+            //handleApiException(err);
+          }
+        );      */
     };
 
     handleAddMore(event) {
       event.preventDefault();
       let {docs} = this.state ;
-      let doc = {"key": uuid.v1(), "value": <FileUpload />} ;
+      let key = uuid.v1();
+      let doc = {
+          "key": key, 
+          "file": null, 
+          "fileName": '',
+          "title": '',
+          "fileType": ''
+      };
       let newDocs = [...docs, doc];
       this.setState({docs: newDocs });
     }
@@ -105,34 +174,81 @@ class EmbeddedDocuments extends React.Component {
     handleRemove(event, findThisKey) {
       let {docs} = this.state ; 
       let newDocs = docs.filter((item) => item.key !== findThisKey );
+      //this.uploadControls  = this.uploadControls.filter( (item) => item.key !== findThisKey);
       this.setState({docs: newDocs});
     }
- 
+
+    renderDoc = (doc) => {
+      const {key, file, fileName, fileType, title} = doc; 
+      console.log(" RENDER DOC == ", doc);
+      return(
+      <FileUpload  
+        commonkey={key}
+        fileValue={file}
+        title={title}
+        fileType={fileType}
+        fileName={fileName}
+        onChangeFile={ 
+          (evt) => {
+              let index = this.state.docs.findIndex( (item) => item.key === key );
+              if (index !== -1) {
+                let theDoc = {};
+                theDoc.key =  this.state.docs[index].key ;
+                theDoc.title = this.state.docs[index].title ;
+                theDoc.file = evt.target.files[0]; 
+                theDoc.fileName = evt.target.files[0].name;
+                theDoc.fileType = evt.target.files[0].type ;
+                let newDocs = [...this.state.docs];
+                newDocs.splice(index, 1, theDoc);
+                this.setState({docs: newDocs});
+              }
+            } 
+        }   
+        onChangeFileTitle={
+            (evt) => {
+              let index = this.state.docs.findIndex( (item) => item.key === key );
+              if (index !== -1) {
+                let item = Object.assign({}, this.state.docs[index]);
+                item.title = evt.target.value ; 
+                let newDocs = [...this.state.docs];
+                newDocs.splice(index, 1, item);
+                this.setState({ docs: newDocs });
+              }
+            }
+        }
+      />);
+    }
+
     renderDocs = () =>                       
         this.state.docs.map(
-          (item, index) => 
-            <Row key={item.key}>
+          (doc, index) => {
+            return (
+              <Row key={doc.key}>
               <Col xs="12">
                 <Card>
                   <CardHeader>
                     { index + 1 }.
                     <Label className="float-right mb-0">
-                    <Button type="reset" size="sm" onClick={ (e) => this.handleRemove(e, item.key)} color="danger"><i className="fa fa-minus-circle"></i> Remove</Button>
+                    <Button type="reset" size="sm" 
+                      onClick={ (e) => this.handleRemove(e, doc.key)} color="danger">
+                        <i className="fa fa-minus-circle"></i> Remove</Button>
                     </Label>
                   </CardHeader>
                   <CardBody>
-                  {item.value}
+                  {this.renderDoc(doc)}
                   </CardBody>
                 </Card>
               </Col>
             </Row> 
+            );
+          }
         )
         ; 
 
     renderAttForm() { 
-      const {isSubmitting, form} = this.state ; 
-      const {mode} = this.props ;
-      const errors = this.formHasErrors();
+      const {isSubmitting} = this.state ; 
+      const { mode} = this.props;
+      const errors = this.props.formHasErrors();
       const formValid = isEmpty(errors);
       return (
         <div >
@@ -141,7 +257,7 @@ class EmbeddedDocuments extends React.Component {
               <Button type="button" onClick={this.handleAddMore}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add File</Button>                
               </CardBody>
             </Card>        
-            <StatefulForm ref="docsForm" onSubmit={this.handleSubmit} noValidate>
+            <StatefulForm encType="multipart/form-data" ref="docsForm" onSubmit={this.handleSubmit} noValidate>
             <Card>
                 <CardHeader>
                     <strong>Components</strong>
@@ -177,10 +293,11 @@ class EmbeddedDocuments extends React.Component {
     }
     
     render() {
-      const {docs} = this.state ; 
+      const {form} = this.props ; 
+      console.log( " FORM PROPS = ", form);
       return this.renderAttForm();
     }
 }
 
 
-export default EmbeddedDocuments;
+export default loadbaseForm()(EmbeddedDocuments);

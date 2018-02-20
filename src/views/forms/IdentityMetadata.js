@@ -9,7 +9,7 @@ import { isEmpty } from '../../utils/generalhelper';
 import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
 import { isInvalidValue } from '../../utils/generalhelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
-import { getRoute, setInRoute } from '../../utils/routeshelper';
+import { setInRoute } from '../../utils/routeshelper';
 import { iriDate, isValidDate } from '../../utils/datehelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
@@ -32,7 +32,7 @@ import { apiUrl } from '../../api';
  * Handlers for this form
  */
 import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityMetadata.handlers';
-import EmbeddedDocuments from './EmbeddedDocuments';
+
 
 class IdentityMetadata extends React.Component {
 /**
@@ -220,7 +220,6 @@ class IdentityMetadata extends React.Component {
       event.preventDefault();
       this.setState({isSubmitting: true});
       const nextClicked = this.wasNextClicked();
-      console.log(" WAS NEXT CLICKED = ", nextClicked);
       const {mode} = this.props;
       if (mode === "edit") {
          handleSubmitEdit(this)
@@ -233,7 +232,6 @@ class IdentityMetadata extends React.Component {
       if (mode === "add") {
         handleSubmitAdd();
       }
-      console.log(" NEXT CLICKED ", this.wasNextClicked());
     }
 
     /**
@@ -279,7 +277,9 @@ class IdentityMetadata extends React.Component {
       } else
       if (isNext && formValid) {
         const {iri, lang} = match.params; 
+        console.log(" NEXT>ROUTE ", iri, lang);
         let nextRoute = setInRoute("document-comp-open", {iri, lang});
+        console.log(" NEXT>SETINROUTE ", nextRoute);
         return (
           <Redirect to={ nextRoute } />
         );
