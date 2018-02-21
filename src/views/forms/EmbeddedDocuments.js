@@ -10,12 +10,14 @@ import { isEmpty } from '../../utils/generalhelper';
 
 import StatefulForm from './StatefulForm';
 import loadbaseForm from './baseFormHOC';
+import {formInitialState, validationSchema} from './EmbeddedDocuments.formConfig'; 
 
 import '../../css/IdentityMetadata.css';
 import { apiUrl } from '../../api';
 import FileUpload from './FileUpload';
 import {dataProxyServer} from '../../constants';
 import uuid from 'uuid';
+import { iriDate } from '../../utils/datehelper';
 
 class EmbeddedDocuments extends React.Component {
 
@@ -53,7 +55,7 @@ class EmbeddedDocuments extends React.Component {
        * The validator function is declared in Yup syntax here, and
        * applied in the onChange of the field. 
        */
-      this.validationSchema = {} ; //validationSchema();
+      //this.validationSchema = validationSchema() ; //validationSchema();
       // bindings
       this.handleAddMore = this.handleAddMore.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -87,27 +89,37 @@ class EmbeddedDocuments extends React.Component {
         let formData = new FormData(event.target);
         console.log(" FORM DATA = ", formData);
         var data = new FormData();
-        
         this.state.docs.forEach( (doc, index) => {
             console.log(` ITEM  ${index} `, doc);
-            /*
-              "key": key, 
-              "file": null, 
-              "fileName": '',
-              "title": '',
-              "fileType": ''
-            */
-            data.append(`file_${index}`, doc.file);
-            data.append(`fileName_${index}`, doc.fileName);
-            data.append(`title_${index}`, doc.title);
-            data.append(`fileType_${index}`, doc.fileType);
-            data.append(`key_${index}`, doc.key);
+            if (doc.file) {
+              /*
+                "key": key, 
+                "file": null, 
+                "fileName": '',
+                "title": '',
+                "fileType": ''
+              */
+            if (doc.title) {
+              data.append(`file_${index}`, doc.file);
+              data.append(`fileName_${index}`, doc.fileName);
+              data.append(`title_${index}`, doc.title);
+              data.append(`fileType_${index}`, doc.fileType);
+              data.append(`key_${index}`, doc.key);
+            }
+          }
         });
 
         // add document metadata to submit formData
         for (let field in this.props.form) {
            let formField = this.props.form[field];
-           data.append(field, formField.value);
+           console.log(" docLang ",  this.props.form['docLang']);
+           if (field === 'docOfficialDate') {
+              let offDate = iriDate(formField.value);
+              console.log(" OFFICIAL DATE = ", offDate);
+              data.append(field, JSON.stringify({value: offDate}));
+           } else {
+              data.append(field, JSON.stringify({value: formField.value}));
+           }
         }
         axios.post(
           dataProxyServer() + '/gwc/document/upload', data, {
@@ -128,32 +140,6 @@ class EmbeddedDocuments extends React.Component {
             //handleApiException(err);
           }
         );
-
-        /*
-        data.append("file", event.target.files[0]);
-        data.append("mimeType", event.target.docAttType.value);
-        data.append("title", event.target.docAttTitle.value);
-        data.append("name", event.target.files[0].name);
-        console.log(" EVENT > TARGET > DATA ", data);
-        axios.post(
-          apiUrl('document-upload'), {
-            data: data
-          }
-          )
-        .then(
-          (response) => {
-            this.setState({isSubmitting: false});
-            console.log(" RESPONSE >  DATA ", response.data);
-            //handleSuccess(response.data);
-          }
-        )
-        .catch(
-          (err) => {
-            this.setState({isSubmitting: false});
-            console.log(" ERROR RESPONSE ", err);
-            //handleApiException(err);
-          }
-        );      */
     };
 
     handleAddMore(event) {
@@ -180,7 +166,6 @@ class EmbeddedDocuments extends React.Component {
 
     renderDoc = (doc) => {
       const {key, file, fileName, fileType, title} = doc; 
-      console.log(" RENDER DOC == ", doc);
       return(
       <FileUpload  
         commonkey={key}
@@ -247,7 +232,7 @@ class EmbeddedDocuments extends React.Component {
 
     renderAttForm() { 
       const {isSubmitting} = this.state ; 
-      const { mode} = this.props;
+      const { mode, form} = this.props;
       const errors = this.props.formHasErrors();
       const formValid = isEmpty(errors);
       return (
@@ -264,6 +249,11 @@ class EmbeddedDocuments extends React.Component {
                     <small> Form</small>
                 </CardHeader>
                 <CardBody> 
+                  <Row>
+                    <Col xs="12">
+                      Title:  <mark>{ form.docTitle.value }</mark> | Type: <mark>{ form.docType.value}</mark> | Language: <mark>{form.docLang.value.value}</mark> | Document #: <mark>{form.docNumber.value}</mark> | IRI : <mark>{form.docIri.value}</mark>
+                    </Col>
+                  </Row>
                     { 
                      this.state.docs.length === 0 ? 
                       "There are no file attachments yet, you can use Add File to add an attachment" :
@@ -294,7 +284,6 @@ class EmbeddedDocuments extends React.Component {
     
     render() {
       const {form} = this.props ; 
-      console.log( " FORM PROPS = ", form);
       return this.renderAttForm();
     }
 }

@@ -3,18 +3,14 @@ import {FormControl} from './FormControl';
 import { Label, Input, Row, Col} from 'reactstrap';
 
 
-
+/**
+ * Upload component for files. Event handlers for File input and Title input need to be 
+ * passed in , along with a key to identify the group of fields
+ * 
+ * @class FileUpload
+ * @extends {React.Component}
+ */
 class FileUpload extends React.Component {
-
-
-    onFormSubmit(evt){
-        evt.preventDefault();
-        this.fileUpload(this.state.file)
-            .then((response)=>{
-                console.log(response.data);
-            });
-    }
-
 
     render() {
         const {fileValue, title, fileType, fileName} = this.props ;
@@ -26,6 +22,7 @@ class FileUpload extends React.Component {
                     <Row>
                       <Col xs="12">
                         <input type="file" className="form-control-file" forkey={commonkey} id="file" name="file" onChange={onChangeFile} />
+                       
                       </Col>  
                     </Row>
                     <Row>
@@ -39,6 +36,7 @@ class FileUpload extends React.Component {
                                 id="doctype"
                                 readOnly="true"
                                 placeholder="Upload File Type" required/>
+                             
                         </FormControl>
                       </Col>
                       <Col xs="6">
@@ -51,6 +49,7 @@ class FileUpload extends React.Component {
                                 value={ title }  
                                 id="doctitle"
                                 placeholder="File Title" required/>
+                           
                         </FormControl>
                       </Col>
                     </Row>
