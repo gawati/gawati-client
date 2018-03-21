@@ -3,11 +3,11 @@ import { Switch, Redirect, Route } from 'react-router-dom';
 
 import {  Container } from 'reactstrap';
 
-import FooterNav from './FooterNav';
+import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
-import TopNav from './TopNav';
+import TopNav from './ui_elements/TopNav';
 import SideBar from './sidebar/SideBar';
-import Breadcrumb from './Breadcrumb';
+import Breadcrumb from './ui_elements/Breadcrumb';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import EditForm from '../views/forms/EditForm';

@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './i18n';
-import { Switch, Route, HashRouter } from 'react-router-dom';
+import { Switch, Route, BrowserRouter } from 'react-router-dom';
 
 //import 'bootstrap/dist/css/bootstrap-reboot.css';
 //import 'bootstrap/dist/css/bootstrap.css';
@@ -23,17 +23,19 @@ import 'simple-line-icons/css/simple-line-icons.css';
 import Register from './views/pages/Register/Register';
 import Login from './views/pages/Login/Login';
 
+import {PrivateRoute} from './components/routing/PrivateRoute';
+
 import './globalize';
 
 ReactDOM.render(
-    <HashRouter>
+    <BrowserRouter>
         <Switch>
             <Route path="/register" name="Register" component={Register} />
             <Route path="/login" name="Login" component={Login} />
-            <Route path="/dashboard" name="App" component={App} />
-            <Route path="/" name="App" component={App} />
+            <PrivateRoute path="/dashboard" name="App" component={App} />
+            <PrivateRoute path="/" name="App" component={App} />
         </Switch>
-    </HashRouter>, 
+    </BrowserRouter>, 
     document.getElementById('root')
 );
 

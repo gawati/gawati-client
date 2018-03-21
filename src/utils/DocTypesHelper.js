@@ -10,8 +10,6 @@ import docTypes from '../configs/docTypes.json';
         "category": "legislation"
     },
  */
-
-
 export const getDocTypes = () => {
     return docTypes.docTypes ;
 };

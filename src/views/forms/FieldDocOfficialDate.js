@@ -1,6 +1,6 @@
 import React from 'react';
 import {Label} from 'reactstrap';
-import InputDate from '../../components/InputDate';
+import InputDate from '../../components/widgets/InputDate';
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
 

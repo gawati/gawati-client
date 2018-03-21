@@ -72,8 +72,6 @@ export const defaultLang = () => ({
 
 export const defaultListCount = () => 10;
 
-
-
 export const getLangCodeAlpha3b = (alpha3b) => languageCodes.langs.lang.find(lingo => lingo['alpha3b'] === alpha3b ) ;
 
 export const getLangs = () => languageCodes.langs ; 

@@ -7,7 +7,7 @@ import {
   Dropdown
 } from 'reactstrap';
 
-import avatar from '../img/avatar.png';
+import avatar from '../../img/avatar.png';
 
 class TopNavDropdown extends React.Component {
 
