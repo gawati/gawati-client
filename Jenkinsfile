@@ -8,7 +8,6 @@ pipeline {
 
     environment { 
         // CI="false"
-        DLD="/var/www/html/dl.gawati.org/dev"
         PKF="gawati-client"
     } 
 
@@ -40,7 +39,7 @@ wget -qO- http://dl.gawati.org/dev/jenkinslib-latest.tbz | tar -xvjf -
 . ./jenkinslib.sh
 cd build
 PkgPack
-PkgLinkAll
+PkgLinkLatest
 '''
                 }
             }
