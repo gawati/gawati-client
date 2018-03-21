@@ -2,6 +2,9 @@ import React from 'react';
 import { Switch, Redirect, Route } from 'react-router-dom';
 
 import {  Container } from 'reactstrap';
+import { instanceOf } from 'prop-types';
+import cookie from 'react-cookie';
+import { withCookies, Cookies } from 'react-cookie';
 
 import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
@@ -14,47 +17,51 @@ import EditForm from '../views/forms/EditForm';
 
 import {PropsRoute, getRoute} from '../utils/RoutesHelper';
 import { ToastContainer } from 'react-toastify';
+import { LoggedInPage } from './LoggedInPage';
+import Login from '../views/pages/Login/Login';
+
+import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 
 class Root extends React.Component {
+
+      static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+      };
+
+    constructor(props) {
+        super(props);
+        this.state =  { 
+            loggedIn: false
+        }
+        this.updatedLoggedInState = this.updatedLoggedInState.bind(this);
+    }
+
+    updatedLoggedInState = (loggedIn) => {
+        const {cookies} =  this.props;
+        cookies.set('loggedIn', loggedIn, { path: "/" });
+        this.setState({loggedIn: loggedIn});
+    }
+
+    checkLogin = () =>{
+        const { cookies } = this.props;
+        return cookies.get('loggedIn')  || false ;
+    }
+
+    componentDidMount() {
+        const {cookies} = this.props;
+        this.state = {
+            loggedIn: 
+        };
+    }
+
     render() {
         const {i18n} = this.props;
-        console.log(" MAGTCH PARAM ", this.props.match, getRoute("document-ident-open"));
+        // check if logged in , if logged in show logged in page otherwise show 
+
         return (
-            <div className="app">
-                <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
-                <div className="app-body">
-                <SideBar path="*" {...this.props}/>
-                <main className="main">
-                    <Breadcrumb />
-                    <Container fluid>
-                        <Switch>
-
-                            <Route exact path="/dashboard">
-                                <Redirect to="/dashboard/_lang/en" />
-                            </Route>
-                            <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
-
-                            <PropsRoute path={ getRoute("document-ident-open") }
-                                name="EditForm" component={EditForm} mode="edit" i18n={i18n} />
-
-                            <PropsRoute path={ getRoute("document-add") } 
-                                name="InputForm" component={EditForm} mode="add" i18n={i18n} />
-
-                            <PropsRoute path={ getRoute("document-comp-open") } 
-                                    name="EditCompForm" component={EditForm} mode="edit" i18n={i18n} />
-
-                             <Redirect from="/" to="/dashboard"/>
-
-                        </Switch>
-                     </Container>
-                </main>
-                {/*<Aside />*/}
-            </div>
-            <PropsRoute path="*" component={ FooterNav } i18n={ i18n } />
-            <ToastContainer />
-            </div>
+            this.checkLogin() ? <LoggedInPage i18n={i18n} /> : <Login login={this.updatedLoggedInState} />
         );
     }
 }
 
-export default Root;
+export default withCookies(Root);

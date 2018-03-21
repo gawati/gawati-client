@@ -3,10 +3,10 @@ import {dataProxyServer} from './constants';
 
 const GAWATI_CLIENT_APIS = {
     apis : {
-        'documents': '/gwc/documents',
-        'document-add': '/gwc/document/add',
-        'document-open': '/gwc/document/load',
-        'document-edit': '/gwc/document/edit',
+        'documents': '/gwdc/documents',
+        'document-add': '/gwdc/document/add',
+        'document-open': '/gwdc/document/load',
+        'document-edit': '/gwdc/document/edit',
         'document-upload': '/gwc/document/upload'
     }
 };

@@ -63,6 +63,7 @@ class Dashboard extends Component {
   }
   
   getDocs = () => {
+    console.log(" GET DOCS === " , apiUrl('documents'));
     axios.post(
       apiUrl('documents'), {
         data: {"docTypes": "all"}
@@ -70,8 +71,8 @@ class Dashboard extends Component {
       )
     .then(
       (response) => {
-          //console.log(" response.data ", response);
-          this.setState({docs: response.data.documents });
+          console.log(" response.data ", response.data);
+          this.setState({docs: response.data.package });
         }
     )
     .catch(
@@ -86,6 +87,7 @@ class Dashboard extends Component {
      axios.get(apiDocs)
      .then(
         (response) => {
+          console.log(" getDocs2 ", docs);
           const {docs} = response.data;
 
           this.setState({
@@ -106,6 +108,7 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
+    console.log(" DOCS + ", docs);
     return (
       <div className="animated fadeIn">
         <Row>

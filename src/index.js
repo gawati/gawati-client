@@ -27,14 +27,17 @@ import {PrivateRoute} from './components/routing/PrivateRoute';
 
 import './globalize';
 
-ReactDOM.render(
-    <BrowserRouter>
-        <Switch>
+{/*         <Switch>
             <Route path="/register" name="Register" component={Register} />
             <Route path="/login" name="Login" component={Login} />
             <PrivateRoute path="/dashboard" name="App" component={App} />
             <PrivateRoute path="/" name="App" component={App} />
         </Switch>
+ */}    
+
+ReactDOM.render(
+    <BrowserRouter>
+        <App />
     </BrowserRouter>, 
     document.getElementById('root')
 );
