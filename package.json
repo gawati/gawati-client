@@ -36,7 +36,6 @@
     "uuid": "^3.2.1",
     "yup": "^0.23.0"
   },
-  "main": "src/electron-starter.js",
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/ --watch --recursive",
