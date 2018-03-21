@@ -1,5 +1,5 @@
 import React from 'react';
-import { getLangs, coerceIntoArray } from '../../utils/generalhelper';
+import { getLangs, coerceIntoArray } from '../../utils/GeneralHelper';
 import { Label } from 'reactstrap';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';

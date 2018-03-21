@@ -1,7 +1,7 @@
 import React from 'react';
 import {Switch} from 'react-router-dom';
 
-import {PropsRoute} from '../../utils/routeshelper';
+import {PropsRoute} from '../../utils/RoutesHelper';
 
 import StdDiv from '../../components/StdDiv';
 import IdentityMetadata from './IdentityMetadata' ;

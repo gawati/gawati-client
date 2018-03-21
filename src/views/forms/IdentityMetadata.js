@@ -5,12 +5,11 @@ import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstr
 import axios from 'axios';
 import moment from 'moment';
 
-import { isEmpty } from '../../utils/generalhelper';
-import {getDocTypeFromLocalType} from '../../utils/doctypeshelper';
-import { isInvalidValue } from '../../utils/generalhelper';
-import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
-import { setInRoute } from '../../utils/routeshelper';
-import { iriDate, isValidDate } from '../../utils/datehelper';
+import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
+import { isEmpty, isInvalidValue } from '../../utils/GeneralHelper';
+import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
+import { setInRoute } from '../../utils/RoutesHelper';
+import { iriDate, isValidDate } from '../../utils/DateHelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';

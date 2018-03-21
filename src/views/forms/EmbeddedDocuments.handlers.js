@@ -1,4 +1,4 @@
-import { notifySuccess, notifyError} from '../../utils/notifhelper';
+import { notifySuccess, notifyError} from '../../utils/NotifHelper';
 
 export const handleSuccess =  (data) => {
     console.log(" DATA === ", data);

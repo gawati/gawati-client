@@ -4,7 +4,7 @@ import { Label, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from '
 import axios from 'axios';
 
 
-import { isEmpty } from '../../utils/generalhelper';
+import { isEmpty } from '../../utils/GeneralHelper';
 
 
 
@@ -17,7 +17,7 @@ import { apiUrl } from '../../api';
 import FileUpload from './FileUpload';
 import {dataProxyServer} from '../../constants';
 import uuid from 'uuid';
-import { iriDate } from '../../utils/datehelper';
+import { iriDate } from '../../utils/DateHelper';
 
 class EmbeddedDocuments extends React.Component {
 

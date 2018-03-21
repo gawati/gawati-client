@@ -2,7 +2,7 @@ import React from 'react';
 import {Label, Input} from 'reactstrap'; 
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
-import {getDocTypes} from '../../utils/doctypeshelper';
+import {getDocTypes} from '../../utils/DocTypesHelper';
 
 class FieldDocType extends React.Component {
 

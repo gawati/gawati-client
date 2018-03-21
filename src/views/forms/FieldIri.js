@@ -1,9 +1,9 @@
 import React from 'react';
 import {Label, Input} from 'reactstrap';
 
-import { isInvalidValue } from '../../utils/generalhelper';
-import { aknExprIri, aknExprIriThis, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/urihelper';
-import { iriDate, isValidDate } from '../../utils/datehelper';
+import { isInvalidValue } from '../../utils/GeneralHelper';
+import { aknExprIri, aknExprIriThis, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
+import { iriDate, isValidDate } from '../../utils/DateHelper';
 
 import {FormControl, formControlErrorClass} from './FormControl';
 

@@ -6,9 +6,9 @@ import axios from 'axios';
 import { handleApiException } from './dashboard.handlers';
 
 import { apiGetCall, apiUrl } from '../api';
-import {Aux} from '../utils/generalhelper';
-import {humanDate, displayXmlDateTime} from '../utils/datehelper';
-import { setInRoute } from '../utils/routeshelper';
+import {Aux} from '../utils/GeneralHelper';
+import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
+import { setInRoute } from '../utils/RoutesHelper';
 
 export const StateColumn = ({ doc }) => 
   <div>{ "draft" }</div>

@@ -2,7 +2,7 @@ import React from 'react';
 import {Label, Input} from 'reactstrap'; 
 import {FormControl, formControlErrorClass} from './FormControl';
 import {FieldError} from './FieldError';
-import {getDocParts} from '../../utils/docpartshelper';
+import {getDocParts} from '../../utils/DocPartsHelper';
 
 class FieldDocPart extends React.Component {
 

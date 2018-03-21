@@ -12,7 +12,7 @@ import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import EditForm from '../views/forms/EditForm';
 
-import {PropsRoute, getRoute} from '../utils/routeshelper';
+import {PropsRoute, getRoute} from '../utils/RoutesHelper';
 import { ToastContainer } from 'react-toastify';
 
 class Root extends React.Component {

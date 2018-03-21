@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container, Row, Col, CardGroup, Card, CardBody, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
-import {Aux} from '../../../utils/generalhelper';
+import {Aux} from '../../../utils/GeneralHelper';
 
 const LoginForm = ({history}) => 
 <Aux>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { apiUrl } from '../../api';
-import { handleApiException } from '../../utils/notifhelper';
+import { handleApiException } from '../../utils/NotifHelper';
 
 /**
  * Higher Order Component for shared form functions.

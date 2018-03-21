@@ -1,4 +1,4 @@
-import {aknIri, normalizeDocNumber} from './urihelper';
+import {aknIri, normalizeDocNumber} from './UriHelper';
 
 it('generates iris', () => {
     expects(

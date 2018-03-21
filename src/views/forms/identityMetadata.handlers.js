@@ -1,4 +1,4 @@
-import { notifySuccess, notifyError} from '../../utils/notifhelper';
+import { notifySuccess, notifyError} from '../../utils/NotifHelper';
 import axios from 'axios';
 
 import { apiUrl } from '../../api';
