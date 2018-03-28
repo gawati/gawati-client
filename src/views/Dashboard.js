@@ -10,9 +10,12 @@ import {Aux} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 
-export const StateColumn = ({ doc }) => 
-  <div>{ "draft" }</div>
-;
+export const StateColumn = ({ stateInfo }) =>  {
+  console.log(" StateColumn ", stateInfo);
+  return (
+    <div data-status={stateInfo.state.status}>{ stateInfo.state.label }</div>
+  );
+}
 
 const showCreatedAndModified = (created, modified) => {
   return (created === modified) ?
@@ -63,7 +66,6 @@ class Dashboard extends Component {
   }
   
   getDocs = () => {
-    console.log(" GET DOCS === " , apiUrl('documents'));
     axios.post(
       apiUrl('documents'), {
         data: {"docTypes": "all"}
@@ -72,7 +74,7 @@ class Dashboard extends Component {
     .then(
       (response) => {
           console.log(" response.data ", response.data);
-          this.setState({docs: response.data.package });
+          this.setState({docs: response.data.documents });
         }
     )
     .catch(
@@ -82,24 +84,6 @@ class Dashboard extends Component {
     );
   };
 
-  getDocs2 = () => {
-     let apiDocs = apiGetCall('documents', {});
-     axios.get(apiDocs)
-     .then(
-        (response) => {
-          console.log(" getDocs2 ", docs);
-          const {docs} = response.data;
-
-          this.setState({
-            docs: docs
-          });
-        }
-     ).catch(
-        (err) => {
-          console.log(" ERROR ", err) ;
-        }
-     );
-  }
 
   componentDidMount() {
     this.getDocs();
@@ -138,7 +122,7 @@ class Dashboard extends Component {
                 return (
                   <tr key={ `docs-${doc.docIri.value}`}>
                     <td className="text-center">
-                      <StateColumn doc={doc} />
+                      <StateColumn stateInfo={docPkg.workflow} />
                     </td>
                     <td>
                       <TitleAndDateColumn docPkg={docPkg} />

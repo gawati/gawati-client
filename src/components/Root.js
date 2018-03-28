@@ -38,26 +38,31 @@ class Root extends React.Component {
 
     updatedLoggedInState = (loggedIn) => {
         const {cookies} =  this.props;
-        cookies.set('loggedIn', loggedIn, { path: "/" });
+        cookies.set('loggedIn', loggedIn);
+        console.log( "updatedLoggedInState" , loggedIn, cookies.getAll());
         this.setState({loggedIn: loggedIn});
     }
 
     checkLogin = () =>{
         const { cookies } = this.props;
-        return cookies.get('loggedIn')  || false ;
+        const isLoggedIn = cookies.get('loggedIn')  ;
+        if (isLoggedIn == null ) {
+            return false;
+        } else {
+            return (isLoggedIn == 'true');
+        }
     }
 
     componentDidMount() {
-        const {cookies} = this.props;
         this.state = {
-            loggedIn: 
+            loggedIn: this.checkLogin()
         };
     }
 
     render() {
-        const {i18n} = this.props;
+        const {i18n, cookies} = this.props;
         // check if logged in , if logged in show logged in page otherwise show 
-
+        console.log(" ROOT CHECKLOGIN ", cookies.getAll(), cookies.get('loggedIn'), this.checkLogin());
         return (
             this.checkLogin() ? <LoggedInPage i18n={i18n} /> : <Login login={this.updatedLoggedInState} />
         );
