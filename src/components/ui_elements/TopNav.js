@@ -34,6 +34,7 @@ class TopNav extends React.Component {
       }
 
   render() {
+    console.log(" TopNav == ", window.GAWATI_AUTH);
     return (
       <header className="app-header navbar">
 {/*         <NavbarToggler className="d-lg-none" onClick={this.mobileSidebarToggle}>

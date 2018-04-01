@@ -10,10 +10,8 @@ import { isEmpty } from '../../utils/GeneralHelper';
 
 import StatefulForm from './StatefulForm';
 import loadbaseForm from './baseFormHOC';
-import {formInitialState, validationSchema} from './EmbeddedDocuments.formConfig'; 
 
 import '../../css/IdentityMetadata.css';
-import { apiUrl } from '../../api';
 import FileUpload from './FileUpload';
 import {dataProxyServer} from '../../constants';
 import uuid from 'uuid';
@@ -283,7 +281,6 @@ class EmbeddedDocuments extends React.Component {
     }
     
     render() {
-      const {form} = this.props ; 
       return this.renderAttForm();
     }
 }

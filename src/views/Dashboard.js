@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
 
-import { apiGetCall, apiUrl } from '../api';
+import { apiUrl } from '../api';
 import {Aux} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';

@@ -1,38 +1,29 @@
 import React from 'react';
 import {
-  Badge,
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
   Dropdown
 } from 'reactstrap';
-import {Redirect} from 'react-router-dom';
-import { withCookies, Cookies } from 'react-cookie';
-import { instanceOf } from 'prop-types';
+
+import {siteLogout} from '../../utils/GawatiAuthClient';
 
 import avatar from '../../img/avatar.png';
 
+
+
 class TopNavDropdown extends React.Component {
-
-
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
-
 
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
     this.state = {
-      dropdownOpen: false,
-      logout: false
+      dropdownOpen: false
     };
   }
 
   logout () {
-    const {cookies} = this.props; 
-    cookies.set('loggedIn', false);
-    this.setState({logout: true});
+    siteLogout();
   }
 
   toggle() {
@@ -42,10 +33,7 @@ class TopNavDropdown extends React.Component {
   }
 
   dropAccnt() {
-    const {cookies} = this.props;
-    const {logout} = this.state ;
     return (
-      logout ? <Redirect to="/login" />:
       <Dropdown nav isOpen={this.state.dropdownOpen} toggle={this.toggle}>
         <DropdownToggle nav>
           <img src={ avatar } className="img-avatar" alt="admin"/>
@@ -77,4 +65,4 @@ class TopNavDropdown extends React.Component {
   }
 }
 
-export default withCookies(TopNavDropdown);
+export default TopNavDropdown;

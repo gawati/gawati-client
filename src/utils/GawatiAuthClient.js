@@ -1,14 +1,36 @@
 import Keycloak from 'keycloak-js';
 
-import GAWATI_AUTH from './GawatiAuthService';
+/**
+ * Sets the KeyCloak JSON Object into the global window object
+ * @param {object} KeyCloak json object for the client 
+ */
+const setGawatiAuth = (obj) => {
+    window.GAWATI_AUTH = obj;
+}
 
-export const setup = (authJson) => {
-    let keycloak = Keycloak(authJson);
-    GAWATI_AUTH = keycloak;
+/**
+ * Gets the GAWATI_AUTH window object
+ */
+const getGawatiAuth = () => {
+    return window.GAWATI_AUTH ; 
 };
 
+/**
+ * Sets up the KeyCloak object using the KeyCloak json document
+ * @param {object} authJson 
+ */
+export const setup = (authJson) => {
+    let keycloak = Keycloak(authJson);
+    setGawatiAuth(keycloak);
+};
+
+/**
+ * Initializes the login for the KeyCloak object
+ * @param {*} onSuccess success callback
+ * @param {*} onError  error callback
+ */
 export const initLoginRequired = (onSuccess, onError) => {
-    GAWATI_AUTH.init(
+    getGawatiAuth().init(
         {onLoad: 'login-required'}
     ).success( (authenticated) => {
         if (authenticated) {
@@ -19,9 +41,34 @@ export const initLoginRequired = (onSuccess, onError) => {
     });
 };
 
+/**
+ * Returns the authorization token
+ */
+export const getToken = () => {
+    return getGawatiAuth().token;
+};
+
+/**
+ * Returns the parsed authorization token
+ */
+export const getTokenParsed = () => {
+    return getGawatiAuth().tokenParsed ; 
+}
+
+/**
+ * Logs out
+ */
+export const siteLogout = () => {
+    return getGawatiAuth().logout();
+};
+
+/**
+ * Refreshes the token every ``minValidity`` seconds
+ * @param {integer} minValidity in seconds
+ */
 export const refreshToken = (minValidity = 5) => {
     return new Promise((resolve, reject) => {
-        GAWATI_AUTH.updateToken(minValidity)
+        getGawatiAuth().updateToken(minValidity)
             .success(() => resolve())
             .error((err) => reject(err));
     });
