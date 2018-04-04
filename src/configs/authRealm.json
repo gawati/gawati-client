@@ -1,7 +1,7 @@
 {
     "realm": "kiribati",
-    "auth-server-url": "http://auth.gawati.local/auth",
-    "url": "http://auth.gawati.local/auth",    
+    "auth-server-url": "http://localhost:11080/auth",
+    "url": "http://localhost:11080/auth",    
     "ssl-required": "external",
     "resource": "gawati-client",
     "clientId": "gawati-client",

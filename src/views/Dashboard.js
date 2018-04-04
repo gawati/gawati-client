@@ -68,12 +68,15 @@ class Dashboard extends Component {
   getDocs = () => {
     axios.post(
       apiUrl('documents'), {
-        data: {"docTypes": "all"}
+        data: {
+          "docTypes": "all", 
+          "itemsFrom":1, 
+          "pageSize": 10
+        }
       }
       )
     .then(
       (response) => {
-          console.log(" response.data ", response.data);
           this.setState({docs: response.data.documents });
         }
     )
