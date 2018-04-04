@@ -6,7 +6,7 @@ import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
 import TopNav from './ui_elements/TopNav';
 import SideBar from './sidebar/SideBar';
-import Breadcrumb from './ui_elements/Breadcrumb';
+import Breadcrumbs from './ui_elements/Breadcrumbs';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import EditForm from '../views/forms/EditForm';
@@ -21,7 +21,7 @@ export const LoggedInPage = ({i18n}) => (
         <div className="app-body">
         <SideBar path="*" {...this.props}/>
         <main className="main">
-        <Breadcrumb />
+        <PropsRoute path="/:path" component={Breadcrumbs} {...this.props} />
         <Container fluid>
             <Switch>
 
