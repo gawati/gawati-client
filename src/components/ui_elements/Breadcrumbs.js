@@ -64,7 +64,6 @@ class Breadcrumbs extends React.Component {
         </Breadcrumb>
       );
     } else {
-      // this.getDocument(pathname);
       return (
         <Breadcrumb>
           <BreadcrumbItem><a href={routes["home"]}>Home</a></BreadcrumbItem>
