@@ -6,7 +6,7 @@ import axios from 'axios';
 import { handleApiException } from './dashboard.handlers';
 
 import { apiUrl } from '../api';
-import {Aux} from '../utils/GeneralHelper';
+import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 
@@ -114,6 +114,7 @@ class Dashboard extends Component {
             <th>Title</th>
             <th className="text-center">Language</th>
             <th>Workflow</th>
+            <th className="text-center">Next States</th>
             <th className="text-center">Country</th>
           </tr>
         </thead>
@@ -138,13 +139,18 @@ class Dashboard extends Component {
                     <td>
                       <div className="clearfix">
                         <div className="float-left">
-                          <strong>50%</strong>
+                          <strong>{getWFProgress(docPkg.workflow)}%</strong>
                         </div>
                         <div className="float-right">
                           <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
                         </div>
                       </div>
-                      <Progress className="progress-xs" color="success" value="50"/>
+                      <Progress className="progress-xs" color="success" value={getWFProgress(docPkg.workflow)}/>
+                    </td>
+                    <td className="text-center">
+                      {
+                        docPkg.workflow.nextStates.map(state => capitalizeFirst(state)).join(",")
+                      }
                     </td>
                     <td className="text-center">
                       <DocCountryColumn doc={doc} />

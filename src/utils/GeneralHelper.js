@@ -168,3 +168,30 @@ export const isInt = (value) =>  {
 
 export const isInvalidValue = (value) =>  
     value === undefined || value === null || value === "" ;
+
+/**
+ * Returns the workflow completion percentage of the document.
+ * @param {object} current document's workflow information.
+ */
+export const getWFProgress = (workflow) => {
+    var i = 0;
+    //Get position of current workflow state from among all states
+    for (i; i < workflow.allStates.length; i++) {
+        if (workflow.allStates[i].name === workflow.state.status) {
+            break;
+        }
+    }
+    var progressPercent = ((i+1) / workflow.allStates.length) * 100;
+    return Math.floor(progressPercent);
+}
+
+/**
+ * Take a string, capitalize the first letter and return the whole string.
+ * "sherlock" -> "Sherlock"
+ * @param {string} str
+ */
+export const capitalizeFirst = (str) => {
+  if (str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+}
