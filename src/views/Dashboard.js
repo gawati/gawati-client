@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
+import {Row, Col, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
@@ -9,6 +9,8 @@ import { apiUrl } from '../api';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
+
+import Pagination from "../components/ui_elements/Pagination";
 
 export const StateColumn = ({ stateInfo }) =>  {
   console.log(" StateColumn ", stateInfo);
@@ -54,30 +56,31 @@ export const DocCountryColumn = ({ doc }) =>
   <div>{doc.docCountry.value}</div>
 ;
 
-
+const PAGE_SIZE = 1;
 
 class Dashboard extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      docs: []
+      docs: [],
+      totalDocs: 0
     };
   }
   
-  getDocs = () => {
+  getDocs = (itemsFrom) => {
     axios.post(
       apiUrl('documents'), {
         data: {
           "docTypes": "all", 
-          "itemsFrom":1, 
-          "pageSize": 10
+          "itemsFrom": itemsFrom,
+          "pageSize": PAGE_SIZE
         }
       }
       )
     .then(
       (response) => {
-          this.setState({docs: response.data.documents });
+          this.setState({docs: response.data.documents, totalDocs: response.data.total});
         }
     )
     .catch(
@@ -89,9 +92,22 @@ class Dashboard extends Component {
 
 
   componentDidMount() {
-    this.getDocs();
+    this.getDocs(1);  //Get from first item
   }
 
+  onPageClick(selected) {
+    //ReactPaginate page indices start from 0.
+    let itemsFrom = (selected * PAGE_SIZE) + 1;
+    this.getDocs(itemsFrom);
+  }
+
+  renderPagination() {
+    let pageCount = this.state.totalDocs/PAGE_SIZE > 1 ? this.state.totalDocs : 1;
+    return (
+      <Pagination pageCount={pageCount}
+                  onPageClick={this.onPageClick.bind(this)} />
+    );
+  }
 
   render() {
     const {docs} = this.state;
@@ -374,27 +390,8 @@ class Dashboard extends Component {
               </tr> */}
             </tbody>
           </Table>
-          <div className="text-center">
-            <Pagination>
-                <PaginationItem>
-                  <PaginationLink previous href="#"></PaginationLink>
-                </PaginationItem>
-                <PaginationItem active>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">4</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink next href="#"></PaginationLink>
-                </PaginationItem>
-              </Pagination>
+            <div className="text-center">
+              {this.renderPagination()}
             </div>
             </CardBody>
             </Card>
