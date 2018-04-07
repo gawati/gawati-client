@@ -26,8 +26,9 @@ export const LoggedInPage = ({i18n}) => (
             <Switch>
 
                 <Route exact path="/dashboard">
-                    <Redirect to="/dashboard/_lang/en" />
+                    <Redirect to="/_lang/en/dashboard" />
                 </Route>
+
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-ident-open") }

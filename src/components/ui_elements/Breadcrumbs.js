@@ -42,6 +42,7 @@ class Breadcrumbs extends React.Component {
   //To handle refreshes 
   componentDidMount() {
     let { match, location : {pathname} } = this.props;
+    console.log(" MATCH COMPONENT_DID_MOUNT ", match, pathname);
     if (match.url === "/document" ) {
       this.getDocument(pathname);
     }
