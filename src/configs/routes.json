@@ -5,28 +5,38 @@
         "label": "Home"
     },
     {
-        "route": "/login",
+        "route": "/_lang/:lang/login",
         "name": "non-logged-in-root",
         "label": "Login"
     },
     {
-        "route": "/dashboard/_lang/:lang",
+        "route": "/_lang/:lang/dashboard",
         "name": "logged-in-root",
         "label": "Dashboard"
     },
     {
-        "route": "/document/add/_lang/:lang",
+        "route": "/_lang/:lang/document/add",
         "name": "document-add",
-        "label": "Add Document"
+        "label": "Add Document",
+        "breadcrumb": [
+            "logged-in-root"
+        ]
     },
     {
-        "route": "/document/open/ident/_lang/:lang/_iri/:iri*",
+        "route": "/_lang/:lang/document/open/ident/_iri/:iri*",
         "name": "document-ident-open",
-        "label": "Document Identity"
+        "label": "Document Identity",
+        "breadcrumb": [
+            "logged-in-root"
+        ]
     },
     {
-        "route": "/document/open/comp/_lang/:lang/_iri/:iri",
+        "route": "/_lang/:lang/document/open/comp/_iri/:iri",
         "name": "document-comp-open",
-        "label": "Document Components"
+        "label": "Document Components",
+        "breadcrumb": [
+            "logged-in-root",
+            "document-ident-open"
+        ]
     }
 ]}

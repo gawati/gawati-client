@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import {Row, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
+import {Row, Button, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
@@ -64,7 +64,7 @@ class Dashboard extends Component {
       docs: []
     };
   }
-  
+
   getDocs = () => {
     axios.post(
       apiUrl('documents'), {
@@ -87,6 +87,15 @@ class Dashboard extends Component {
     );
   };
 
+  linkDocumentAdd  = () => {
+    console.log("PROPS>MATCH>PARAMS ", this.props.match.params);
+    const {lang} = this.props.match.params || "en" ;
+    let navLinkTo = setInRoute(
+      "document-add", 
+      {"lang": lang}
+    );
+    return navLinkTo;
+  };
 
   componentDidMount() {
     this.getDocs();
@@ -95,11 +104,20 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
-    console.log(" DOCS + ", docs);
+    const addLink = this.linkDocumentAdd();
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" sm="12" lg="12">   
+          <Col xs="12" sm="12" lg="12">
+          <Card className="bg-white text-right mt-1 mb-1">
+            <CardBody className="pt-0 pb-0">
+                <Button type="button" name="btn" className={ `btn btn-link` } >
+                  <NavLink to={ addLink }>
+                    <i className="fa fa-plus"></i> Add Document
+                  </NavLink>
+              </Button>                
+            </CardBody>
+          </Card>      
           <br />   
           {/*  className="table-outline mb-0 d-none d-sm-table"  */}
           <Card>
