@@ -1,0 +1,22 @@
+Sidebar Nav can use either literal text and urls i.e. 
+set label and url manually or simply specify a route name. THen it  autopmatically sets the label and url. 
+if you want to override the route lable simply set route="" and label="your custom text".
+badge is optional.
+
+{
+    "items":[
+        {
+            "label": "Dashboard",
+            "url":  "/dashboard",
+            "icon": "fa fa-list-alt",
+            "badge": {
+              "variant": "info",
+              "text": "NEW"
+            }
+        },
+        {
+            "route": "logged-in-root",
+            "icon": "fa fa-list-alt"  
+        }
+    ]
+}

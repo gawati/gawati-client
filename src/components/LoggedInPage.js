@@ -18,7 +18,7 @@ export const LoggedInPage = ({i18n}) => (
     <div className="app">
         <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
         <div className="app-body">
-        <SideBar path="*" {...this.props}/>
+        <PropsRoute path="*" component={SideBar} i18n={i18n} />
         { /*
         <main className="main">
             <PropsRoute path="/:path" component={Breadcrumbs} {...this.props} />

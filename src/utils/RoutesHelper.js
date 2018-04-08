@@ -9,7 +9,8 @@ import { Route } from 'react-router-dom';
 export const defaultRoute = () => (
     {
         name: "404",
-        route: "/404"
+        route: "/404",
+        label: "error_404"
     }
 );
 
@@ -18,13 +19,22 @@ export const defaultRoute = () => (
  * @param {string} routeName 
  */
 export const getRoute = (routeName) => {
+    return getRouteObject(routeName).route;
+};
+
+export const getRouteObject = (routeName) => {
     let routeConfig = routeConfigs.routes.find( route => route.name === routeName) ;
     if (routeConfig === undefined) {
         return defaultRoute();
     } else {
-        return routeConfig.route;
+        return routeConfig;
     }
 };
+
+export const getRouteLabel = (routeName) => {
+    const label = getRouteObject(routeName).label;
+    return label;
+}
 
 /**
  * Sets values in a route based on the provided map and produces a link
@@ -36,7 +46,12 @@ export const getRoute = (routeName) => {
  * @param {object} params 
  */
 export const setInRoute = (routeName, params) => {
-    let route = getRoute(routeName);
+    let route = getRouteObject(routeName);
+    return setInRouteObject(route, params);
+};
+
+export const setInRouteObject = (routeObj, params) => {
+    let route = routeObj.route;
     let routeArr = route.split("/");
     let updatedRouteArr = routeArr.map( part => {
         if (part.startsWith(":")) {
@@ -48,7 +63,6 @@ export const setInRoute = (routeName, params) => {
     });
     return updatedRouteArr.join("/");
 };
-
 
 export const convertObjectToEncodedString = (obj) => encodeURIComponent(JSON.stringify(obj)) ;
     
