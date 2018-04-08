@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import {Row, Button, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
+import {Breadcrumb, BreadcrumbItem,  Button, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
-import StdDiv from '../components/general/StdDiv';
 import { handleApiException } from './dashboard.handlers';
 
 import { apiUrl } from '../api';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
+//import Breadcrumbs from '../components/ui_elements/Breadcrumbs';
+import StdCompContainer from '../components/general/StdCompContainer';
 
 export const StateColumn = ({ stateInfo }) =>  {
   console.log(" StateColumn ", stateInfo);
@@ -89,7 +90,6 @@ class Dashboard extends Component {
   };
 
   linkDocumentAdd  = () => {
-    console.log("PROPS>MATCH>PARAMS ", this.props.match.params);
     const {lang} = this.props.match.params || "en" ;
     let navLinkTo = setInRoute(
       "document-add", 
@@ -102,320 +102,120 @@ class Dashboard extends Component {
     this.getDocs();
   }
 
+  /**
+   * Return the real breadcrumb here 
+   * 
+   * @memberof Dashboard
+   */
+  getBreadcrumb = () => 
+    <Breadcrumb><BreadcrumbItem>Home</BreadcrumbItem><BreadcrumbItem>Test</BreadcrumbItem></Breadcrumb>;
+  
+  renderDashboardTableRow = (docs) => {
+    return docs.map(
+      (docPkg, index) => {
+        let doc = docPkg.akomaNtoso;
+        return (
+          <tr key={ `docs-${doc.docIri.value}`}>
+            <td className="text-center">
+              <StateColumn stateInfo={docPkg.workflow} />
+            </td>
+            <td>
+              <TitleAndDateColumn docPkg={docPkg} />
+            </td>
+            <td className="text-center">
+              <DocLangColumn doc={doc} />
+            </td>
+            <td>
+              <div className="clearfix">
+                <div className="float-left">
+                  <strong>{getWFProgress(docPkg.workflow)}%</strong>
+                </div>
+                <div className="float-right">
+                  <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
+                </div>
+              </div>
+              <Progress className="progress-xs" color="success" value={getWFProgress(docPkg.workflow)}/>
+            </td>
+            <td className="text-center">
+              {
+                docPkg.workflow.nextStates.map(state => capitalizeFirst(state)).join(",")
+              }
+            </td>
+            <td className="text-center">
+              <DocCountryColumn doc={doc} />
+            </td>
+          </tr>
+        );
+      }
+    )
+
+  };
 
   render() {
     const {docs} = this.state;
     const addLink = this.linkDocumentAdd();
+    const breadcrumb = this.getBreadcrumb();
     return (
-      <StdDiv>
-          <Card className="bg-white text-right mt-1 mb-1">
-            <CardBody className="pt-0 pb-0">
-                <Button type="button" name="btn" className={ `btn btn-link` } >
-                  <NavLink to={ addLink }>
+      <StdCompContainer breadcrumb={breadcrumb}>
+         {/** dummy action bar to be replaced by real one */}
+        <Card className="bg-white text-right mt-1 mb-1">
+          <CardBody className="pt-0 pb-0">
+            <Button type="button" name="btn" className={ `btn btn-link` } >
+              <NavLink to={ addLink }>
                     <i className="fa fa-plus"></i> Add Document
-                  </NavLink>
-              </Button>                
+              </NavLink>
+            </Button>                
             </CardBody>
-          </Card>      
-          <br />   
-          {/*  className="table-outline mb-0 d-none d-sm-table"  */}
-          <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i> Documents
-              </CardHeader>
-              <CardBody>
-      <Table hover responsive>
-        <thead className="thead-light">
-          <tr>
-            <th className="text-center">State</th>
-            <th>Title</th>
-            <th className="text-center">Language</th>
-            <th>Workflow</th>
-            <th className="text-center">Next States</th>
-            <th className="text-center">Country</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            docs.map(
-              (docPkg, index) => {
-                let doc = docPkg.akomaNtoso;
-                return (
-                  <tr key={ `docs-${doc.docIri.value}`}>
-                    <td className="text-center">
-                      <StateColumn stateInfo={docPkg.workflow} />
-                    </td>
-                    <td>
-                      <TitleAndDateColumn docPkg={docPkg} />
-                    </td>
-                
-                    <td className="text-center">
-                      <DocLangColumn doc={doc} />
-                    </td>
-                
-                    <td>
-                      <div className="clearfix">
-                        <div className="float-left">
-                          <strong>{getWFProgress(docPkg.workflow)}%</strong>
-                        </div>
-                        <div className="float-right">
-                          <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                        </div>
-                      </div>
-                      <Progress className="progress-xs" color="success" value={getWFProgress(docPkg.workflow)}/>
-                    </td>
-                    <td className="text-center">
-                      {
-                        docPkg.workflow.nextStates.map(state => capitalizeFirst(state)).join(",")
-                      }
-                    </td>
-                    <td className="text-center">
-                      <DocCountryColumn doc={doc} />
-                    </td>
-                  </tr>
-                );
-              }
-            )
-
-          }
-           {/*  <tr>
-              <td className="text-center">
-                <div className="avatar">
-                  <img src={'img/avatars/1.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                  <span className="avatar-status badge-success"></span>
-                </div>
-              </td>
-              <td>
-                <div>Yiorgos Avraamu</div>
-                <div className="small text-muted">
-                  <span>New</span> | Registered: Jan 1, 2015
-                </div>
-              </td>
-              <td className="text-center">
-                <img src={'img/flags/USA.png'} alt="USA" style={{height: 24 + 'px'}}/>
-              </td>
-              <td>
-                <div className="clearfix">
-                  <div className="float-left">
-                    <strong>50%</strong>
-                  </div>
-                  <div className="float-right">
-                    <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                  </div>
-                </div>
-                <Progress className="progress-xs" color="success" value="50"/>
-              </td>
-              <td className="text-center">
-                <i className="fa fa-cc-mastercard" style={{fontSize: 24 + 'px'}}></i>
-              </td>
-              <td>
-                <div className="small text-muted">Last login</div>
-                <strong>10 sec ago</strong>
-              </td>
-              </tr>
-              <tr>
-                <td className="text-center">
-                  <div className="avatar">
-                    <img src={'img/avatars/2.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                    <span className="avatar-status badge-danger"></span>
-                  </div>
-                </td>
-                <td>
-                  <div>Avram Tarasios</div>
-                  <div className="small text-muted">
-
-                    <span>Recurring</span> | Registered: Jan 1, 2015
-                  </div>
-                </td>
-                <td className="text-center">
-                  <img src={'img/flags/Brazil.png'} alt="Brazil" style={{height: 24 + 'px'}}/>
-                </td>
-                <td>
-                  <div className="clearfix">
-                    <div className="float-left">
-                      <strong>10%</strong>
-                    </div>
-                    <div className="float-right">
-                      <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                    </div>
-                  </div>
-                  <Progress className="progress-xs" color="info" value="10"/>
-                </td>
-                <td className="text-center">
-                  <i className="fa fa-cc-visa" style={{fontSize: 24 + 'px'}}></i>
-                </td>
-                <td>
-                  <div className="small text-muted">Last login</div>
-                  <strong>5 minutes ago</strong>
-                </td>
-              </tr>
-              <tr>
-                <td className="text-center">
-                  <div className="avatar">
-                    <img src={'img/avatars/3.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                    <span className="avatar-status badge-warning"></span>
-                  </div>
-                </td>
-                <td>
-                  <div>Quintin Ed</div>
-                  <div className="small text-muted">
-                    <span>New</span> | Registered: Jan 1, 2015
-                  </div>
-                </td>
-                <td className="text-center">
-                  <img src={'img/flags/India.png'} alt="India" style={{height: 24 + 'px'}}/>
-                </td>
-                <td>
-                  <div className="clearfix">
-                    <div className="float-left">
-                      <strong>74%</strong>
-                    </div>
-                    <div className="float-right">
-                      <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                    </div>
-                  </div>
-                  <Progress className="progress-xs" color="warning" value="74"/>
-                </td>
-                <td className="text-center">
-                  <i className="fa fa-cc-stripe" style={{fontSize: 24 + 'px'}}></i>
-                </td>
-                <td>
-                  <div className="small text-muted">Last login</div>
-                  <strong>1 hour ago</strong>
-                </td>
-              </tr>
-              <tr>
-                <td className="text-center">
-                  <div className="avatar">
-                    <img src={'img/avatars/4.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                    <span className="avatar-status badge-secondary"></span>
-                  </div>
-                </td>
-                <td>
-                  <div>Enéas Kwadwo</div>
-                  <div className="small text-muted">
-                    <span>New</span> | Registered: Jan 1, 2015
-                  </div>
-                </td>
-                <td className="text-center">
-                  <img src={'img/flags/France.png'} alt="France" style={{height: 24 + 'px'}}/>
-                </td>
-                <td>
-                  <div className="clearfix">
-                    <div className="float-left">
-                      <strong>98%</strong>
-                    </div>
-                    <div className="float-right">
-                      <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                    </div>
-                  </div>
-                  <Progress className="progress-xs" color="danger" value="98"/>
-                </td>
-                <td className="text-center">
-                  <i className="fa fa-paypal" style={{fontSize: 24 + 'px'}}></i>
-                </td>
-                <td>
-                  <div className="small text-muted">Last login</div>
-                  <strong>Last month</strong>
-                </td>
-              </tr>
-              <tr>
-                <td className="text-center">
-                  <div className="avatar">
-                    <img src={'img/avatars/5.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                    <span className="avatar-status badge-success"></span>
-                  </div>
-                </td>
-                <td>
-                  <div>Agapetus Tadeáš</div>
-                  <div className="small text-muted">
-                    <span>New</span> | Registered: Jan 1, 2015
-                  </div>
-                </td>
-                <td className="text-center">
-                  <img src={'img/flags/Spain.png'} alt="Spain" style={{height: 24 + 'px'}}/>
-                </td>
-                <td>
-                  <div className="clearfix">
-                    <div className="float-left">
-                      <strong>22%</strong>
-                    </div>
-                    <div className="float-right">
-                      <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                    </div>
-                  </div>
-                  <Progress className="progress-xs" color="info" value="22"/>
-                </td>
-                <td className="text-center">
-                  <i className="fa fa-google-wallet" style={{fontSize: 24 + 'px'}}></i>
-                </td>
-                <td>
-                  <div className="small text-muted">Last login</div>
-                  <strong>Last week</strong>
-                </td>
-              </tr>
-              <tr>
-                <td className="text-center">
-                  <div className="avatar">
-                    <img src={'img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com"/>
-                    <span className="avatar-status badge-danger"></span>
-                  </div>
-                </td>
-                <td>
-                  <div>Friderik Dávid</div>
-                  <div className="small text-muted">
-                    <span>New</span> | Registered: Jan 1, 2015
-                  </div>
-                </td>
-                <td className="text-center">
-                  <img src={'img/flags/Poland.png'} alt="Poland" style={{height: 24 + 'px'}}/>
-                </td>
-                <td>
-                  <div className="clearfix">
-                    <div className="float-left">
-                      <strong>43%</strong>
-                    </div>
-                    <div className="float-right">
-                      <small className="text-muted">Jun 11, 2015 - Jul 10, 2015</small>
-                    </div>
-                  </div>
-                  <Progress className="progress-xs" color="success" value="43"/>
-                </td>
-                <td className="text-center">
-                  <i className="fa fa-cc-amex" style={{fontSize: 24 + 'px'}}></i>
-                </td>
-                <td>
-                  <div className="small text-muted">Last login</div>
-                  <strong>Yesterday</strong>
-                </td>
-              </tr> */}
-            </tbody>
-          </Table>
-          <div className="text-center">
-            <Pagination>
-                <PaginationItem>
-                  <PaginationLink previous href="#"></PaginationLink>
-                </PaginationItem>
-                <PaginationItem active>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">4</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink next href="#"></PaginationLink>
-                </PaginationItem>
-              </Pagination>
-            </div>
+        </Card>      
+        <br />   
+              {/*  className="table-outline mb-0 d-none d-sm-table"  */}
+        <Card>
+          <CardHeader>
+            <i className="fa fa-align-justify"></i> Documents
+          </CardHeader>
+          <CardBody>
+            <Table hover responsive>
+              <thead className="thead-light">
+                <tr>
+                  <th className="text-center">State</th>
+                  <th>Title</th>
+                  <th className="text-center">Language</th>
+                  <th>Workflow</th>
+                  <th className="text-center">Next States</th>
+                  <th className="text-center">Country</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  this.renderDashboardTableRow(docs)
+                }
+              </tbody>
+            </Table>
+            <div className="text-center">
+                <Pagination>
+                    <PaginationItem>
+                      <PaginationLink previous href="#"></PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem active>
+                      <PaginationLink href="#">1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">2</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">3</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink href="#">4</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink next href="#"></PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
+              </div>
             </CardBody>
-            </Card>
-         </StdDiv>
+        </Card>
+    </StdCompContainer>
     );
   }
 }

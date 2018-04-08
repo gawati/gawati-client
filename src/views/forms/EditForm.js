@@ -3,7 +3,6 @@ import {Switch} from 'react-router-dom';
 
 import {PropsRoute, getRoute} from '../../utils/RoutesHelper';
 
-import StdDiv from '../../components/general/StdDiv';
 import IdentityMetadata from './IdentityMetadata' ;
 import EmbeddedDocuments from './EmbeddedDocuments';
 
@@ -14,7 +13,6 @@ class EditForm extends React.Component {
         // from some reason, the react router loses context of url params, we have to 
         // pull it from the the url ... 
         return (
-            <StdDiv>
                 <Switch>
 
                     <PropsRoute path={ getRoute("document-add") }  
@@ -29,7 +27,6 @@ class EditForm extends React.Component {
                                     lang={ lang }  iri={ iri } i18n={i18n} />
                                     
                 </Switch>
-            </StdDiv>
         );
     }
 
