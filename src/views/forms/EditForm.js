@@ -3,7 +3,7 @@ import {Switch} from 'react-router-dom';
 
 import {PropsRoute, getRoute} from '../../utils/RoutesHelper';
 
-import StdDiv from '../../components/StdDiv';
+import StdDiv from '../../components/general/StdDiv';
 import IdentityMetadata from './IdentityMetadata' ;
 import EmbeddedDocuments from './EmbeddedDocuments';
 

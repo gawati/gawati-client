@@ -23,6 +23,7 @@ export const LoggedInPage = ({i18n}) => (
         <main className="main">
         <PropsRoute path="/:path" component={Breadcrumbs} {...this.props} />
         <Container fluid>
+
             <Switch>
 
                 <Route exact path="/dashboard">

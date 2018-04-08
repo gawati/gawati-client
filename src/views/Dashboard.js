@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import {Row, Button, Col, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
+import StdDiv from '../components/general/StdDiv';
 import { handleApiException } from './dashboard.handlers';
 
 import { apiUrl } from '../api';
@@ -106,9 +107,7 @@ class Dashboard extends Component {
     const {docs} = this.state;
     const addLink = this.linkDocumentAdd();
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" sm="12" lg="12">
+      <StdDiv>
           <Card className="bg-white text-right mt-1 mb-1">
             <CardBody className="pt-0 pb-0">
                 <Button type="button" name="btn" className={ `btn btn-link` } >
@@ -416,9 +415,7 @@ class Dashboard extends Component {
             </div>
             </CardBody>
             </Card>
-         </Col>
-        </Row>
-      </div>
+         </StdDiv>
     );
   }
 }
