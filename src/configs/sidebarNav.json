@@ -1,0 +1,10 @@
+{
+    "items":[
+        {
+            "route": "logged-in-root",
+            "name": "Dashboard",
+            "url":  "/dashboard",
+            "icon": "fa fa-list-alt"
+        }
+    ]
+}

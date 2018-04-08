@@ -11,6 +11,8 @@ import {
 
 import TopNavDropdown from './TopNavDropdown';
 
+import { NavLinkForTopBar } from './NavElements';
+
 class TopNav extends React.Component {
 
     sidebarToggle(e) {
@@ -34,7 +36,7 @@ class TopNav extends React.Component {
       }
 
   render() {
-    console.log(" TopNav == ", window.GAWATI_AUTH);
+    const lang = this.props.match.params.lang || "en" ; 
     return (
       <header className="app-header navbar">
 {/*         <NavbarToggler className="d-lg-none" onClick={this.mobileSidebarToggle}>
@@ -56,15 +58,15 @@ class TopNav extends React.Component {
         </NavbarToggler>
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
-            <NavLink href="#">Dashboard</NavLink>
-          </NavItem>
-          <NavItem className="px-3">
+            <NavLinkForTopBar lang={lang} routeName="logged-in-root" />
+         </NavItem>
+{/*           <NavItem className="px-3">
             <NavLink href="#">Users</NavLink>
           </NavItem>
           <NavItem className="px-3">
             <NavLink href="#">Settings</NavLink>
           </NavItem>
-        </Nav>
+ */}        </Nav>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
