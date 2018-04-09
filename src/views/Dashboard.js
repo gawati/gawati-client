@@ -9,7 +9,6 @@ import { apiUrl } from '../api';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
-//import Breadcrumbs from '../components/ui_elements/Breadcrumbs';
 import StdCompContainer from '../components/general/StdCompContainer';
 
 export const StateColumn = ({ stateInfo }) =>  {
