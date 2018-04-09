@@ -14,6 +14,8 @@ import StdCompContainer from '../components/general/StdCompContainer';
 
 import Pagination from "../components/ui_elements/Pagination";
 
+import Pagination from "../components/ui_elements/Pagination";
+
 export const StateColumn = ({ stateInfo }) =>  {
   console.log(" StateColumn ", stateInfo);
   return (
@@ -109,6 +111,14 @@ class Dashboard extends Component {
     //ReactPaginate page indices start from 0.
     let itemsFrom = (selected * PAGE_SIZE) + 1;
     this.getDocs(itemsFrom);
+  }
+
+  renderPagination() {
+    let pageCount = this.state.totalDocs/PAGE_SIZE > 1 ? this.state.totalDocs : 1;
+    return (
+      <Pagination pageCount={pageCount}
+        onPageClick={this.onPageClick.bind(this)} />
+    );
   }
 
   /**
