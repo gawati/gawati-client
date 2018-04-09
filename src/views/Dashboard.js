@@ -108,7 +108,7 @@ class Dashboard extends Component {
    * @memberof Dashboard
    */
   getBreadcrumb = () => 
-    <Breadcrumb><BreadcrumbItem>Home</BreadcrumbItem><BreadcrumbItem>Test</BreadcrumbItem></Breadcrumb>;
+    <Breadcrumb><BreadcrumbItem active>Home</BreadcrumbItem></Breadcrumb>;
   
   renderDashboardTableRow = (docs) => {
     return docs.map(

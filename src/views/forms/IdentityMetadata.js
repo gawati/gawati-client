@@ -6,9 +6,9 @@ import axios from 'axios';
 import moment from 'moment';
 
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
-import { isEmpty, isInvalidValue } from '../../utils/GeneralHelper';
+import { isEmpty, isInvalidValue, capitalizeFirst } from '../../utils/GeneralHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { setInRoute } from '../../utils/RoutesHelper';
+import { setInRoute, getCrumbLinks } from '../../utils/RoutesHelper';
 import { iriDate, isValidDate } from '../../utils/DateHelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
@@ -262,12 +262,20 @@ class IdentityMetadata extends React.Component {
     }
 
     /**
-     * Replace with the real breadcrumb
-     * 
      * @memberof IdentityMetadata
      */
-    getBreadcrumb = () => 
-      <Breadcrumb><BreadcrumbItem>Home</BreadcrumbItem><BreadcrumbItem>Test</BreadcrumbItem></Breadcrumb>;
+    getBreadcrumb = () => {
+      let title = this.state.form.docTitle.value;
+      let type = this.state.form.docAknType.value;
+      let crumbLinks = getCrumbLinks("document-ident-open", this.props.match.params)
+      return (
+        <Breadcrumb>
+          <BreadcrumbItem><a href={crumbLinks[0]}>Home</a></BreadcrumbItem>
+          <BreadcrumbItem><a href={crumbLinks[0]}>{capitalizeFirst(type)}</a></BreadcrumbItem>
+          <BreadcrumbItem active>{title}</BreadcrumbItem>
+        </Breadcrumb>
+      );
+    }
   
     render() {
       const {isSubmitting, isNext, form, documentLoadError} = this.state ; 
