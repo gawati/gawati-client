@@ -1,12 +1,11 @@
 import React from 'react';
-import { Label, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Label, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import axios from 'axios';
 
 
-import { isEmpty } from '../../utils/GeneralHelper';
-
-
+import { isEmpty, capitalizeFirst } from '../../utils/GeneralHelper';
+import { getCrumbLinks } from '../../utils/RoutesHelper';
 
 import StatefulForm from './StatefulForm';
 import loadbaseForm from './baseFormHOC';
@@ -16,6 +15,8 @@ import FileUpload from './FileUpload';
 import {dataProxyServer} from '../../constants';
 import uuid from 'uuid';
 import { iriDate } from '../../utils/DateHelper';
+
+import StdCompContainer from '../../components/general/StdCompContainer';
 
 class EmbeddedDocuments extends React.Component {
 
@@ -279,9 +280,31 @@ class EmbeddedDocuments extends React.Component {
       </div>
     );
     }
+
+    /**
+     * @memberof EmbeddedDocuments
+     */
+    getBreadcrumb = () => {
+      let title = this.props.form.docTitle.value;
+      let type = this.props.form.docAknType.value;
+      let crumbLinks = getCrumbLinks("document-comp-open", this.props.match.params)
+      return (
+        <Breadcrumb>
+          <BreadcrumbItem><a href={crumbLinks[0]}>Home</a></BreadcrumbItem>
+          <BreadcrumbItem><a href={crumbLinks[0]}>{capitalizeFirst(type)}</a></BreadcrumbItem>
+          <BreadcrumbItem><a href={crumbLinks[1]}>Identity</a></BreadcrumbItem>
+          <BreadcrumbItem active>{title}</BreadcrumbItem>
+        </Breadcrumb>
+      );
+    }
     
     render() {
-      return this.renderAttForm();
+      const breadcrumb = this.getBreadcrumb();
+      return (
+        <StdCompContainer breadcrumb={breadcrumb} >
+          {this.renderAttForm()}
+        </StdCompContainer>
+      );
     }
 }
 

@@ -9,7 +9,6 @@ import { apiUrl } from '../api';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
-//import Breadcrumbs from '../components/ui_elements/Breadcrumbs';
 import StdCompContainer from '../components/general/StdCompContainer';
 
 import Pagination from "../components/ui_elements/Pagination";
@@ -127,7 +126,7 @@ class Dashboard extends Component {
    * @memberof Dashboard
    */
   getBreadcrumb = () => 
-    <Breadcrumb><BreadcrumbItem>Home</BreadcrumbItem><BreadcrumbItem>Test</BreadcrumbItem></Breadcrumb>;
+    <Breadcrumb><BreadcrumbItem active>Home</BreadcrumbItem></Breadcrumb>;
   
   renderDashboardTableRow = (docs) => {
     return docs.map(

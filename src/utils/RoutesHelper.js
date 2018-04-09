@@ -82,3 +82,16 @@ export const PropsRoute = ({ component, ...rest }) => {
       }}/>
     );
 };
+
+/**
+ * Gets breadcrumb links for a given route
+ * @param {string} routeName
+ * @param {object} params
+ */
+export const getCrumbLinks = (routeName, params) => {
+    let crumbs = getRouteObject(routeName).breadcrumb;
+    let crumbLinks = crumbs.map(rName => {
+        return setInRoute(rName, params);
+    });
+    return crumbLinks;
+}

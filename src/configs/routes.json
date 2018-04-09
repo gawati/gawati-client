@@ -31,7 +31,7 @@
         ]
     },
     {
-        "route": "/_lang/:lang/document/open/comp/_iri/:iri",
+        "route": "/_lang/:lang/document/open/comp/_iri/:iri*",
         "name": "document-comp-open",
         "label": "Document Components",
         "breadcrumb": [
