@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactPaginate from 'react-paginate';
 
-export default class Pagination extends Component {
+export default class Paginater extends Component {
 
   handlePageClick = (data) => {
     this.props.onPageClick(data.selected);    

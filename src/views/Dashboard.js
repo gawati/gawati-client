@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import {Breadcrumb, BreadcrumbItem,  Button, Table, Progress, Pagination, PaginationItem, PaginationLink, CardHeader, CardBody, Card} from 'reactstrap';
+import {Breadcrumb, BreadcrumbItem,  Button, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
@@ -10,10 +10,7 @@ import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 import StdCompContainer from '../components/general/StdCompContainer';
-
-import Pagination from "../components/ui_elements/Pagination";
-
-import Pagination from "../components/ui_elements/Pagination";
+import Paginater from "../components/ui_elements/Paginater";
 
 export const StateColumn = ({ stateInfo }) =>  {
   console.log(" StateColumn ", stateInfo);
@@ -59,7 +56,7 @@ export const DocCountryColumn = ({ doc }) =>
   <div>{doc.docCountry.value}</div>
 ;
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 2;
 
 class Dashboard extends Component {
 
@@ -110,14 +107,6 @@ class Dashboard extends Component {
     //ReactPaginate page indices start from 0.
     let itemsFrom = (selected * PAGE_SIZE) + 1;
     this.getDocs(itemsFrom);
-  }
-
-  renderPagination() {
-    let pageCount = this.state.totalDocs/PAGE_SIZE > 1 ? this.state.totalDocs : 1;
-    return (
-      <Pagination pageCount={pageCount}
-        onPageClick={this.onPageClick.bind(this)} />
-    );
   }
 
   /**
@@ -171,11 +160,13 @@ class Dashboard extends Component {
 
   renderPagination() {
     let pageCount = this.state.totalDocs/PAGE_SIZE > 1 ? this.state.totalDocs : 1;
+    console.log(" PAGE COUNT = ", this.state.totalDocs, pageCount);
     return (
-      <Pagination pageCount={pageCount}
+      <Paginater pageCount={pageCount}
         onPageClick={this.onPageClick.bind(this)} />
     );
   }
+  
 
   render() {
     const {docs} = this.state;
