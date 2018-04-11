@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink, Route } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { CardBody, Card, ButtonGroup, Button } from 'reactstrap';
 import { PropsRoute, setInRoute, getRoute } from '../utils/RoutesHelper';
 
@@ -24,6 +24,7 @@ export default class DocActions extends Component {
   handleTransition() {
     this.props.selectedDocs.map(doc => {
       console.log("Transition state for ", doc);
+      return doc;
     });
   }
 
