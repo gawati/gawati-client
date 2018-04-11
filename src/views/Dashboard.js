@@ -132,15 +132,6 @@ class Dashboard extends Component {
     );
   };
 
-  linkDocumentAdd  = () => {
-    const {lang} = this.props.match.params || "en" ;
-    let navLinkTo = setInRoute(
-      "document-add", 
-      {"lang": lang}
-    );
-    return navLinkTo;
-  };
-
   componentDidMount() {
     this.getDocs(1);  //Get from first item
     this.resetCheckboxes();
@@ -217,21 +208,10 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
-    const addLink = this.linkDocumentAdd();
     const breadcrumb = this.getBreadcrumb();
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
-         {/** dummy action bar to be replaced by real one */}
-        <Card className="bg-white text-right mt-1 mb-1">
-          <CardBody className="pt-0 pb-0">
-            <Button type="button" name="btn" className={ `btn btn-link` } >
-              <NavLink to={ addLink }>
-                    <i className="fa fa-plus"></i> Add Document
-              </NavLink>
-            </Button>                
-            </CardBody>
-            <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} />
-        </Card>      
+        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} />
         <br />   
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <Card>
