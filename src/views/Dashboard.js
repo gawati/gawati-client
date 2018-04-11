@@ -11,6 +11,8 @@ import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 import StdCompContainer from '../components/general/StdCompContainer';
 import Paginater from "../components/ui_elements/Paginater";
+import DocActions from "../components/DocActions";
+import Checkbox from "../components/widgets/Checkbox";
 
 export const StateColumn = ({ stateInfo }) =>  {
   console.log(" StateColumn ", stateInfo);
@@ -64,8 +66,48 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       docs: [],
-      totalDocs: 0
+      totalDocs: 0,
+      allSelected: false,
+      isChecked: []
     };
+  }
+
+  resetCheckboxes() {
+    let isChecked = [];
+    for (let i=0; i<this.state.docs.length; i++) {
+      isChecked[i] = false;
+    }
+    this.setState({isChecked, allSelected: false});
+  }
+
+  toggleCheckbox = label => {
+    let isChecked = this.state.isChecked;
+    isChecked[label] = !this.state.isChecked[label];
+    this.setState({isChecked});
+  }
+
+  selectAll() {
+    let newAllSelected = !this.state.allSelected;
+
+    if (newAllSelected) {
+      let isChecked = this.state.isChecked;
+      for (let i=0; i<this.state.docs.length; i++) {
+        isChecked[i] = true;
+      }
+      this.setState({isChecked, allSelected: true});
+    } else {
+      this.resetCheckboxes();
+    }
+  }
+
+  getSelectedDocs() {
+    let selectedDocs = [];
+    for (let i=0; i<this.state.isChecked.length; i++) {
+      if (this.state.isChecked[i]) {
+        selectedDocs.push(this.state.docs[i].akomaNtoso);
+      }
+    }
+    return selectedDocs;
   }
   
   getDocs = (itemsFrom) => {
@@ -90,23 +132,16 @@ class Dashboard extends Component {
     );
   };
 
-  linkDocumentAdd  = () => {
-    const {lang} = this.props.match.params || "en" ;
-    let navLinkTo = setInRoute(
-      "document-add", 
-      {"lang": lang}
-    );
-    return navLinkTo;
-  };
-
   componentDidMount() {
     this.getDocs(1);  //Get from first item
+    this.resetCheckboxes();
   }
 
   onPageClick(selected) {
     //ReactPaginate page indices start from 0.
     let itemsFrom = (selected * PAGE_SIZE) + 1;
     this.getDocs(itemsFrom);
+    this.resetCheckboxes();
   }
 
   /**
@@ -151,6 +186,9 @@ class Dashboard extends Component {
             <td className="text-center">
               <DocCountryColumn doc={doc} />
             </td>
+            <td className="float-right">
+              <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
+            </td>
           </tr>
         );
       }
@@ -170,20 +208,10 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
-    const addLink = this.linkDocumentAdd();
     const breadcrumb = this.getBreadcrumb();
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
-         {/** dummy action bar to be replaced by real one */}
-        <Card className="bg-white text-right mt-1 mb-1">
-          <CardBody className="pt-0 pb-0">
-            <Button type="button" name="btn" className={ `btn btn-link` } >
-              <NavLink to={ addLink }>
-                    <i className="fa fa-plus"></i> Add Document
-              </NavLink>
-            </Button>                
-            </CardBody>
-        </Card>      
+        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} match={this.props.match} />
         <br />   
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <Card>
@@ -200,6 +228,7 @@ class Dashboard extends Component {
                   <th>Workflow</th>
                   <th className="text-center">Next States</th>
                   <th className="text-center">Country</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>

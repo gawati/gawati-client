@@ -32,6 +32,7 @@ import { apiUrl } from '../../api';
  */
 import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityMetadata.handlers';
 import StdCompContainer from '../../components/general/StdCompContainer';
+import DocActions from "../../components/DocActions";
 
 
 class IdentityMetadata extends React.Component {
@@ -300,6 +301,8 @@ class IdentityMetadata extends React.Component {
       else
       return (
       <StdCompContainer breadcrumb={breadcrumb} >
+        <DocActions selectedDocs={[this.state.form]} match={this.props.match} />
+        <br />
         <StatefulForm ref="identityForm" onSubmit={this.handleSubmit} noValidate>
         <Card>
           <CardHeader>
