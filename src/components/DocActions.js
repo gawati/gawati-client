@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Route } from 'react-router-dom';
 import { CardBody, Card, ButtonGroup, Button } from 'reactstrap';
-import { setInRoute } from '../utils/RoutesHelper';
+import { PropsRoute, setInRoute, getRoute } from '../utils/RoutesHelper';
+
+// Display only on the Dashboard view
+const AdditionalActions = ({linkDocumentAdd, handleSelectAll}) => (
+  <ButtonGroup>
+    <Button type="button" className={ `btn btn-link` } >
+      <NavLink to={ linkDocumentAdd }>
+            <i className="fa fa-plus"></i> Add Document
+      </NavLink>
+    </Button>
+    <Button type="button" className={ `btn btn-link` } onClick={handleSelectAll}>Select All</Button>
+  </ButtonGroup>
+);
 
 /**
- * To-Do: 
- * a. Display Select All only on the Dashboard route
+ * To-Do:
  * b. Get route props
  */
 export default class DocActions extends Component {
@@ -30,6 +41,19 @@ export default class DocActions extends Component {
     return navLinkTo;
   };
 
+  renderAdditional() {
+    return (
+      <ButtonGroup>
+        <Button type="button" className={ `btn btn-link` } >
+          <NavLink to={ this.linkDocumentAdd() }>
+                <i className="fa fa-plus"></i> Add Document
+          </NavLink>
+        </Button>
+        <Button type="button" className={ `btn btn-link` } onClick={this.handleSelectAll.bind(this)}>Select All</Button>
+      </ButtonGroup>
+    )
+  }
+
   render() {
     return(
       <Card className="bg-white text-right mt-1 mb-1">
@@ -40,12 +64,8 @@ export default class DocActions extends Component {
             <Button type="button" className={ `btn btn-link` }>Action B</Button>
           </ButtonGroup>
 
-          <Button type="button" className={ `btn btn-link` } >
-            <NavLink to={ this.linkDocumentAdd() }>
-                  <i className="fa fa-plus"></i> Add Document
-            </NavLink>
-          </Button>
-          <Button type="button" className={ `btn btn-link` } onClick={this.handleSelectAll.bind(this)}>Select All</Button>
+          <PropsRoute path={ getRoute("logged-in-root") } component={AdditionalActions} linkDocumentAdd={this.linkDocumentAdd()} handleSelectAll={this.handleSelectAll.bind(this)} />
+
         </CardBody>
       </Card>
     )
