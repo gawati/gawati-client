@@ -104,7 +104,7 @@ class Dashboard extends Component {
     let selectedDocs = [];
     for (let i=0; i<this.state.isChecked.length; i++) {
       if (this.state.isChecked[i]) {
-        selectedDocs.push(this.state.docs[i]);
+        selectedDocs.push(this.state.docs[i].akomaNtoso);
       }
     }
     return selectedDocs;
