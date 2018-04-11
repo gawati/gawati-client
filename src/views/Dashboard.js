@@ -211,7 +211,7 @@ class Dashboard extends Component {
     const breadcrumb = this.getBreadcrumb();
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
-        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} />
+        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} match={this.props.match} />
         <br />   
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <Card>

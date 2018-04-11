@@ -301,7 +301,7 @@ class IdentityMetadata extends React.Component {
       else
       return (
       <StdCompContainer breadcrumb={breadcrumb} >
-        <DocActions selectedDocs={[this.state.form]} />
+        <DocActions selectedDocs={[this.state.form]} match={this.props.match} />
         <StatefulForm ref="identityForm" onSubmit={this.handleSubmit} noValidate>
         <Card>
           <CardHeader>

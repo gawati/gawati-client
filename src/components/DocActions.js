@@ -16,8 +16,8 @@ const AdditionalActions = ({linkDocumentAdd, handleSelectAll}) => (
 );
 
 /**
- * To-Do:
- * b. Get route props
+ * Actions that can be taken on multiple documents or on a single document.
+ * 
  */
 export default class DocActions extends Component {
 
@@ -32,27 +32,13 @@ export default class DocActions extends Component {
   }
 
   linkDocumentAdd = () => {
-    // const {lang} = this.props.match.params || "en" ;
-    const {lang} = "en" ;
+    const {lang} = this.props.match.params || "en" ;
     let navLinkTo = setInRoute(
       "document-add",
       {"lang": lang}
     );
     return navLinkTo;
   };
-
-  renderAdditional() {
-    return (
-      <ButtonGroup>
-        <Button type="button" className={ `btn btn-link` } >
-          <NavLink to={ this.linkDocumentAdd() }>
-                <i className="fa fa-plus"></i> Add Document
-          </NavLink>
-        </Button>
-        <Button type="button" className={ `btn btn-link` } onClick={this.handleSelectAll.bind(this)}>Select All</Button>
-      </ButtonGroup>
-    )
-  }
 
   render() {
     return(
