@@ -1,7 +1,8 @@
 import React from 'react';
 import {FormControl} from './FormControl';
 import { Label, Input, Row, Col, Button} from 'reactstrap';
-
+import axios from 'axios';
+import {dataProxyServer} from '../../constants';
 
 /**
  * Upload component for files. Event handlers for File input and Title input need to be 
@@ -11,9 +12,31 @@ import { Label, Input, Row, Col, Button} from 'reactstrap';
  * @extends {React.Component}
  */
 class FileUpload extends React.Component {
-
     handleSaveFile() {
-        console.log("Save attachment");
+        const {fileValue, title, fileType, fileName, getDocIndex, commonkey} = this.props ;
+        let index = getDocIndex(commonkey);
+        console.log("Save attachment: ", index, title);
+
+        let data = new FormData();
+        if (fileValue) {
+            if (title) {
+                data.append(`file_${index}`, fileValue);
+                data.append(`fileName_${index}`, fileName);
+                data.append(`title_${index}`, title);
+                data.append(`fileType_${index}`, fileType);
+                data.append(`key_${index}`, commonkey);
+            }
+        }
+
+        axios.post(dataProxyServer() + '/gwc/document/upload', data, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        }).then((response) => {
+            console.log(" RESPONSE >  DATA ", response.data);
+            //handleSuccess(response.data);
+        }).catch((err) => {
+            console.log(" ERROR RESPONSE ", err);
+            //handleApiException(err);
+        });
     }
 
     render() {
