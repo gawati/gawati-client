@@ -17,6 +17,7 @@ import uuid from 'uuid';
 import { iriDate } from '../../utils/DateHelper';
 
 import StdCompContainer from '../../components/general/StdCompContainer';
+import "../../css/custom.css";
 
 class EmbeddedDocuments extends React.Component {
 
@@ -229,6 +230,18 @@ class EmbeddedDocuments extends React.Component {
         )
         ; 
 
+    renderMetadata(form) {
+      return (
+        <ul className="list-inline custom-list">
+          <li className="list-inline-item"><span>Title <b>{ form.docTitle.value }</b></span></li>
+          <li className="list-inline-item"><span>Type <b>{ form.docType.value }</b></span></li>
+          <li className="list-inline-item"><span>Language <b>{ form.docLang.value.value }</b></span></li>
+          <li className="list-inline-item"><span>Document # <b>{ form.docNumber.value }</b></span></li>
+          <li className="list-inline-item"><span>IRI <b>{ form.docIri.value }</b></span></li>
+        </ul>
+      )
+    }
+
     renderAttForm() { 
       const {isSubmitting} = this.state ; 
       const { mode, form} = this.props;
@@ -247,12 +260,8 @@ class EmbeddedDocuments extends React.Component {
                     <strong>Components</strong>
                     <small> Form</small>
                 </CardHeader>
-                <CardBody> 
-                  <Row>
-                    <Col xs="12">
-                      Title:  <mark>{ form.docTitle.value }</mark> | Type: <mark>{ form.docType.value}</mark> | Language: <mark>{form.docLang.value.value}</mark> | Document #: <mark>{form.docNumber.value}</mark> | IRI : <mark>{form.docIri.value}</mark>
-                    </Col>
-                  </Row>
+                <CardBody>
+                    {this.renderMetadata(form)}
                     { 
                      this.state.docs.length === 0 ? 
                       "There are no file attachments yet, you can use Add File to add an attachment" :
