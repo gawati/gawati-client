@@ -31,25 +31,25 @@ import './globalize';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
 import authJSON from './configs/authRealm.json';
 
-
-setup(authJSON);
-
-initLoginRequired(
-    () => {
-        ReactDOM.render(
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>, 
-            document.getElementById('root')
-        );
-    },
-    (error) => {
-        console.log("ERROR initLoginRequired ", "Error while logging in" );
-        alert("There was an error while initializing login");
-    }
-);
-
-
+setup().then(() => {
+    initLoginRequired(
+        () => {
+            ReactDOM.render(
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>,
+                document.getElementById('root')
+            );
+        },
+        (error) => {
+            console.log("ERROR initLoginRequired ", "Error while logging in" );
+            alert("There was an error while initializing login");
+        }
+    );
+}).catch((e) => {
+    console.log(e);
+    alert("There was an error while setting up authentication");
+});
 
 /*         <Switch>
             <Route path="/register" name="Register" component={Register} />
