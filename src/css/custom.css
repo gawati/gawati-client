@@ -5,3 +5,19 @@
     border: 1px solid #C9C1D5;
     color: #5F5F5F;
 }
+
+.custom-list span {
+    /*background:rgba(136,197,199,.05);*/
+    /*color: #59a6a9;*/
+    /*background: rgba(136, 197, 199, 0.22);*/
+    color: #6cb9da;
+    background: rgba(108, 185, 218, 0.1);
+    padding: 0.3em 0 0.3em 0.3em;
+}
+
+.custom-list b {
+    color: white;
+    /*background: #88c5c7;*/
+    background: #6cb9da;
+    padding: 0.3em;
+}
