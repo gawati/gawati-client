@@ -164,6 +164,10 @@ class EmbeddedDocuments extends React.Component {
       this.setState({docs: newDocs});
     }
 
+    getDocIndex(key) {
+      return this.state.docs.findIndex( (item) => item.key === key );
+    }
+
     renderDoc = (doc) => {
       const {key, file, fileName, fileType, title} = doc; 
       return(
@@ -173,6 +177,7 @@ class EmbeddedDocuments extends React.Component {
         title={title}
         fileType={fileType}
         fileName={fileName}
+        getDocIndex={this.getDocIndex.bind(this)}
         onChangeFile={ 
           (evt) => {
               let index = this.state.docs.findIndex( (item) => item.key === key );
