@@ -55,6 +55,10 @@ export const getTokenParsed = () => {
     return getGawatiAuth().tokenParsed ; 
 }
 
+export const generateBearerToken = (token) => { 
+    return {Authorization: `Bearer ${token}` , 'Content-Type': 'application/json' };
+};
+
 /**
  * Logs out
  */

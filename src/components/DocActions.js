@@ -45,11 +45,11 @@ export default class DocActions extends Component {
     return(
       <Card className="bg-white text-right mt-1 mb-1">
         <CardBody className="pt-0 pb-0 pl-0 pr-0">
-          <ButtonGroup className="float-left">
+{/*           <ButtonGroup className="float-left">
             <Button type="button" className={ `btn btn-link` } onClick={this.handleTransition.bind(this)}>Transition</Button>
             <Button type="button" className={ `btn btn-link` }>Action A</Button>
             <Button type="button" className={ `btn btn-link` }>Action B</Button>
-          </ButtonGroup>
+          </ButtonGroup> */}
 
           <PropsRoute path={ getRoute("logged-in-root") } component={AdditionalActions} linkDocumentAdd={this.linkDocumentAdd()} handleSelectAll={this.handleSelectAll.bind(this)} />
 

@@ -198,7 +198,6 @@ class Dashboard extends Component {
 
   renderPagination() {
     let pageCount = this.state.totalDocs/PAGE_SIZE > 1 ? this.state.totalDocs : 1;
-    console.log(" PAGE COUNT = ", this.state.totalDocs, pageCount);
     return (
       <Paginater pageCount={pageCount}
         onPageClick={this.onPageClick.bind(this)} />

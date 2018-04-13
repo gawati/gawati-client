@@ -31,7 +31,7 @@ class InputDate extends React.Component {
                 format="YYYY-MM-DD"
                 time={false}
                 value={value}
-                placeholder={ 'Enter date in the format "2016/12/30"'}
+                placeholder={ 'Enter date in the format "2016-12-30"'}
                 onChange={this.handleChange}
                 //onBlur={this.handleBlur}
           />
