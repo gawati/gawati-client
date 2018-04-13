@@ -6,6 +6,9 @@
     color: #5F5F5F;
 }
 
+.custom-list li {
+    margin-top: 0.5em;
+}
 .custom-list span {
     /*background:rgba(136,197,199,.05);*/
     /*color: #59a6a9;*/
