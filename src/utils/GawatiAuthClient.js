@@ -1,12 +1,6 @@
 import Keycloak from 'keycloak-js';
-
-/**
- * Sets the KeyCloak JSON Object into the global window object
- * @param {object} KeyCloak json object for the client 
- */
-const setGawatiAuth = (obj) => {
-    window.GAWATI_AUTH = obj;
-}
+import axios from 'axios';
+import {apiLocalGetCall} from '../api';
 
 /**
  * Gets the GAWATI_AUTH window object
@@ -16,13 +10,18 @@ const getGawatiAuth = () => {
 };
 
 /**
- * Sets up the KeyCloak object using the KeyCloak json document
- * @param {object} authJson 
+ * Sets up the KeyCloak object into the global window object
+ * using the KeyCloak json document
  */
-export const setup = (authJson) => {
-    let keycloak = Keycloak(authJson);
-    setGawatiAuth(keycloak);
-};
+export const setup = () => {
+  if (window.GAWATI_AUTH === undefined) {
+    return axios.get(apiLocalGetCall('keycloak', {})).then(response => {
+      window.GAWATI_AUTH = Keycloak(response.data);
+    });
+  } else {;
+    return Promise.resolve(true);
+  }
+}
 
 /**
  * Initializes the login for the KeyCloak object
