@@ -5,6 +5,7 @@ import {Breadcrumb, BreadcrumbItem, Card, CardHeader, CardBody, CardFooter, Row,
 import axios from 'axios';
 import moment from 'moment';
 
+import {T} from '../../utils/i18nHelper';
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
 import { isEmpty, isInvalidValue, capitalizeFirst } from '../../utils/GeneralHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
@@ -17,7 +18,7 @@ import FieldDocCountry from './FieldDocCountry';
 import FieldDocNumber from './FieldDocNumber';
 import FieldDocTitle from './FieldDocTitle';
 import FieldDocType from './FieldDocType';
-import FieldDocOfficialDate from './FieldDocOfficialDate';
+import FieldDate from './FieldDate';
 import FieldDocPart from './FieldDocPart';
 
 import StatefulForm from './StatefulForm';
@@ -34,7 +35,9 @@ import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityM
 import StdCompContainer from '../../components/general/StdCompContainer';
 import DocActions from "../../components/DocActions";
 
-
+/**
+ * This needs to be converted to use the baseformHOC
+ */
 class IdentityMetadata extends React.Component {
 /**
  * Creates an instance of IdentityMetadata.
@@ -229,9 +232,20 @@ class IdentityMetadata extends React.Component {
               this.setState({isNext: true});
             }
           })
+          .catch( (err) => {
+            console.log(` There was an error while saving ${mode}`, err);
+          });
       }
       if (mode === "add") {
-        handleSubmitAdd();
+        handleSubmitAdd(this)
+          .then( (response) => {
+            if (nextClicked) {
+              this.setState({isNext: true});
+            }
+          })
+          .catch( (err) => {
+            console.log(` There was an error while saving ${mode}`, err);
+          });
       }
     }
 
@@ -266,16 +280,26 @@ class IdentityMetadata extends React.Component {
      * @memberof IdentityMetadata
      */
     getBreadcrumb = () => {
-      let title = this.state.form.docTitle.value;
+      const {mode} = this.props;
+      let title = this.state.form.docTitle.value ;
       let type = this.state.form.docAknType.value;
-      let crumbLinks = getCrumbLinks("document-ident-open", this.props.match.params)
-      return (
-        <Breadcrumb>
-          <BreadcrumbItem><a href={crumbLinks[0]}>Home</a></BreadcrumbItem>
-          <BreadcrumbItem><a href={crumbLinks[0]}>{capitalizeFirst(type)}</a></BreadcrumbItem>
-          <BreadcrumbItem active>{title}</BreadcrumbItem>
-        </Breadcrumb>
-      );
+      let crumbLinks = getCrumbLinks("document-ident-open", this.props.match.params);
+      if (mode === "edit") {
+        return (
+          <Breadcrumb>
+            <BreadcrumbItem><a href={crumbLinks[0]}>Home</a></BreadcrumbItem>
+            <BreadcrumbItem><a href={crumbLinks[0]}>{capitalizeFirst(type)}</a></BreadcrumbItem>
+            <BreadcrumbItem active>{title}</BreadcrumbItem>
+          </Breadcrumb>
+        );
+      } else {
+        return (
+          <Breadcrumb>
+            <BreadcrumbItem><a href={crumbLinks[0]}>Home</a></BreadcrumbItem>
+            <BreadcrumbItem><a href={crumbLinks[0]}>{T("New Document")}</a></BreadcrumbItem>
+          </Breadcrumb>
+        );
+      }
     }
   
     render() {
@@ -353,6 +377,7 @@ class IdentityMetadata extends React.Component {
                       used by the Component implementation to set the value in the state */ 
                   }
                   <FieldDocLanguage name="docLang" 
+                    label={T("Language")}
                     readOnly={ mode === "edit" }
                     onChange={
                         (field, value) => {
@@ -370,8 +395,11 @@ class IdentityMetadata extends React.Component {
 
               <Row>
                 <Col xs="4">
-                    <FieldDocOfficialDate  value={form.docOfficialDate.value} 
+                    <FieldDate  
+                      value={form.docOfficialDate.value} 
                       readOnly={ mode === "edit" }
+                      name="docOfficialDate"
+                      label={T("Official Date")}
                       onChange={
                         (field, value)=> {
                           this.validateFormField(field, value);
@@ -394,18 +422,47 @@ class IdentityMetadata extends React.Component {
                     />
                 </Col>
                 <Col xs="4">
-                      <FieldDocPart value={form.docPart.value}
-                        readOnly={ mode === "edit" }
-                        onChange={
-                          (evt)=> {
-                            const val = evt.target.value ; 
-                            console.log(" PART onChange = ", val);
-                            this.validateFormField('docPart', val);
-                            this.updateIriValue();
-                          }
+                  <FieldDocPart value={form.docPart.value}
+                    readOnly={ mode === "edit" }
+                    onChange={
+                      (evt)=> {
+                        const val = evt.target.value ; 
+                        this.validateFormField('docPart', val);
+                        this.updateIriValue();
+                      }
+                    }
+                    error={errors.docPart}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="6">
+                  <FieldDate  
+                      value={form.docPublicationDate.value} 
+                      readOnly={ false }
+                      fieldName="docPublicationDate"
+                      label={T("Publication Date")}
+                      onChange={
+                        (field, value)=> {
+                          this.validateFormField(field, value);
                         }
-                        error={errors.docPart}
-                      />
+                      }
+                      error={errors.docPublicationDate}
+                    />
+                </Col>
+                <Col xs="6">
+                  <FieldDate  
+                      value={form.docEntryIntoForceDate.value} 
+                      readOnly={ false }
+                      fieldName="docEntryIntoForceDate"
+                      label={T("Entry Into Force Date")}
+                      onChange={
+                        (field, value)=> {
+                          this.validateFormField(field, value);
+                        }
+                      }
+                      error={errors.docEntryIntoForceDate}
+                    />
                 </Col>
               </Row>
               <Row>
