@@ -146,7 +146,7 @@ class IdentityMetadata extends React.Component {
      * using the Yup validator specified in the validationSchema
      */
     validateFormField = (fieldName, fieldValue) => {
-      //console.log( " VALIDATING ", fieldName, fieldValue);
+      console.log( " VALIDATING ", fieldName, fieldValue);
       this.validationSchema[fieldName].validate
         .validate(fieldValue)
           .then((value) => {
@@ -440,7 +440,7 @@ class IdentityMetadata extends React.Component {
                   <FieldDate  
                       value={form.docPublicationDate.value} 
                       readOnly={ false }
-                      fieldName="docPublicationDate"
+                      name="docPublicationDate"
                       label={T("Publication Date")}
                       onChange={
                         (field, value)=> {
@@ -454,7 +454,7 @@ class IdentityMetadata extends React.Component {
                   <FieldDate  
                       value={form.docEntryIntoForceDate.value} 
                       readOnly={ false }
-                      fieldName="docEntryIntoForceDate"
+                      name="docEntryIntoForceDate"
                       label={T("Entry Into Force Date")}
                       onChange={
                         (field, value)=> {

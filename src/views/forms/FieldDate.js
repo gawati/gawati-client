@@ -26,7 +26,7 @@ FieldDate.propTypes =  {
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
   readOnly: PropTypes.bool.isRequired,
-  fieldName: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.instanceOf(Date).isRequired,
   type: PropTypes.string.isRequired,
