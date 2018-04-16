@@ -24,13 +24,11 @@ const FieldDate = ({onChange, onBlur, readOnly, name, label, value, error}) => {
  
 FieldDate.propTypes =  {
   onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
   readOnly: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.instanceOf(Date).isRequired,
-  type: PropTypes.string.isRequired,
-  iri: PropTypes.string.isRequired
+  value: PropTypes.instanceOf(Date).isRequired
 };
 
   
