@@ -27,23 +27,27 @@ class FieldDocLanguage extends React.Component {
 
     }
 
-    handleChange = (value) => 
-        this.props.onChange('docLang', value)
+    handleChange = (value) => {
+        const {name} = this.props;
+        this.props.onChange(name, value);
+    }
     ;
     
-    handleBlur = () => 
-        this.props.onBlur('docLang', true);
+    handleBlur = () => {
+        const {name} = this.props;
+        this.props.onBlur(name, true);
+    }
     ;
   
     render() {
     
-      const {name, readOnly, value, error} = this.props ; 
+      const {name, readOnly, label, value, error} = this.props ; 
      
       return (
         <FormControl className={ formControlErrorClass(error)}>
-        <Label htmlFor="docLang">Language</Label>
+        <Label htmlFor={name}>{ label }</Label>
         <Select
-          id="docLang"
+          id={name}
           name={name}
           options={this.langs}
           multi={false}
@@ -54,14 +58,6 @@ class FieldDocLanguage extends React.Component {
           value={value}
           closeOnSelect={true}
         />
-{/*         <Input type="select" name="docLang" onChange={onChange} defaultValue={value} id="doclang" required>
-          <option value="" disabled >Select a Language</option>
-          <option value="eng">English</option>
-          <option value="fra">French</option>
-          <option value="por">Portoguese</option>
-          <option value="spa">Spanish</option>
-          <option value="mul">Multilingual</option>
-        </Input> */}
          {!!this.props.error &&  (
             <FieldError error={error} />
         )}

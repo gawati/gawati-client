@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import { apiUrl } from '../../api';
 import { handleApiException } from '../../utils/NotifHelper';
+import {formInitialState as identityMetadataFormInitialState} from './identityMetadata.formConfig';
 
 /**
  * Higher Order Component for shared form functions.
@@ -23,12 +24,17 @@ function loadbaseForm() {
         
         constructor(props) {
           super(props);
+          // we get the identity metadata form initial so its available on all tabs 
+          // of the form, perhaps it is a better idea to pass this as a parameter to 
+          // loadbaseForm()
           this.state = {
-            form: this.formInitialState()
+            form: identityMetadataFormInitialState()
           }
         }
 
         /**
+         * This loads the main identity metadata since it is also required
+         * on the second tab
          * Returns a promise. Does not set any submitting states !
          */
         loadFormWithDocument = (thisIri) => {
@@ -63,19 +69,23 @@ function loadbaseForm() {
           return loadForm;  
         };
 
+        /*
         formInitialState = () => (
           {
-              docLang: {value: {} , error: null },
-              docType: {value: '', error: null },
-              docAknType: {value: '', error: null },
-              docCountry: {value: '', error: null },
-              docTitle: {value: '', error: null},
-              docOfficialDate: {value: undefined, error: null },
-              docNumber: {value: '', error: null },
-              docPart: {value: '', error: null },
-              docIri : {value: '', error: null }
-          }
+            docLang: {value: {} , error: null },
+            docType: {value: '', error: null },
+            docAknType: {value: '', error: null },
+            docCountry: {value: '', error: null },
+            docTitle: {value: '', error: null},
+            docOfficialDate: {value: undefined, error: null },
+            docPublicationDate: {value: undefined, error:null},
+            docEntryIntoForceDate: {value: undefined, error:null},
+            docNumber: {value: '', error: null },
+            docPart: {value: '', error: null },
+            docIri : {value: '', error: null }
+        }
         );
+        */
 
         /**
          * Checks if a form has errors
@@ -94,7 +104,7 @@ function loadbaseForm() {
         }
         ; 
 
-        setFieldValue = (fieldName, value) => 
+      setFieldValue = (fieldName, value) => 
         this.setState({
           form: {
             ...this.state.form, 
@@ -106,7 +116,7 @@ function loadbaseForm() {
           }
         })
         ;
-  
+    
       setFieldError = (fieldName, err) => {
         this.setState({
           form: {
@@ -136,9 +146,9 @@ function loadbaseForm() {
             //console.log(" FIELD ERROR ", fieldName, err);
             this.setFieldError(fieldName, err);
           });  
-      }
+      };
       
-        render() {
+      render() {
           const { form, documentLoadError } = this.state ; 
           return (
             <WrappedComponent {...this.props} 

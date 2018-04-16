@@ -8,6 +8,8 @@ export const formInitialState = () => (
         docCountry: {value: '', error: null },
         docTitle: {value: '', error: null},
         docOfficialDate: {value: undefined, error: null },
+        docPublicationDate: {value: undefined, error:null},
+        docEntryIntoForceDate: {value: undefined, error:null},
         docNumber: {value: '', error: null },
         docPart: {value: '', error: null },
         docIri : {value: '', error: null }
@@ -38,6 +40,12 @@ export const validationSchema = () => (
         },
         docOfficialDate: {
           validate: Yup.date(" Official date is required").typeError(" You need to enter a date")
+        },
+        docPublicationDate: {
+          validate: Yup.date(" Publication date is required").typeError(" You need to enter a date")
+        },
+        docEntryIntoForceDate: {
+          validate: Yup.date(" Entry into Force date is required").typeError(" You need to enter a date")
         },
         docNumber: {
           validate: Yup.string().required(" Document number is required ")

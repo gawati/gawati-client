@@ -1,6 +1,5 @@
 import Keycloak from 'keycloak-js';
 import axios from 'axios';
-import {apiLocalGetCall} from '../api';
 
 /**
  * Gets the GAWATI_AUTH window object
@@ -13,9 +12,9 @@ const getGawatiAuth = () => {
  * Sets up the KeyCloak object into the global window object
  * using the KeyCloak json document
  */
-export const setup = () => {
+export const setup = (keycloakURL) => {
   if (window.GAWATI_AUTH === undefined) {
-    return axios.get(apiLocalGetCall('keycloak', {})).then(response => {
+    return axios.get(keycloakURL).then(response => {
       window.GAWATI_AUTH = Keycloak(response.data);
     });
   } else {;

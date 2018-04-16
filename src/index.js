@@ -29,9 +29,11 @@ import './globalize';
 
 //import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
-import authJSON from './configs/authRealm.json';
+import {apiLocalGetCall} from './api';
 
-setup().then(() => {
+setup(
+    apiLocalGetCall('keycloak', {})
+).then(() => {
     initLoginRequired(
         () => {
             ReactDOM.render(

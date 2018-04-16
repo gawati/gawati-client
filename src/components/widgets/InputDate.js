@@ -13,13 +13,15 @@ class InputDate extends React.Component {
     }
 
     handleChange = (value) => {
-        this.props.onChange('docOfficialDate', value);
+        const {name} = this.props;
+        this.props.onChange(name    , value);
     }
 
-    //handleBlur = () => 
-    //   this.props.onBlur('docOfficialDate', true);
-    //;
-
+/*     handleBlur = () => {
+        const {name} = this.props;
+        this.props.onBlue(name, true);
+    }; 
+ */
     render() {
         const {name, readOnly, value} = this.props;
         return (
