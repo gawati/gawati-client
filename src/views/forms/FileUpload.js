@@ -16,15 +16,17 @@ class FileUpload extends React.Component {
         const {fileValue, title, fileType, fileName, getDocIndex, commonkey} = this.props ;
         let index = getDocIndex(commonkey);
         console.log("Save attachment: ", index, title);
+        let iri = "/" + this.props.iri;
 
         let data = new FormData();
         if (fileValue) {
             if (title) {
-                data.append(`file_${index}`, fileValue);
-                data.append(`fileName_${index}`, fileName);
-                data.append(`title_${index}`, title);
-                data.append(`fileType_${index}`, fileType);
-                data.append(`key_${index}`, commonkey);
+                data.append(`file`, fileValue);
+                data.append(`fileName`, fileName);
+                data.append(`title`, title);
+                data.append(`fileType`, fileType);
+                data.append(`key`, commonkey);
+                data.append(`iri`, iri);
             }
         }
 

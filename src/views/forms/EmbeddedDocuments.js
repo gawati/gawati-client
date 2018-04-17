@@ -171,7 +171,8 @@ class EmbeddedDocuments extends React.Component {
     renderDoc = (doc) => {
       const {key, file, fileName, fileType, title} = doc; 
       return(
-      <FileUpload  
+      <FileUpload
+        iri={this.props.match.params.iri}
         commonkey={key}
         fileValue={file}
         title={title}
