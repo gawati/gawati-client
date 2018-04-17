@@ -3,6 +3,7 @@ import {FormControl} from './FormControl';
 import { Label, Input, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 import {dataProxyServer} from '../../constants';
+import { iriDate } from '../../utils/DateHelper';
 
 /**
  * Upload component for files. Event handlers for File input and Title input need to be 
@@ -28,6 +29,18 @@ class FileUpload extends React.Component {
                 data.append(`key`, commonkey);
                 data.append(`iri`, iri);
             }
+        }
+        // add document metadata to submit formData
+        for (let field in this.props.form) {
+           let formField = this.props.form[field];
+           console.log(" docLang ",  this.props.form['docLang']);
+           if (field === 'docOfficialDate') {
+              let offDate = iriDate(formField.value);
+              console.log(" OFFICIAL DATE = ", offDate);
+              data.append(field, JSON.stringify({value: offDate}));
+           } else {
+              data.append(field, JSON.stringify({value: formField.value}));
+           }
         }
 
         axios.post(dataProxyServer() + '/gwc/document/upload', data, {

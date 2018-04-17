@@ -173,6 +173,7 @@ class EmbeddedDocuments extends React.Component {
       return(
       <FileUpload
         iri={this.props.match.params.iri}
+        form={this.props.form}
         commonkey={key}
         fileValue={file}
         title={title}
