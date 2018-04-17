@@ -1,0 +1,8 @@
+State Tree for Document Form
+-----------------------------
+
+DocumentForm
+    - Identity Metadata (to identify the document) (identity: {})
+    - Attachments Metadata (attachments: [])
+    - Extended Metadata (extendedMeta: {})
+    - Signature Metadata (signatureMeta: {})

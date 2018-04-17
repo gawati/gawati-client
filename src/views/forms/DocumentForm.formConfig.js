@@ -1,6 +1,6 @@
 import Yup from 'yup';
 
-export const formInitialState = () => (
+export const identityInitialState = () => (
     {
         docLang: {value: {} , error: null },
         docType: {value: '', error: null },
@@ -16,7 +16,7 @@ export const formInitialState = () => (
     }
 );
 
-export const validationSchema = () => (
+export const identityValidationSchema = () => (
     {
         docLang: {
           validate:  Yup.object()

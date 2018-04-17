@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-import {Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
+
+import {Breadcrumb, BreadcrumbItem, Button, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
+import { linkDocumentEdit } from '../components/utils/QuickRoutes';
 
 import { apiUrl } from '../api';
+
+import RRNavLink from '../components/utils/RRNavLink';
+import { iriFromPackage } from '../utils/DataHelper';
+import { T } from '../utils/i18nHelper';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { setInRoute } from '../utils/RoutesHelper';
@@ -35,12 +40,10 @@ export const TitleAndDateColumn = ({docPkg}) =>  {
       "document-ident-open", 
       {"lang": "en", "iri": linkIri }
   );
-
-  
   return (
     <Aux>
       <div>
-        <NavLink to={ navLinkTo }>{doc.docTitle.value}</NavLink>
+        <RRNavLink to={ navLinkTo }>{doc.docTitle.value}</RRNavLink>
       </div>
       <div className="small text-muted">
        { showCreatedAndModified(created, modified) }
@@ -152,7 +155,7 @@ class Dashboard extends Component {
   getBreadcrumb = () => 
     <Breadcrumb><BreadcrumbItem active>Home</BreadcrumbItem></Breadcrumb>;
   
-  renderDashboardTableRow = (docs) => {
+  renderDashboardTableRow = (lang, docs) => {
     return docs.map(
       (docPkg, index) => {
         let doc = docPkg.akomaNtoso;
@@ -184,9 +187,12 @@ class Dashboard extends Component {
               }
             </td>
             <td className="text-center">
-              <DocCountryColumn doc={doc} />
+                <Button >View</Button>&#160;
+                {console.log(" NAVLINK = ", linkDocumentEdit("en", iriFromPackage(docPkg)))}
+                <Button>Edit</Button>&#160;
+                <Button >Delete</Button>
             </td>
-            <td className="float-right">
+            <td className="text-center">
               <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
             </td>
           </tr>
@@ -207,6 +213,7 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
+    const {lang} = this.props.match.params; 
     const breadcrumb = this.getBreadcrumb();
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
@@ -219,20 +226,20 @@ class Dashboard extends Component {
           </CardHeader>
           <CardBody>
             <Table hover responsive>
-              <thead className="thead-light">
-                <tr>
-                  <th className="text-center">State</th>
-                  <th>Title</th>
-                  <th className="text-center">Language</th>
-                  <th>Workflow</th>
-                  <th className="text-center">Next States</th>
-                  <th className="text-center">Country</th>
-                  <th></th>
+            <thead className="thead-light">
+            <tr>
+              <th className="text-center">State</th>
+              <th>Title</th>
+              <th className="text-center">Language</th>
+              <th>Workflow</th>
+              <th className="text-center">Next States</th>
+              <th></th>
+              <th></th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  this.renderDashboardTableRow(docs)
+                  this.renderDashboardTableRow(lang, docs)
                 }
               </tbody>
             </Table>

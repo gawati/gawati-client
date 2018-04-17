@@ -1,23 +1,30 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
+import IdentityMetadataForm from './IdentityMetadataForm';
+import StdCompContainer from '../../components/general/StdCompContainer';
+
+import {T} from '../../utils/i18nHelper';
 import { isInvalidValue} from '../../utils/GeneralHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
 import { iriDate, isValidDate } from '../../utils/DateHelper';
+import {DocumentFormActions} from './DocumentFormActions';
 
+import 'react-tabs/style/react-tabs.css';
 
 /*
 * Form Related configs and util functions
 */
 import {
-    formInitialState, 
-    validationSchema
+    identityInitialState,
+    identityValidationSchema
 } from './DocumentForm.formConfig';
 import {
     loadFormWithDocument,
     loadViewWithDocument,
     setFieldValue,
     validateFormFields,
+    getBreadcrumb,
 } from './DocumentForm.formUtils' ;
 
 /**
@@ -39,17 +46,20 @@ class DocumentForm extends React.Component {
           i.e. docTitle has to have a corresponding 
           <input name="docTitle" .... /> in the form
           */ 
-          form: formInitialState()
+          pkg: {
+            pkgIdentity: identityInitialState(),
+            pkgAttachments: []
+          }
         };
         /** 
          * This provides validation of each field value using Yup
          * The validator function is declared in Yup syntax here, and
          * applied in the onChange of the field. 
          */
-        this.validationSchema = validationSchema();
+        this.validationSchema = identityValidationSchema();
         // bindings
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleReset = this.handleReset.bind(this);
+        //this.handleSubmit = this.handleSubmit.bind(this);
+        //this.handleReset = this.handleReset.bind(this);
     }
 
     componentDidMount() {
@@ -98,20 +108,26 @@ class DocumentForm extends React.Component {
     };
   
     updateIriValue = () => {
-        setFieldValue(this, "docIri", this.generateIRI(this.state.form));
+        setFieldValue(this, "docIri", this.generateIRI(this.state.pkg.pkgIdentity));
     };
 
     render() {
+        const breadcrumb = getBreadcrumb(this);
+        const {match, mode} = this.props;
+        const {lang} = match.params;
+        const {pkgIdentity} = this.state.pkg ; 
         return (
+          <StdCompContainer breadcrumb={breadcrumb}>
+            <DocumentFormActions lang={lang} />
             <Tabs>
             <TabList>
-              <Tab>Identity</Tab>
+              <Tab>{T("Identity")}</Tab>
               <Tab>Attachments</Tab>
               <Tab>Signature</Tab>
               <Tab>Extended Metadata</Tab>
             </TabList>
             <TabPanel>
-              <h2>Any content 1</h2>
+               <IdentityMetadataForm lang={lang} mode={mode} pkg={pkgIdentity} />
             </TabPanel>
             <TabPanel>
               <h2>Any content 2</h2>
@@ -123,7 +139,8 @@ class DocumentForm extends React.Component {
               <h2>Any content 2</h2>
             </TabPanel>
 
-          </Tabs>            
+          </Tabs>
+        </StdCompContainer>
         );
     }
 

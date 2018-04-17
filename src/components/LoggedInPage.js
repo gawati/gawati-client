@@ -8,6 +8,7 @@ import SideBar from './sidebar/SideBar';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
 import EditForm from '../views/forms/EditForm';
+import DocumentForm from '../views/forms/DocumentForm';
 
 import {PropsRoute, getRoute} from '../utils/RoutesHelper';
 import { ToastContainer } from 'react-toastify';
@@ -32,10 +33,10 @@ export const LoggedInPage = ({i18n}) => (
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-ident-open") }
-                    name="EditForm" component={EditForm} mode="edit" i18n={i18n} />
+                    name="EditForm" component={DocumentForm} mode="edit" i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-add") } 
-                    name="InputForm" component={EditForm} mode="add" i18n={i18n} />
+                    name="InputForm" component={DocumentForm} mode="add" i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-comp-open") } 
                         name="EditCompForm" component={EditForm} mode="edit" i18n={i18n} />
