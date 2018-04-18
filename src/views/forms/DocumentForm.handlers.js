@@ -2,7 +2,10 @@ import { notifySuccess, notifyError} from '../../utils/NotifHelper';
 import axios from 'axios';
 
 import { apiUrl } from '../../api';
+import { identityInitialState } from './DocumentForm.formConfig';
+import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
 
+/** EVENT HANDLERS */
 export const handleSuccess =  (THIS, data) => {
     const {success, error} = data ; 
     if (success) {
@@ -74,4 +77,30 @@ export const handleSubmitAdd = (THIS) => {
  */
 export const handleApiException = (THIS, err) => {
     console.log(" Error while adding ", err);
+};
+
+
+/** STATE HANDLERS  */
+
+export const stateAction = (state, action) => {
+    switch (action.type) {
+      case STATE_ACTION_RESET:
+        return Object.assign(
+          {}, 
+          state, 
+          {pkg: {pkgIdentity: identityInitialState()}}
+        );
+      case STATE_ACTION_IS_SUBMITTING:
+        return Object.assign(
+          {}, 
+          state, 
+          {isSubmitting: action.params.isSubmitting}
+        );
+      default:
+        return state;
+    }
+};
+
+export const applyActionToState = (THIS, action) => {
+  THIS.setState(stateAction(THIS.state, action));
 };

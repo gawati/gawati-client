@@ -1,16 +1,9 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
-import {Breadcrumb, BreadcrumbItem, Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
-
-import axios from 'axios';
-import moment from 'moment';
+import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
-import { isEmpty, isInvalidValue, capitalizeFirst } from '../../utils/GeneralHelper';
-import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { setInRoute, getCrumbLinks } from '../../utils/RoutesHelper';
-import { iriDate, isValidDate } from '../../utils/DateHelper';
+import { isEmpty} from '../../utils/GeneralHelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';
@@ -23,17 +16,12 @@ import FieldDocPart from './FieldDocPart';
 
 import StatefulForm from './StatefulForm';
 
-import {formInitialState, validationSchema} from './identityMetadata.formConfig';
-
 import '../../css/IdentityMetadata.css';
-import { apiUrl } from '../../api';
 
 /**
  * Handlers for this form
  */
-import {handleApiException, handleSubmitAdd, handleSubmitEdit} from './identityMetadata.handlers';
-import StdCompContainer from '../../components/general/StdCompContainer';
-import DocActions from "../../components/DocActions";
+import { formHasErrors, setFieldValue, generateIRI, validateFormField } from './DocumentForm.formUtils';
 
 /**
  * This needs to be converted to use the baseformHOC
@@ -44,16 +32,16 @@ class IdentityMetadataForm extends React.Component {
  * @param {any} props 
  * @memberof IdentityMetadata
  */
-  constructor(props) {
+    constructor(props) {
       super(props);
+      this.validationSchema = props.validationSchema ; 
       // lang={lang} mode={mode} pkg={pkgIdentity}
-      const {lang, mode, pkg} = props;
-      this.state = {
-        isSubmitting: false,
-        mode: props.mode
-      };
-    }
+      // const {lang, mode, pkg, isSubmitting} = props;
+    } 
 
+    updateIriValue = (form) => {
+      setFieldValue(this, "docIri", generateIRI(form));
+    };
 
     /**
      * Check the errors in the form on load
@@ -62,8 +50,12 @@ class IdentityMetadataForm extends React.Component {
     }
 
     render() {
+      const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
+      const {pkgIdentity: form} = this.props.pkg ; 
+      const errors = formHasErrors(form);
+      const formValid = isEmpty(errors);
       return (
-        <StatefulForm ref="identityForm" onSubmit={this.handleSubmit} noValidate>
+        <StatefulForm ref="identityForm" onSubmit={handleSubmit} noValidate>
         <Card>
           <CardHeader>
               <strong>Document Identity</strong>
@@ -82,8 +74,9 @@ class IdentityMetadataForm extends React.Component {
                 <FieldDocCountry value={form.docCountry.value} readOnly={ mode === "edit" }
                         onChange={
                           (evt)=> {
-                            this.validateFormField('docCountry', evt.target.value);
-                            this.updateIriValue();
+                            validateFormField(this, this.validationSchema, "docCountry", evt.target.value);
+                            //update the IRI displayed on the page
+                            this.updateIriValue(form);
                           }
                         }  
                         error={errors.docCountry}
@@ -96,12 +89,17 @@ class IdentityMetadataForm extends React.Component {
                       onChange={
                         (evt)=> {
                           const fieldValue = evt.target.value ;
-                          this.validateFormField('docType',fieldValue);
-                          this.validateFormField(
+                          validateFormField(
+                            this, this.validationSchema, 
+                            'docType',
+                            fieldValue
+                          );
+                          validateFormField(
+                            this, this.validationSchema, 
                             'docAknType',  
                             fieldValue !== "" ? getDocTypeFromLocalType(fieldValue).aknType : ""
                           );
-                          this.updateIriValue();                              }
+                          this.updateIriValue(form);                              }
                       }  
                       error={errors.docType}
                       />
@@ -119,8 +117,8 @@ class IdentityMetadataForm extends React.Component {
                         (field, value) => {
                           // we set an empty object as the default for validation since 
                           // we have specified an object as neccessary for the schema.
-                          this.validateFormField(field, value === null ? {}: value);
-                          this.updateIriValue();
+                          validateFormField(this, this.validationSchema, field, value === null ? {}: value);
+                          this.updateIriValue(form);
                         }
                       }
                     value={form.docLang.value}
@@ -138,8 +136,8 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Official Date")}
                       onChange={
                         (field, value)=> {
-                          this.validateFormField(field, value);
-                          this.updateIriValue();
+                          validateFormField(this, this.validationSchema, field, value);
+                          this.updateIriValue(form);
                         }
                       }
                       error={errors.docOfficialDate}
@@ -150,8 +148,8 @@ class IdentityMetadataForm extends React.Component {
                       readOnly={ mode === "edit" }
                       onChange={
                         (evt)=> {
-                          this.validateFormField('docNumber', evt.target.value);
-                          this.updateIriValue();
+                          validateFormField(this, this.validationSchema, 'docNumber', evt.target.value);
+                          this.updateIriValue(form);
                         }
                       }
                       error={errors.docNumber}
@@ -163,8 +161,8 @@ class IdentityMetadataForm extends React.Component {
                     onChange={
                       (evt)=> {
                         const val = evt.target.value ; 
-                        this.validateFormField('docPart', val);
-                        this.updateIriValue();
+                        validateFormField(this, this.validationSchema, 'docPart', val);
+                        this.updateIriValue(form);
                       }
                     }
                     error={errors.docPart}
@@ -180,7 +178,7 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Publication Date")}
                       onChange={
                         (field, value)=> {
-                          this.validateFormField(field, value);
+                          validateFormField(this, this.validationSchema, field, value);
                         }
                       }
                       error={errors.docPublicationDate}
@@ -194,7 +192,7 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Entry Into Force Date")}
                       onChange={
                         (field, value)=> {
-                          this.validateFormField(field, value);
+                          validateFormField(this, this.validationSchema, field, value);
                         }
                       }
                       error={errors.docEntryIntoForceDate}
@@ -206,7 +204,7 @@ class IdentityMetadataForm extends React.Component {
                     <FieldDocTitle value={form.docTitle.value}
                       onChange={
                         (evt)=> {
-                            this.validateFormField('docTitle', evt.target.value);
+                            validateFormField(this, this.validationSchema, 'docTitle', evt.target.value);
                           }
                         }
                       error={errors.docTitle}
@@ -228,7 +226,7 @@ class IdentityMetadataForm extends React.Component {
               { " " }
               <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
               { " " }
-              <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
+              <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
             </CardFooter>
         </Card>
       </StatefulForm>
@@ -236,6 +234,4 @@ class IdentityMetadataForm extends React.Component {
     }
 }
 
-
 export default IdentityMetadataForm;
-

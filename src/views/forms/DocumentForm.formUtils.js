@@ -7,8 +7,9 @@ import {T} from '../../utils/i18nHelper';
 import { apiUrl } from '../../api';
 import {handleApiException} from './DocumentForm.handlers';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
-import { capitalizeFirst } from '../../utils/GeneralHelper';
-
+import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
+import { isValidDate, iriDate } from '../../utils/DateHelper';
+import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
 
 /**
  * Loads a form context with  a document
@@ -99,8 +100,8 @@ export const validateFormFields = (THIS) => {
  * Validates the value of the passed in field name
  * using the Yup validator specified in the validationSchema
  */
-export const validateFormField = (THIS, fieldName, fieldValue) => {
-    THIS.validationSchema[fieldName].validate
+export const validateFormField = (THIS, validationSchema, fieldName, fieldValue) => {
+    validationSchema[fieldName].validate
         .validate(fieldValue)
         .then((value) => {
             setFieldValue(THIS, fieldName, value);
@@ -117,12 +118,11 @@ export const validateFormField = (THIS, fieldName, fieldValue) => {
  * Returns an object with field names as keys which 
  * have errors.
  */
-export const formHasErrors = (THIS) => {
-    const {pkgIdentity} = THIS.state.pkg;
+export const formHasErrors = (form) => {
     let errors = {};
-    for (let field in pkgIdentity) {
-        if ( pkgIdentity[field].error !== null ) {
-        errors[field] = pkgIdentity[field];
+    for (let field in form) {
+        if ( form[field].error !== null ) {
+            errors[field] = form[field];
         }
     }
     return errors;
@@ -158,5 +158,37 @@ export const setFieldError = (THIS, fieldName, err) => {
     });
 };
   
-  
+
+export const generateIRI = ({
+    docCountry, 
+    docType, 
+    docAknType, 
+    docOfficialDate, 
+    docNumber, 
+    docLang, 
+    docPart 
+}) => {
+    const unknown = unknownIriComponent(); 
+    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
+    iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
+    iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
+    iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
+    iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
+    iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
+    iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
+    iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
+    return aknExprIri(
+      aknWorkIri(
+        iriCountry, 
+        iriType, 
+        iriSubType, 
+        iriOfficialDate, 
+        iriNumber
+      ),
+      iriLang, 
+      iriPart
+    );
+};
+
+
     

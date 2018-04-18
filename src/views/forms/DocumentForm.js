@@ -26,6 +26,8 @@ import {
     validateFormFields,
     getBreadcrumb,
 } from './DocumentForm.formUtils' ;
+import { applyActionToState } from './DocumentForm.handlers';
+import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
 
 /**
  * Expects the following props
@@ -56,7 +58,7 @@ class DocumentForm extends React.Component {
          * The validator function is declared in Yup syntax here, and
          * applied in the onChange of the field. 
          */
-        this.validationSchema = identityValidationSchema();
+        this.identityValidationSchema = identityValidationSchema();
         // bindings
         //this.handleSubmit = this.handleSubmit.bind(this);
         //this.handleReset = this.handleReset.bind(this);
@@ -76,46 +78,23 @@ class DocumentForm extends React.Component {
         }
     }
 
-    generateIRI = ({
-        docCountry, 
-        docType, 
-        docAknType, 
-        docOfficialDate, 
-        docNumber, 
-        docLang, 
-        docPart 
-    }) => {
-        const unknown = unknownIriComponent(); 
-        var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
-        iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
-        iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
-        iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
-        iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
-        iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
-        iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
-        iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
-        return aknExprIri(
-          aknWorkIri(
-            iriCountry, 
-            iriType, 
-            iriSubType, 
-            iriOfficialDate, 
-            iriNumber
-          ),
-          iriLang, 
-          iriPart
-        );
-    };
-  
     updateIriValue = () => {
         setFieldValue(this, "docIri", this.generateIRI(this.state.pkg.pkgIdentity));
     };
+
+    handleIdentityReset = () => {
+        applyActionToState(this, {type: STATE_ACTION_RESET, params: {}});
+    };
+
+    handleIdentitySubmit = (evt) => {
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING, params: {isSubmitting: true}});
+    }
 
     render() {
         const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
         const {lang} = match.params;
-        const {pkgIdentity} = this.state.pkg ; 
+        const {pkg, isSubmitting} = this.state ;
         return (
           <StdCompContainer breadcrumb={breadcrumb}>
             <DocumentFormActions lang={lang} />
@@ -127,7 +106,15 @@ class DocumentForm extends React.Component {
               <Tab>Extended Metadata</Tab>
             </TabList>
             <TabPanel>
-               <IdentityMetadataForm lang={lang} mode={mode} pkg={pkgIdentity} />
+               <IdentityMetadataForm 
+                    lang={lang} 
+                    mode={mode} 
+                    pkg={pkg} 
+                    isSubmitting={isSubmitting}
+                    validationSchema={this.identityValidationSchema}
+                    handleReset={this.handleIdentityReset} 
+                    handleSubmit={this.handleIdentitySubmit} 
+                />
             </TabPanel>
             <TabPanel>
               <h2>Any content 2</h2>
