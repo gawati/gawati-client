@@ -36,3 +36,5 @@ export const dataProxyServer = () =>
  * from a config file
  */
 export const documentTypes = () => ["act", "doc", "judgment"];
+
+export const MAX_ATTACHMENTS = 10;

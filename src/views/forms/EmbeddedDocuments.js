@@ -12,7 +12,7 @@ import loadbaseForm from './baseFormHOC';
 
 import '../../css/IdentityMetadata.css';
 import FileUpload from './FileUpload';
-import {dataProxyServer} from '../../constants';
+import {dataProxyServer, MAX_ATTACHMENTS} from '../../constants';
 import uuid from 'uuid';
 import { iriDate } from '../../utils/DateHelper';
 
@@ -143,18 +143,22 @@ class EmbeddedDocuments extends React.Component {
     };
 
     handleAddMore(event) {
-      event.preventDefault();
-      let {docs} = this.state ;
-      let key = uuid.v1();
-      let doc = {
-          "key": key, 
-          "file": null, 
-          "fileName": '',
-          "title": '',
-          "fileType": ''
-      };
-      let newDocs = [...docs, doc];
-      this.setState({docs: newDocs });
+      if (this.props.form.docComponents.value.length === MAX_ATTACHMENTS) {
+        alert("Maximum number of attachments reached");
+      } else {
+        event.preventDefault();
+        let {docs} = this.state ;
+        let key = uuid.v1();
+        let doc = {
+            "key": key, 
+            "file": null, 
+            "fileName": '',
+            "title": '',
+            "fileType": ''
+        };
+        let newDocs = [...docs, doc];
+        this.setState({docs: newDocs });
+      }
     }
 
     handleRemove(event, findThisKey) {

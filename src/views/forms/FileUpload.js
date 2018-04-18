@@ -13,6 +13,13 @@ import { iriDate } from '../../utils/DateHelper';
  * @extends {React.Component}
  */
 class FileUpload extends React.Component {
+
+    handleSuccess(response) {
+        if (response.hasOwnProperty("success")) {
+            alert("File Saved");
+        }
+    }
+
     handleSaveFile() {
         const {fileValue, title, fileType, fileName, getDocIndex, commonkey} = this.props ;
         let index = getDocIndex(commonkey);
@@ -47,7 +54,7 @@ class FileUpload extends React.Component {
             headers: { "X-Requested-With": "XMLHttpRequest" }
         }).then((response) => {
             console.log(" RESPONSE >  DATA ", response.data);
-            //handleSuccess(response.data);
+            this.handleSuccess(response.data);
         }).catch((err) => {
             console.log(" ERROR RESPONSE ", err);
             //handleApiException(err);
@@ -57,7 +64,7 @@ class FileUpload extends React.Component {
     render() {
         const {fileValue, title, fileType, fileName} = this.props ;
         console.log(" PROPS = fileValue, title, fileType, fileName ", fileValue, title, fileType, fileName);
-        const {onChangeFile, onChangeFileTitle, commonkey} = this.props ; 
+        const {onChangeFile, onChangeFileTitle, commonkey} = this.props ;
         return (
             <div>
                 <Row className="mb-4">
