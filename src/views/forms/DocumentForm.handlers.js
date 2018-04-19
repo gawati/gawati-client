@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { apiUrl } from '../../api';
 import { identityInitialState } from './DocumentForm.formConfig';
-import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
+import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
 
 /** EVENT HANDLERS */
 export const handleSuccess =  (THIS, data) => {
@@ -32,13 +32,13 @@ export const handleSubmitEdit = (THIS) => {
     request
       .then(
         (response) => {
-          THIS.setState({isSubmitting: false});
+          applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
           handleSuccess(response.data);
         }
       )
       .catch(
         (err) => {
-          THIS.setState({isSubmitting: false});
+          applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
           handleApiException(THIS, err);
         }
       );
@@ -58,13 +58,13 @@ export const handleSubmitAdd = (THIS) => {
       )
     .then(
       (response) => {
-        THIS.setState({isSubmitting: false});
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
         handleSuccess(response.data);
       }
     )
     .catch(
       (err) => {
-        THIS.setState({isSubmitting: false});
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
         handleApiException(err);
       }
     );      
@@ -83,7 +83,6 @@ export const handleApiException = (THIS, err) => {
 /** STATE HANDLERS  */
 
 export const stateAction = (state, action) => {
-    console.log(" STATE ACTION ; STATE ==" , state, " ACTION == ", action);
     switch (action.type) {
       case STATE_ACTION_RESET:
         return Object.assign(
@@ -128,11 +127,11 @@ export const stateAction = (state, action) => {
           }
         );
       case STATE_ACTION_SET_FIELD_ERROR:
-      return Object.assign(
-        {},
-        state,
-        {
-          pkg:{
+        return Object.assign(
+          {},
+          state,
+          {
+            pkg:{
                 pkgIdentity: {
                     ...state.pkg.pkgIdentity, 
                       [action.params.fieldName]: {
@@ -141,11 +140,18 @@ export const stateAction = (state, action) => {
                         error: action.params.err.message
                     }
                 }
-            }
-        }
-    );
-      
-    default:
+              }
+          }
+        );
+      case STATE_ACTION_SET_DOCUMENT_LOAD_ERROR:
+        return Object.assign(
+          {},
+          state,
+          {
+            documentLoadError: true
+          }
+        );
+      default:
         return state;
     }
 };

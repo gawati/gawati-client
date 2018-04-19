@@ -10,7 +10,7 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR } from './DocumentForm.constants';
 
 /**
  * Loads a form context with  a document
@@ -19,7 +19,7 @@ import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_
 export const loadFormWithDocument = (THIS) => {
     let {params} = THIS.props.match ; 
     let {iri} = params;
-    THIS.setState({isSubmitting: true});
+    applyActionToState(THIS, {type: STATE_ACTION_IS_SUBMITTING});
     iri = iri.startsWith("/") ? iri : `/${iri}` ;
     console.log("loadFormWithDocument: IRI FOUND = ", iri);
     axios.post(
@@ -32,7 +32,7 @@ export const loadFormWithDocument = (THIS) => {
             const {error, akomaNtoso} = response.data;
             console.log("loadFormWithDocument: error, akomaNtoso ", response.data);
             if (error) {
-                THIS.setState({ documentLoadError: true });
+                applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
             } else {
                 let aknDoc = akomaNtoso; 
                 aknDoc = convertDateData(
