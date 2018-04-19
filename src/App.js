@@ -16,7 +16,7 @@ class App extends Component {
       {
         (t, { i18n })=>(
           <CookiesProvider>
-          <Root i18n={i18n} />
+            <Root i18n={i18n} />
           </CookiesProvider>
         )
       }
