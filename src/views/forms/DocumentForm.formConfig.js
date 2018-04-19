@@ -2,6 +2,8 @@ import Yup from 'yup';
 
 export const identityInitialState = () => (
     {
+        // docCreatedDate: {value: undefined, error: null},
+        // docModifiedDate: {value: undefined, error: null},
         docLang: {value: {} , error: null },
         docType: {value: '', error: null },
         docAknType: {value: '', error: null },

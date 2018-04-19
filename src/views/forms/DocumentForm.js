@@ -5,9 +5,6 @@ import IdentityMetadataForm from './IdentityMetadataForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 
 import {T} from '../../utils/i18nHelper';
-import { isInvalidValue} from '../../utils/GeneralHelper';
-import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { iriDate, isValidDate } from '../../utils/DateHelper';
 import {DocumentFormActions} from './DocumentFormActions';
 
 import 'react-tabs/style/react-tabs.css';
@@ -24,7 +21,9 @@ import {
     loadViewWithDocument,
     setFieldValue,
     validateFormFields,
+    validateFormField,
     getBreadcrumb,
+    generateIRI,
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.handlers';
 import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
@@ -79,15 +78,20 @@ class DocumentForm extends React.Component {
     }
 
     updateIriValue = () => {
-        setFieldValue(this, "docIri", this.generateIRI(this.state.pkg.pkgIdentity));
+        console.log(" THIS UPDATEIRIVALUE = docIRI ", this.state);
+        setFieldValue(this, "docIri", generateIRI(this.state.pkg.pkgIdentity));
     };
+
+    validateFormField = (schema, field, value) => {
+        return validateFormField(this, schema, field, value);
+    }
 
     handleIdentityReset = () => {
         applyActionToState(this, {type: STATE_ACTION_RESET, params: {}});
     };
 
     handleIdentitySubmit = (evt) => {
-        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING, params: {isSubmitting: true}});
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
     }
 
     render() {
@@ -114,6 +118,8 @@ class DocumentForm extends React.Component {
                     validationSchema={this.identityValidationSchema}
                     handleReset={this.handleIdentityReset} 
                     handleSubmit={this.handleIdentitySubmit} 
+                    updateIriValue={this.updateIriValue}
+                    validateFormField={this.validateFormField}
                 />
             </TabPanel>
             <TabPanel>

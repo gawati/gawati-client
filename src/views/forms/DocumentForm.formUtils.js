@@ -5,11 +5,12 @@ import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import { apiUrl } from '../../api';
-import {handleApiException} from './DocumentForm.handlers';
+import {handleApiException, applyActionToState} from './DocumentForm.handlers';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
 
 /**
  * Loads a form context with  a document
@@ -34,24 +35,36 @@ export const loadFormWithDocument = (THIS) => {
                 THIS.setState({ documentLoadError: true });
             } else {
                 let aknDoc = akomaNtoso; 
-                aknDoc.docOfficialDate.value = moment(
-                    aknDoc.docOfficialDate.value, 
-                    "YYYY-MM-DD", 
-                    true
-                ).toDate();
-                THIS.setState({
-                    isSubmitting: false,
-                    pkg: {pkgIdentity: aknDoc}
-                });
+                aknDoc = convertDateData(
+                    aknDoc,
+                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
+                );
+                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {aknDoc: aknDoc}});
             } 
         }
     )
     .catch(
         (err) => {
-        THIS.setState({isSubmitting: false});
-        handleApiException(err);
+            applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+            handleApiException(err);
         }
     );
+};
+
+/**
+ * Mutates the date strings in the Akoma Ntoso object into 
+ * Javascript Date Objects
+ * @param {*} aknDoc 
+ */
+const convertDateData = (aknDoc, dateFields) => {
+    dateFields.forEach( (item) => {
+        aknDoc[item].value = moment(
+            aknDoc[item].value, 
+            "YYYY-MM-DD", 
+            true
+        ).toDate();
+    });
+    return aknDoc;
 };
 
 export const loadViewWithDocument = (THIS, iri) => {
@@ -92,7 +105,8 @@ export const validateFormFields = (THIS) => {
     const {pkgIdentity} = THIS.state.pkg ; 
     for (let field in pkgIdentity) {
       // !+FUTURE_FIX(kohsah, 2018-01-16) aggregate state and set it in one shot
-      validateFormField(THIS, field, pkgIdentity[field].value);
+      console.log(" PKG IDENTITY  = ", field);
+      validateFormField(THIS, THIS.identityValidationSchema, field, pkgIdentity[field].value);
     }
 };
 
@@ -101,6 +115,7 @@ export const validateFormFields = (THIS) => {
  * using the Yup validator specified in the validationSchema
  */
 export const validateFormField = (THIS, validationSchema, fieldName, fieldValue) => {
+    console.log(" VALIDATE_FORM_FIELD = ", fieldName, fieldValue, validationSchema);
     validationSchema[fieldName].validate
         .validate(fieldValue)
         .then((value) => {
@@ -129,33 +144,23 @@ export const formHasErrors = (form) => {
 };
   
 export const setFieldValue = (THIS, fieldName, value) => {
-    THIS.setState({
-        pkg: {
-            pkgIdentity: {
-                ...THIS.state.pkgIdentity, 
-                [fieldName]: {
-                    ...THIS.state.pkgIdentity[fieldName], 
-                    value: value,
-                    error: null
-                }
-            }
+    applyActionToState(
+        THIS, 
+        {
+            type: STATE_ACTION_SET_FIELD_VALUE, 
+            params: {fieldName: fieldName, fieldValue: value}
         }
-    });
+    );
 };
 
 export const setFieldError = (THIS, fieldName, err) => {
-    THIS.setState({
-        pkg:{
-            pkgIdentity: {
-                ...THIS.state.pkgIdentity, 
-                [fieldName]: {
-                    ...THIS.state.pkgIdentity[fieldName], 
-                    value: err.value === null ? '': err.value,
-                    error: err.message
-                }
-            }
+    applyActionToState(
+        THIS,
+        {
+            type: STATE_ACTION_SET_FIELD_ERROR,
+            params: {fieldName: fieldName, err: err}
         }
-    });
+    );
 };
   
 

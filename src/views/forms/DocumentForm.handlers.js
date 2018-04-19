@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { apiUrl } from '../../api';
 import { identityInitialState } from './DocumentForm.formConfig';
-import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
+import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
 
 /** EVENT HANDLERS */
 export const handleSuccess =  (THIS, data) => {
@@ -83,6 +83,7 @@ export const handleApiException = (THIS, err) => {
 /** STATE HANDLERS  */
 
 export const stateAction = (state, action) => {
+    console.log(" STATE ACTION ; STATE ==" , state, " ACTION == ", action);
     switch (action.type) {
       case STATE_ACTION_RESET:
         return Object.assign(
@@ -94,9 +95,57 @@ export const stateAction = (state, action) => {
         return Object.assign(
           {}, 
           state, 
-          {isSubmitting: action.params.isSubmitting}
+          {isSubmitting: true}
         );
-      default:
+      case STATE_ACTION_IS_NOT_SUBMITTING:
+        return Object.assign(
+          {}, 
+          state, 
+          {isSubmitting: false}
+        );
+      case STATE_ACTION_LOADED_DATA:
+        // action.params = {isSubmitting: true / false,   pkg: {pkgIdentity: aknDoc}}
+        return Object.assign(
+          {}, 
+          state, 
+          {isSubmitting: false, pkg: {pkgIdentity: action.params.aknDoc}}
+        );
+      case STATE_ACTION_SET_FIELD_VALUE:
+        return Object.assign(
+          {},
+          state,
+          {
+            pkg: {
+                pkgIdentity: {
+                    ...state.pkg.pkgIdentity, 
+                    [action.params.fieldName]: {
+                        ...state.pkg.pkgIdentity[action.params.fieldName], 
+                        value: action.params.fieldValue,
+                        error: null
+                    }
+                }
+            }
+          }
+        );
+      case STATE_ACTION_SET_FIELD_ERROR:
+      return Object.assign(
+        {},
+        state,
+        {
+          pkg:{
+                pkgIdentity: {
+                    ...state.pkg.pkgIdentity, 
+                      [action.params.fieldName]: {
+                        ...state.pkg.pkgIdentity[action.params.fieldName], 
+                        value: action.params.err.value === null ? '': action.params.err.value,
+                        error: action.params.err.message
+                    }
+                }
+            }
+        }
+    );
+      
+    default:
         return state;
     }
 };

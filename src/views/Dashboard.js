@@ -222,17 +222,17 @@ class Dashboard extends Component {
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <Card>
           <CardHeader>
-            <i className="fa fa-align-justify"></i> Documents
+            <i className="fa fa-align-justify"></i> {T("Documents")}
           </CardHeader>
           <CardBody>
             <Table hover responsive>
             <thead className="thead-light">
             <tr>
-              <th className="text-center">State</th>
+              <th className="text-center">{T("State")}</th>
               <th>Title</th>
-              <th className="text-center">Language</th>
+              <th className="text-center">{T("Language")}</th>
               <th>Workflow</th>
-              <th className="text-center">Next States</th>
+              <th className="text-center">{T("Next States")}</th>
               <th></th>
               <th></th>
                 </tr>
