@@ -12,11 +12,12 @@ import loadbaseForm from './baseFormHOC';
 
 import '../../css/IdentityMetadata.css';
 import FileUpload from './FileUpload';
-import {dataProxyServer} from '../../constants';
+import {dataProxyServer, MAX_ATTACHMENTS} from '../../constants';
 import uuid from 'uuid';
 import { iriDate } from '../../utils/DateHelper';
 
 import StdCompContainer from '../../components/general/StdCompContainer';
+import "../../css/custom.css";
 
 class EmbeddedDocuments extends React.Component {
 
@@ -142,18 +143,22 @@ class EmbeddedDocuments extends React.Component {
     };
 
     handleAddMore(event) {
-      event.preventDefault();
-      let {docs} = this.state ;
-      let key = uuid.v1();
-      let doc = {
-          "key": key, 
-          "file": null, 
-          "fileName": '',
-          "title": '',
-          "fileType": ''
-      };
-      let newDocs = [...docs, doc];
-      this.setState({docs: newDocs });
+      if (this.props.form.docComponents.value.length === MAX_ATTACHMENTS) {
+        alert("Maximum number of attachments reached");
+      } else {
+        event.preventDefault();
+        let {docs} = this.state ;
+        let key = uuid.v1();
+        let doc = {
+            "key": key, 
+            "file": null, 
+            "fileName": '',
+            "title": '',
+            "fileType": ''
+        };
+        let newDocs = [...docs, doc];
+        this.setState({docs: newDocs });
+      }
     }
 
     handleRemove(event, findThisKey) {
@@ -163,15 +168,22 @@ class EmbeddedDocuments extends React.Component {
       this.setState({docs: newDocs});
     }
 
+    getDocIndex(key) {
+      return this.state.docs.findIndex( (item) => item.key === key );
+    }
+
     renderDoc = (doc) => {
       const {key, file, fileName, fileType, title} = doc; 
       return(
-      <FileUpload  
+      <FileUpload
+        iri={this.props.match.params.iri}
+        form={this.props.form}
         commonkey={key}
         fileValue={file}
         title={title}
         fileType={fileType}
         fileName={fileName}
+        getDocIndex={this.getDocIndex.bind(this)}
         onChangeFile={ 
           (evt) => {
               let index = this.state.docs.findIndex( (item) => item.key === key );
@@ -229,6 +241,18 @@ class EmbeddedDocuments extends React.Component {
         )
         ; 
 
+    renderMetadata(form) {
+      return (
+        <ul className="list-inline custom-list">
+          <li className="list-inline-item"><span>Title <b>{ form.docTitle.value }</b></span></li>
+          <li className="list-inline-item"><span>Type <b>{ form.docType.value }</b></span></li>
+          <li className="list-inline-item"><span>Language <b>{ form.docLang.value.value }</b></span></li>
+          <li className="list-inline-item"><span>Document # <b>{ form.docNumber.value }</b></span></li>
+          <li className="list-inline-item"><span>IRI <b>{ form.docIri.value }</b></span></li>
+        </ul>
+      )
+    }
+
     renderAttForm() { 
       const {isSubmitting} = this.state ; 
       const { mode, form} = this.props;
@@ -247,12 +271,8 @@ class EmbeddedDocuments extends React.Component {
                     <strong>Components</strong>
                     <small> Form</small>
                 </CardHeader>
-                <CardBody> 
-                  <Row>
-                    <Col xs="12">
-                      Title:  <mark>{ form.docTitle.value }</mark> | Type: <mark>{ form.docType.value}</mark> | Language: <mark>{form.docLang.value.value}</mark> | Document #: <mark>{form.docNumber.value}</mark> | IRI : <mark>{form.docIri.value}</mark>
-                    </Col>
-                  </Row>
+                <CardBody>
+                    {this.renderMetadata(form)}
                     { 
                      this.state.docs.length === 0 ? 
                       "There are no file attachments yet, you can use Add File to add an attachment" :
