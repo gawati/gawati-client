@@ -23,6 +23,7 @@ import '../../css/IdentityMetadata.css';
  * This will make the data flow one way and avoid maintaining another set of
  * UI attachments
  * c. Remove 'key' since indexes are sufficient.
+ * d. Rename `index` to `id`?
  */
 
 /**

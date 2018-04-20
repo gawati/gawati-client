@@ -6,9 +6,12 @@ import {dataProxyServer} from '../../constants';
 import { iriDate } from '../../utils/DateHelper';
 
 /**
- * Upload component for files. Event handlers for File input and Title input need to be 
- * passed in , along with a key to identify the group of fields
+ * To-Do:
+ * Rename `index` to `id`?
  * 
+ * Upload component for files. Handles both update and new.
+ * Leave `index` empty for new files. The server will generate one.
+ *  
  * @class FileUpload
  * @extends {React.Component}
  */
@@ -40,45 +43,40 @@ class FileUpload1 extends React.Component {
     }
 
     handleSaveFile() {
-        console.log("File is saved");
-        // const {fileValue, title, fileType, fileName, getDocIndex, commonkey} = this.props ;
-        // let index = getDocIndex(commonkey);
-        // console.log("Save attachment: ", index, title);
-        // let iri = "/" + this.props.iri;
+        const {index, file, title, fileType, fileName} = this.state;
+        let iri = this.props.form['docIri'].value;
 
-        // let data = new FormData();
-        // if (fileValue) {
-        //     if (title) {
-        //         data.append(`file`, fileValue);
-        //         data.append(`fileName`, fileName);
-        //         data.append(`title`, title);
-        //         data.append(`fileType`, fileType);
-        //         data.append(`key`, commonkey);
-        //         data.append(`iri`, iri);
-        //     }
-        // }
-        // // add document metadata to submit formData
-        // for (let field in this.props.form) {
-        //    let formField = this.props.form[field];
-        //    console.log(" docLang ",  this.props.form['docLang']);
-        //    if (field === 'docOfficialDate') {
-        //       let offDate = iriDate(formField.value);
-        //       console.log(" OFFICIAL DATE = ", offDate);
-        //       data.append(field, JSON.stringify({value: offDate}));
-        //    } else {
-        //       data.append(field, JSON.stringify({value: formField.value}));
-        //    }
-        // }
+        let data = new FormData();
+        if (file) {
+            if (title) {
+                data.append(`index`, index);
+                data.append(`file`, file);
+                data.append(`fileName`, fileName);
+                data.append(`title`, title);
+                data.append(`fileType`, fileType);
+                data.append(`iri`, iri);
+            }
+        }
+        // add document metadata to submit formData
+        for (let field in this.props.form) {
+           let formField = this.props.form[field];
+           if (field === 'docOfficialDate') {
+              let offDate = iriDate(formField.value);
+              data.append(field, JSON.stringify({value: offDate}));
+           } else {
+              data.append(field, JSON.stringify({value: formField.value}));
+           }
+        }
 
-        // axios.post(dataProxyServer() + '/gwc/document/upload', data, {
-        //     headers: { "X-Requested-With": "XMLHttpRequest" }
-        // }).then((response) => {
-        //     console.log(" RESPONSE >  DATA ", response.data);
-        //     this.handleSuccess(response.data);
-        // }).catch((err) => {
-        //     console.log(" ERROR RESPONSE ", err);
-        //     //handleApiException(err);
-        // });
+        axios.post(dataProxyServer() + '/gwc/document/upload', data, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        }).then((response) => {
+            console.log(" RESPONSE >  DATA ", response.data);
+            this.handleSuccess(response.data);
+        }).catch((err) => {
+            console.log(" ERROR RESPONSE ", err);
+            //handleApiException(err);
+        });
     }
 
     render() {
