@@ -8,11 +8,22 @@ import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
 import { isEmpty} from '../../utils/GeneralHelper';
 import {embeddedDocumentsValidationSchema} from './DocumentForm.formConfig';
 
+import FileUpload1 from './FileUpload1';
 import {MAX_ATTACHMENTS} from '../../constants';
 
 import StatefulForm from './StatefulForm';
 
 import '../../css/IdentityMetadata.css';
+
+/**
+ * To-Do:
+ * a. Attach each FileUpload with an attachment. Updates should be linked
+ *    to that emDoc.
+ * b. Make 'Add File' a dialog box.
+ * This will make the data flow one way and avoid maintaining another set of
+ * UI attachments
+ * c. Remove 'key' since indexes are sufficient.
+ */
 
 /**
  * Handlers for this form
@@ -67,13 +78,14 @@ class EmbeddedDocumentsForm extends React.Component {
       )
     }
 
-    handleRemoveAtt(e, key) {
-        alert("Removed att");
+    handleRemoveAtt(e, emDoc) {
+        alert("Removed attachment");
     }
 
     renderAttachment(emDoc) {
+        const form = this.props.pkg.pkgIdentity;
         return(
-            <div>{emDoc.showAs}</div>
+            <FileUpload1 form={form} emDoc={emDoc} />
         );
     }
 
@@ -85,10 +97,10 @@ class EmbeddedDocumentsForm extends React.Component {
                 <Col xs="12">
                     <Card>
                     <CardHeader>
-                        { emDoc.index }.
+                        { emDoc.index }. {emDoc.showAs}
                         <Label className="float-right mb-0">
                         <Button type="reset" size="sm"
-                        onClick={ (e) => this.handleRemoveAtt(e, emDoc.index)} color="danger">
+                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger">
                             <i className="fa fa-minus-circle"></i> Remove</Button>
                         </Label>
                     </CardHeader>
