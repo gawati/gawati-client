@@ -8,7 +8,10 @@ export const stateAction = (state, action) => {
         return Object.assign(
           {}, 
           state, 
-          {pkg: {pkgIdentity: identityInitialState()}}
+          {pkg: {
+            pkgIdentity: identityInitialState()},
+            pkgAttachments: [...state.pkg.pkgAttachments]
+          }
         );
       case STATE_ACTION_IS_SUBMITTING:
         return Object.assign(
@@ -27,7 +30,10 @@ export const stateAction = (state, action) => {
         return Object.assign(
           {}, 
           state, 
-          {isSubmitting: false, pkg: {pkgIdentity: action.params.aknDoc}}
+          {isSubmitting: false, pkg: {
+            pkgIdentity: action.params.aknDoc,
+            pkgAttachments: [...state.pkg.pkgAttachments]
+          }}
         );
       case STATE_ACTION_SET_FIELD_VALUE:
         return Object.assign(
@@ -42,7 +48,8 @@ export const stateAction = (state, action) => {
                         value: action.params.fieldValue,
                         error: null
                     }
-                }
+                },
+                pkgAttachments: [...state.pkg.pkgAttachments]
             }
           }
         );
@@ -59,7 +66,8 @@ export const stateAction = (state, action) => {
                         value: action.params.err.value === null ? '': action.params.err.value,
                         error: action.params.err.message
                     }
-                }
+                },
+                pkgAttachments: [...state.pkg.pkgAttachments]
               }
           }
         );
