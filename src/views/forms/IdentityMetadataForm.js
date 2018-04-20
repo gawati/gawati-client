@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import {Card, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
@@ -60,6 +60,7 @@ class IdentityMetadataForm extends React.Component {
 
     render() {
       const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
+      console.log(" handleSubmit == ", handleSubmit);
       const {pkgIdentity: form} = this.props.pkg ; 
       const errors = formHasErrors(form);
       console.log(" FORM VALUES = ", form);
