@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label} from 'reactstrap';
 import uuid from 'uuid';
 
 import {T} from '../../utils/i18nHelper';
@@ -55,11 +55,57 @@ class EmbeddedDocumentsForm extends React.Component {
         }
       }
   
-  
+    renderMetadata(form) {
+      return (
+        <ul className="list-inline custom-list">
+          <li className="list-inline-item"><span>Title <b>{ form.docTitle.value }</b></span></li>
+          <li className="list-inline-item"><span>Type <b>{ form.docType.value }</b></span></li>
+          <li className="list-inline-item"><span>Language <b>{ form.docLang.value.value }</b></span></li>
+          <li className="list-inline-item"><span>Document # <b>{ form.docNumber.value }</b></span></li>
+          <li className="list-inline-item"><span>IRI <b>{ form.docIri.value }</b></span></li>
+        </ul>
+      )
+    }
+
+    handleRemoveAtt(e, key) {
+        alert("Removed att");
+    }
+
+    renderAttachment(emDoc) {
+        return(
+            <div>{emDoc.showAs}</div>
+        );
+    }
+
+    renderAttachments(emDocs) {
+        let attachments =
+        emDocs.map(emDoc => {
+            return (
+                <Row key={emDoc.index}>
+                <Col xs="12">
+                    <Card>
+                    <CardHeader>
+                        { emDoc.index }.
+                        <Label className="float-right mb-0">
+                        <Button type="reset" size="sm"
+                        onClick={ (e) => this.handleRemoveAtt(e, emDoc.index)} color="danger">
+                            <i className="fa fa-minus-circle"></i> Remove</Button>
+                        </Label>
+                    </CardHeader>
+                    <CardBody>
+                    {this.renderAttachment(emDoc)}
+                    </CardBody>
+                    </Card>
+                </Col>
+                </Row>
+            );
+        });
+        return attachments;
+    }
 
     renderAttForm = () => {
         const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
-        const {pkgAttachments: form} = this.props.pkg ; 
+        const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
         const errors = formHasErrors(form);
         const formValid = isEmpty(errors);
         return (
@@ -78,9 +124,9 @@ class EmbeddedDocumentsForm extends React.Component {
                     <CardBody>
                         {this.renderMetadata(form)}
                         { 
-                        this.state.docs.length === 0 ? 
+                            attachments.length === 0 ?
                             "There are no file attachments yet, you can use Add File to add an attachment" :
-                            this.renderDocs()
+                            this.renderAttachments(attachments)
                         }
                     </CardBody>
                     <CardFooter>

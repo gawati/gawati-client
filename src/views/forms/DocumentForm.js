@@ -2,6 +2,7 @@ import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import IdentityMetadataForm from './IdentityMetadataForm';
+import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 
 import {T} from '../../utils/i18nHelper';
@@ -135,7 +136,17 @@ class DocumentForm extends React.Component {
                 />
             </TabPanel>
             <TabPanel>
-              <h2>Any content 2</h2>
+                <EmbeddedDocumentsForm
+                    lang={lang}
+                    mode={mode}
+                    pkg={pkg}
+                    isSubmitting={isSubmitting}
+                    validationSchema={this.identityValidationSchema}
+                    handleReset={this.handleIdentityReset}
+                    handleSubmit={this.handleIdentitySubmit} 
+                    updateIriValue={this.updateIriValue}
+                    validateFormField={this.validateFormField}
+                />
             </TabPanel>
             <TabPanel>
               <h2>Any content 2</h2>

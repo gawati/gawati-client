@@ -32,7 +32,7 @@ export const stateAction = (state, action) => {
           state, 
           {isSubmitting: false, pkg: {
             pkgIdentity: action.params.aknDoc,
-            pkgAttachments: [...state.pkg.pkgAttachments]
+            pkgAttachments: action.params.aknDoc['docComponents'].value
           }}
         );
       case STATE_ACTION_SET_FIELD_VALUE:
