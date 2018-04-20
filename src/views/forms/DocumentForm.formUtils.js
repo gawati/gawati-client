@@ -5,7 +5,8 @@ import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import { apiUrl } from '../../api';
-import {handleApiException, applyActionToState} from './DocumentForm.handlers';
+import {handleApiException} from './DocumentForm.handlers';
+import {applyActionToState} from './DocumentForm.stateManager';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';

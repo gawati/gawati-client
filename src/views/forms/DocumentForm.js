@@ -25,8 +25,9 @@ import {
     getBreadcrumb,
     generateIRI,
 } from './DocumentForm.formUtils' ;
-import { applyActionToState } from './DocumentForm.handlers';
+import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
+import { handleSubmitEdit, handleSubmitAdd } from './DocumentForm.handlers';
 
 /**
  * Expects the following props
@@ -91,7 +92,18 @@ class DocumentForm extends React.Component {
     };
 
     handleIdentitySubmit = (evt) => {
+        console.log("IN: handleIdentitySubmit ", evt);
+        const {mode} = this.props;
+        evt.preventDefault();
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        if (mode === "edit") {
+            handleSubmitEdit(this, this.state.pkg)
+            return;
+        }
+        if (mode === "add") {
+          handleSubmitAdd(this, this.state.pkg);
+          return;
+        }
     }
 
     render() {
