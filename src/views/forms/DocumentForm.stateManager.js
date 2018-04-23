@@ -104,7 +104,7 @@ const actionPkgIdentity = (state, action) => {
 const actionPkgAttachments = (state, action) => {
   switch (action.type) {
     case STATE_ACTION_RESET_IDENTITY: return state.pkg.pkgAttachments;
-    case STATE_ACTION_LOADED_DATA: return action.params.aknDoc['docComponents'].value;
+    case STATE_ACTION_LOADED_DATA: return action.params.aknDoc['attachments'].value;
     default: return state.pkg.pkgAttachments;
   }
 };
