@@ -1,37 +1,22 @@
 import React from 'react';
 import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-import uuid from 'uuid';
 
 import {T} from '../../utils/i18nHelper';
 import StdCompContainer from '../../components/general/StdCompContainer';
-import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
-import { isEmpty} from '../../utils/GeneralHelper';
-import {embeddedDocumentsValidationSchema} from './DocumentForm.formConfig';
 
 import FileUpload1 from './FileUpload1';
 import {MAX_ATTACHMENTS} from '../../constants';
 
 import StatefulForm from './StatefulForm';
 
-import '../../css/IdentityMetadata.css';
-
 /**
  * To-Do:
- * a. Attach each FileUpload with an attachment. Updates should be linked
- *    to that emDoc.
- * b. Make 'Add File' a dialog box.
- * This will make the data flow one way and avoid maintaining another set of
- * UI attachments
- * c. Remove 'key' since indexes are sufficient.
- * d. Rename `index` to `id`?
- * e. Remove next -> components button at the bottom from IdentityMetadata page.
- * f. Reload `loadFormWithDocument` to get newly saved attachments
+ * a. Remove Attachments functionality.
+ * b. Rename `index` to `id`?
+ * c. Reload `loadFormWithDocument` to get newly saved attachments.
+ * d. Remove next -> components button at the bottom from IdentityMetadata page.
+ *    It is broken.
  */
-
-/**
- * Handlers for this form
- */
-import { formHasErrors } from './DocumentForm.formUtils';
 
 /**
  * This needs to be converted to use the baseformHOC
@@ -40,15 +25,19 @@ class EmbeddedDocumentsForm extends React.Component {
 
     constructor(props) {
         super(props);
-        this.validationSchema = props.validationSchema ;
         this.state = { attModal: false }
-    } 
-  
-      /**
-       * Wrapper on validateFormField passed in as a prop
-       */
-    validateFormField = (field, value) => {
-        return this.props.validateFormField(this.validationSchema, field, value);
+    }
+
+    handleRemoveAtt(e, emDoc) {
+        alert("Removed attachment");
+    }
+
+    toggleAttModal() {
+        this.setState({ attModal: !this.state.attModal });
+    }
+
+    handlePostSave() {
+        this.setState({ attModal: false });
     }
 
     handleAddMore(event) {
@@ -65,8 +54,8 @@ class EmbeddedDocumentsForm extends React.Component {
           };
           this.setState({newAtt: newAtt, attModal: true});
         }
-      }
-  
+    }
+
     renderMetadata(form) {
       return (
         <ul className="list-inline custom-list">
@@ -77,18 +66,6 @@ class EmbeddedDocumentsForm extends React.Component {
           <li className="list-inline-item"><span>IRI <b>{ form.docIri.value }</b></span></li>
         </ul>
       )
-    }
-
-    handleRemoveAtt(e, emDoc) {
-        alert("Removed attachment");
-    }
-
-    toggleAttModal() {
-        this.setState({ attModal: !this.state.attModal });
-    }
-
-    handlePostSave() {
-        this.setState({ attModal: false });
     }
 
     renderAttModal() {
@@ -140,10 +117,8 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttForm = () => {
-        const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
+        const {mode} = this.props;
         const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
-        const errors = formHasErrors(form);
-        const formValid = isEmpty(errors);
         return (
             <div >
                 <Card className="bg-white text-right mt-1 mb-1">
@@ -151,7 +126,7 @@ class EmbeddedDocumentsForm extends React.Component {
                     <Button type="button" onClick={this.handleAddMore.bind(this)}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add File</Button>
                     </CardBody>
                 </Card>        
-                <StatefulForm encType="multipart/form-data" ref="docsForm" onSubmit={this.handleSubmit} noValidate>
+                <StatefulForm encType="multipart/form-data" ref="docsForm" noValidate>
                 <Card>
                     <CardHeader>
                         <strong>Components</strong>
@@ -166,22 +141,6 @@ class EmbeddedDocumentsForm extends React.Component {
                         }
                         {this.renderAttModal()}
                     </CardBody>
-                    <CardFooter>
-                        <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
-                        { " " }
-                        <Button type="submit" name="btnNext" size="sm" 
-                            color="primary" disabled={isSubmitting || !formValid}
-                            onClick={ 
-                            (evt) => {
-                                this.setNextClicked();
-                            }
-                            }
-                            >
-                            <i className="fa fa-chevron-right"></i> Next
-                        </Button>
-                        { " " }
-                        <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={this.handleReset}><i className="fa fa-ban"></i> Reset</Button>
-                        </CardFooter>
                 </Card>
                 </StatefulForm>
             </div>

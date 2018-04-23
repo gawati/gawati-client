@@ -145,12 +145,6 @@ class DocumentForm extends React.Component {
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
-                    isSubmitting={isSubmitting}
-                    validationSchema={this.identityValidationSchema}
-                    handleReset={this.handleIdentityReset}
-                    handleSubmit={this.handleIdentitySubmit} 
-                    updateIriValue={this.updateIriValue}
-                    validateFormField={this.validateFormField}
                 />
             </TabPanel>
             <TabPanel>
