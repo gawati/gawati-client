@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label} from 'reactstrap';
+import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 import uuid from 'uuid';
 
 import {T} from '../../utils/i18nHelper';
@@ -24,6 +24,8 @@ import '../../css/IdentityMetadata.css';
  * UI attachments
  * c. Remove 'key' since indexes are sufficient.
  * d. Rename `index` to `id`?
+ * e. Remove next -> components button at the bottom from IdentityMetadata page.
+ * f. Reload `loadFormWithDocument` to get newly saved attachments
  */
 
 /**
@@ -38,7 +40,8 @@ class EmbeddedDocumentsForm extends React.Component {
 
     constructor(props) {
         super(props);
-        this.validationSchema = props.validationSchema ; 
+        this.validationSchema = props.validationSchema ;
+        this.state = { attModal: false }
     } 
   
       /**
@@ -49,21 +52,18 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     handleAddMore(event) {
-        if (this.props.form.docComponents.value.length === MAX_ATTACHMENTS) {
+        const {pkgAttachments: attachments} = this.props.pkg ;
+        if (attachments.length === MAX_ATTACHMENTS) {
           alert("Maximum number of attachments reached");
         } else {
           event.preventDefault();
-          let {docs} = this.state ;
-          let key = uuid.v1();
-          let doc = {
-              "key": key, 
-              "file": null, 
+          let newAtt = {
+              "index": '',
               "fileName": '',
-              "title": '',
+              "showAs": '',
               "fileType": ''
           };
-          let newDocs = [...docs, doc];
-          this.setState({docs: newDocs });
+          this.setState({newAtt: newAtt, attModal: true});
         }
       }
   
@@ -83,10 +83,33 @@ class EmbeddedDocumentsForm extends React.Component {
         alert("Removed attachment");
     }
 
+    toggleAttModal() {
+        this.setState({ attModal: !this.state.attModal });
+    }
+
+    handlePostSave() {
+        this.setState({ attModal: false });
+    }
+
+    renderAttModal() {
+        const form = this.props.pkg.pkgIdentity;
+        return (
+            <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
+            <ModalHeader>Upload New Attachment</ModalHeader>
+            <ModalBody>
+                <FileUpload1 form={form} emDoc={this.state.newAtt} handlePostSave={this.handlePostSave.bind(this)} />
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={this.toggleAttModal.bind(this)}>Cancel</Button>
+            </ModalFooter>
+            </Modal>
+        )
+    }
+
     renderAttachment(emDoc) {
         const form = this.props.pkg.pkgIdentity;
         return(
-            <FileUpload1 form={form} emDoc={emDoc} />
+            <FileUpload1 form={form} emDoc={emDoc} handlePostSave={this.handlePostSave.bind(this)} />
         );
     }
 
@@ -125,7 +148,7 @@ class EmbeddedDocumentsForm extends React.Component {
             <div >
                 <Card className="bg-white text-right mt-1 mb-1">
                     <CardBody className="pt-0 pb-0">
-                    <Button type="button" onClick={this.handleAddMore}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add File</Button>                
+                    <Button type="button" onClick={this.handleAddMore.bind(this)}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add File</Button>
                     </CardBody>
                 </Card>        
                 <StatefulForm encType="multipart/form-data" ref="docsForm" onSubmit={this.handleSubmit} noValidate>
@@ -141,6 +164,7 @@ class EmbeddedDocumentsForm extends React.Component {
                             "There are no file attachments yet, you can use Add File to add an attachment" :
                             this.renderAttachments(attachments)
                         }
+                        {this.renderAttModal()}
                     </CardBody>
                     <CardFooter>
                         <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>

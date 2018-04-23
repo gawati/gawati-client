@@ -8,6 +8,7 @@ import { iriDate } from '../../utils/DateHelper';
 /**
  * To-Do:
  * Rename `index` to `id`?
+ * Check for empty file and title
  * 
  * Upload component for files. Handles both update and new.
  * Leave `index` empty for new files. The server will generate one.
@@ -77,6 +78,9 @@ class FileUpload1 extends React.Component {
             console.log(" ERROR RESPONSE ", err);
             //handleApiException(err);
         });
+
+        //Call Post Save handler in the parent.
+        this.props.handlePostSave();
     }
 
     render() {
