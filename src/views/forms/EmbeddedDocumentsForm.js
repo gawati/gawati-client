@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label} from 'reactstrap';
 import uuid from 'uuid';
 
 import {T} from '../../utils/i18nHelper';
@@ -8,11 +8,23 @@ import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
 import { isEmpty} from '../../utils/GeneralHelper';
 import {embeddedDocumentsValidationSchema} from './DocumentForm.formConfig';
 
+import FileUpload1 from './FileUpload1';
 import {MAX_ATTACHMENTS} from '../../constants';
 
 import StatefulForm from './StatefulForm';
 
 import '../../css/IdentityMetadata.css';
+
+/**
+ * To-Do:
+ * a. Attach each FileUpload with an attachment. Updates should be linked
+ *    to that emDoc.
+ * b. Make 'Add File' a dialog box.
+ * This will make the data flow one way and avoid maintaining another set of
+ * UI attachments
+ * c. Remove 'key' since indexes are sufficient.
+ * d. Rename `index` to `id`?
+ */
 
 /**
  * Handlers for this form
@@ -55,11 +67,58 @@ class EmbeddedDocumentsForm extends React.Component {
         }
       }
   
-  
+    renderMetadata(form) {
+      return (
+        <ul className="list-inline custom-list">
+          <li className="list-inline-item"><span>Title <b>{ form.docTitle.value }</b></span></li>
+          <li className="list-inline-item"><span>Type <b>{ form.docType.value }</b></span></li>
+          <li className="list-inline-item"><span>Language <b>{ form.docLang.value.value }</b></span></li>
+          <li className="list-inline-item"><span>Document # <b>{ form.docNumber.value }</b></span></li>
+          <li className="list-inline-item"><span>IRI <b>{ form.docIri.value }</b></span></li>
+        </ul>
+      )
+    }
+
+    handleRemoveAtt(e, emDoc) {
+        alert("Removed attachment");
+    }
+
+    renderAttachment(emDoc) {
+        const form = this.props.pkg.pkgIdentity;
+        return(
+            <FileUpload1 form={form} emDoc={emDoc} />
+        );
+    }
+
+    renderAttachments(emDocs) {
+        let attachments =
+        emDocs.map(emDoc => {
+            return (
+                <Row key={emDoc.index}>
+                <Col xs="12">
+                    <Card>
+                    <CardHeader>
+                        { emDoc.index }. {emDoc.showAs}
+                        <Label className="float-right mb-0">
+                        <Button type="reset" size="sm"
+                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger">
+                            <i className="fa fa-minus-circle"></i> Remove</Button>
+                        </Label>
+                    </CardHeader>
+                    <CardBody>
+                    {this.renderAttachment(emDoc)}
+                    </CardBody>
+                    </Card>
+                </Col>
+                </Row>
+            );
+        });
+        return attachments;
+    }
 
     renderAttForm = () => {
         const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
-        const {pkgAttachments: form} = this.props.pkg ; 
+        const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
         const errors = formHasErrors(form);
         const formValid = isEmpty(errors);
         return (
@@ -78,9 +137,9 @@ class EmbeddedDocumentsForm extends React.Component {
                     <CardBody>
                         {this.renderMetadata(form)}
                         { 
-                        this.state.docs.length === 0 ? 
+                            attachments.length === 0 ?
                             "There are no file attachments yet, you can use Add File to add an attachment" :
-                            this.renderDocs()
+                            this.renderAttachments(attachments)
                         }
                     </CardBody>
                     <CardFooter>

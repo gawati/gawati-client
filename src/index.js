@@ -44,12 +44,12 @@ setup(
             );
         },
         (error) => {
-            console.log("ERROR initLoginRequired ", "Error while logging in" );
+            console.log("ERROR initLoginRequired ", "Error while logging in", error );
             alert("There was an error while initializing login");
         }
     );
 }).catch((e) => {
-    console.log(e);
+    console.log("ERROR retreieing json" , e);
     alert("There was an error while setting up authentication");
 });
 
