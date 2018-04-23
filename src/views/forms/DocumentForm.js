@@ -51,7 +51,8 @@ class DocumentForm extends React.Component {
           */ 
           pkg: {
             pkgIdentity: identityInitialState(),
-            pkgAttachments: []
+            pkgAttachments: [],
+            workflow: {}
           }
         };
         /** 

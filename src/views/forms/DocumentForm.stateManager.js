@@ -8,7 +8,8 @@ const initialState = {
   documentLoadError: false,
   pkg: {
     pkgIdentity: identityInitialState(),
-    pkgAttachments: []
+    pkgAttachments: [],
+    workflow: {}
   }
 };
 
