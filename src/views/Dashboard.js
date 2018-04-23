@@ -8,6 +8,7 @@ import { linkDocumentEdit } from '../components/utils/QuickRoutes';
 
 import { apiUrl } from '../api';
 
+import { getTokenParsed, getRolesForClient, getRolesForCurrentClient } from '../utils/GawatiAuthClient';
 import RRNavLink from '../components/utils/RRNavLink';
 import { iriFromPackage } from '../utils/DataHelper';
 import { T } from '../utils/i18nHelper';
@@ -20,7 +21,6 @@ import DocActions from "../components/DocActions";
 import Checkbox from "../components/widgets/Checkbox";
 
 export const StateColumn = ({ stateInfo }) =>  {
-  console.log(" StateColumn ", stateInfo);
   return (
     <div data-status={stateInfo.state.status}>{ stateInfo.state.label }</div>
   );
@@ -188,7 +188,6 @@ class Dashboard extends Component {
             </td>
             <td className="text-center">
                 <Button >View</Button>&#160;
-                {console.log(" NAVLINK = ", linkDocumentEdit("en", iriFromPackage(docPkg)))}
                 <Button>Edit</Button>&#160;
                 <Button >Delete</Button>
             </td>

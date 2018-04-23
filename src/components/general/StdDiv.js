@@ -8,7 +8,7 @@ class StdDiv extends React.Component {
         return (
             <div className="animated fadeIn">
                 <Row>
-                    <Col xs="12" sm="12" lg="12">
+                    <Col xs="12" sm="12" lg="12" className="doc-container-padding-0" >
                         {children}
                     </Col>
                 </Row>

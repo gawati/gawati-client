@@ -60,14 +60,13 @@ class IdentityMetadataForm extends React.Component {
 
     render() {
       const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
-      console.log(" handleSubmit == ", handleSubmit);
       const {pkgIdentity: form} = this.props.pkg ; 
       const errors = formHasErrors(form);
       console.log(" FORM VALUES = ", form);
       const formValid = isEmpty(errors);
       return (
         <StatefulForm ref="identityForm" onSubmit={handleSubmit} noValidate>
-        <Card>
+        <Card className="doc-form-card">
           <CardBody>
             <Row>
             <Col xs="3" />

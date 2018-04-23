@@ -30,7 +30,7 @@ export const loadFormWithDocument = (THIS) => {
     )
     .then(
         (response) => {
-            const {error, akomaNtoso} = response.data;
+            const {error, akomaNtoso, workflow, permissions} = response.data;
             console.log("loadFormWithDocument: error, akomaNtoso ", response.data);
             if (error) {
                 applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
@@ -40,7 +40,7 @@ export const loadFormWithDocument = (THIS) => {
                     aknDoc,
                     ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
                 );
-                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {aknDoc: aknDoc}});
+                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {aknDoc: aknDoc, workflow: workflow, permissions: permissions}});
             } 
         }
     )
@@ -80,7 +80,6 @@ export const getBreadcrumb = (THIS) => {
     const {mode} = THIS.props;
     const {params} = THIS.props.match;
     const {pkgIdentity} = THIS.state.pkg;
-    console.log(" PAKG IDENTY ", pkgIdentity);
     let title = pkgIdentity.docTitle.value ;
     let type = pkgIdentity.docAknType.value;
     let crumbLinks = getCrumbLinks("document-ident-open", params);

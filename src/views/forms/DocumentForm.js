@@ -1,6 +1,5 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 import IdentityMetadataForm from './IdentityMetadataForm';
 import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
@@ -27,8 +26,9 @@ import {
     generateIRI,
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
-import { STATE_ACTION_RESET, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
 import { handleSubmitEdit, handleSubmitAdd } from './DocumentForm.handlers';
+import { DocumentInfo } from './DocumentInfo';
 
 /**
  * Expects the following props
@@ -89,7 +89,10 @@ class DocumentForm extends React.Component {
     }
 
     handleIdentityReset = () => {
-        applyActionToState(this, {type: STATE_ACTION_RESET, params: {}});
+        applyActionToState(this, {
+            type: STATE_ACTION_RESET_IDENTITY, 
+            params: {}
+        });
     };
 
     handleIdentitySubmit = (evt) => {
@@ -115,6 +118,7 @@ class DocumentForm extends React.Component {
         return (
           <StdCompContainer breadcrumb={breadcrumb}>
             <DocumentFormActions lang={lang} />
+            <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
             <Tabs>
             <TabList>
               <Tab>{T("Identity")}</Tab>
