@@ -6,5 +6,5 @@ export const docNumber = (pkg) => {
 
 export const docWorkflowState = (pkg) => {
     console.log(" docWorkflowState = ", pkg);
-    return pkg.workflow.state; 
+    return pkg.workflow.state ? pkg.workflow.state : '';
 };

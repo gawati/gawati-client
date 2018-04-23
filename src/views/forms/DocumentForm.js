@@ -51,7 +51,8 @@ class DocumentForm extends React.Component {
           */ 
           pkg: {
             pkgIdentity: identityInitialState(),
-            pkgAttachments: []
+            pkgAttachments: [],
+            workflow: {}
           }
         };
         /** 
@@ -110,6 +111,10 @@ class DocumentForm extends React.Component {
         }
     }
 
+    reloadAttachments = () => {
+        loadFormWithDocument(this);
+    }
+
     render() {
         const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
@@ -144,12 +149,7 @@ class DocumentForm extends React.Component {
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
-                    isSubmitting={isSubmitting}
-                    validationSchema={this.identityValidationSchema}
-                    handleReset={this.handleIdentityReset}
-                    handleSubmit={this.handleIdentitySubmit} 
-                    updateIriValue={this.updateIriValue}
-                    validateFormField={this.validateFormField}
+                    reload={this.reloadAttachments}
                 />
             </TabPanel>
             <TabPanel>

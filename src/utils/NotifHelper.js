@@ -19,7 +19,7 @@ export const notifyError = ( msg ) => {
 export const notifyWarning = ( msg ) => {
     toast.warning(msg, {
         hideProgressBar: true,
-        position: toast.POSITION.TOP_RIGHT
+        position: toast.POSITION.TOP_CENTER
     });
 };
 
