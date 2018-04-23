@@ -111,6 +111,10 @@ class DocumentForm extends React.Component {
         }
     }
 
+    reloadAttachments = () => {
+        loadFormWithDocument(this);
+    }
+
     render() {
         const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
@@ -145,6 +149,7 @@ class DocumentForm extends React.Component {
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
+                    reload={this.reloadAttachments}
                 />
             </TabPanel>
             <TabPanel>

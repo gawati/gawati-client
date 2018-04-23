@@ -32,6 +32,8 @@ class FileUpload1 extends React.Component {
     handleSuccess(response) {
         if (response.hasOwnProperty("success")) {
             alert("File Saved");
+            //Call Post Save handler in the parent.
+            this.props.handlePostSave();
         }
     }
 
@@ -78,9 +80,6 @@ class FileUpload1 extends React.Component {
             console.log(" ERROR RESPONSE ", err);
             //handleApiException(err);
         });
-
-        //Call Post Save handler in the parent.
-        this.props.handlePostSave();
     }
 
     render() {

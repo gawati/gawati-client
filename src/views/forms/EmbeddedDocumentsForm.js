@@ -13,7 +13,6 @@ import StatefulForm from './StatefulForm';
  * To-Do:
  * a. Remove Attachments functionality.
  * b. Rename `index` to `id`?
- * c. Reload `loadFormWithDocument` to get newly saved attachments.
  * d. Remove next -> components button at the bottom from IdentityMetadata page.
  *    It is broken.
  */
@@ -38,6 +37,7 @@ class EmbeddedDocumentsForm extends React.Component {
 
     handlePostSave() {
         this.setState({ attModal: false });
+        this.props.reload();
     }
 
     handleAddMore(event) {
