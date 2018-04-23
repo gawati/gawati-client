@@ -6,14 +6,13 @@ import StdCompContainer from '../../components/general/StdCompContainer';
 
 import FileUpload1 from './FileUpload1';
 import {MAX_ATTACHMENTS} from '../../constants';
-
 import StatefulForm from './StatefulForm';
+import { notifyWarning } from '../../utils/NotifHelper';
 
 /**
  * To-Do:
  * a. Remove Attachments functionality.
- * b. Rename `index` to `id`?
- * d. Remove next -> components button at the bottom from IdentityMetadata page.
+ * b. Remove next -> components button at the bottom from IdentityMetadata page.
  *    It is broken.
  */
 
@@ -43,7 +42,7 @@ class EmbeddedDocumentsForm extends React.Component {
     handleAddMore(event) {
         const {pkgAttachments: attachments} = this.props.pkg ;
         if (attachments.length === MAX_ATTACHMENTS) {
-          alert("Maximum number of attachments reached");
+          notifyWarning("Maximum number of attachments reached");
         } else {
           event.preventDefault();
           let newAtt = {
