@@ -43,6 +43,9 @@ class FileUpload1 extends React.Component {
     }
 
     handleSaveFile() {
+        //Call Pre Save handler in the parent.
+        this.props.handlePreSave();
+
         const {index, file, title, fileType, fileName} = this.state;
         const {pkgAttachments, pkgIdentity} = this.props.pkg;
         let iri = pkgIdentity['docIri'].value;
@@ -124,7 +127,9 @@ class FileUpload1 extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-                <Button size="sm" color="primary" className="float-right" onClick={this.handleSaveFile.bind(this)}>
+                <Button size="sm" color="primary" className="float-right"
+                disabled={this.props.isSubmitting}
+                onClick={this.handleSaveFile.bind(this)}>
                     <i className="fa fa-dot-circle-o"></i> Save
                 </Button>
             </div>

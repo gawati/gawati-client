@@ -26,7 +26,7 @@ import {
     generateIRI,
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING } from './DocumentForm.constants';
 import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
@@ -111,6 +111,18 @@ class DocumentForm extends React.Component {
         }
     }
 
+    /**
+     * Set `isSubmitting`
+     * @val Boolean
+     */
+    setSubmitting = (val) => {
+        if (val) {
+            applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        } else {
+            applyActionToState(this, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        }
+    }
+
     reloadAttachments = () => {
         loadFormWithDocument(this);
     }
@@ -155,6 +167,8 @@ class DocumentForm extends React.Component {
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
+                    isSubmitting={isSubmitting}
+                    setSubmitting={this.setSubmitting}
                     reload={this.reloadAttachments}
                     handleRemove={this.handleRemoveAttachment}
                 />

@@ -11,10 +11,9 @@ import { notifyWarning } from '../../utils/NotifHelper';
 import { iriDate } from '../../utils/DateHelper';
 /**
  * To-Do:
- * a. Use `isSubmitting` to disable when required
- * b. Remove next -> components button at the bottom from IdentityMetadata page.
+ * a. Remove next -> components button at the bottom from IdentityMetadata page.
  *    It is broken.
- * c. Index displayed should be ordered. Don't take it from file index
+ * b. Index displayed should be ordered. Don't take it from file index
  */
 
 /**
@@ -48,8 +47,13 @@ class EmbeddedDocumentsForm extends React.Component {
         this.setState({ attModal: !this.state.attModal });
     }
 
+    handlePreSave() {
+        this.props.setSubmitting(true);
+    }
+
     handlePostSave() {
         this.setState({ attModal: false });
+        this.props.setSubmitting(false);
         this.props.reload();
     }
 
@@ -86,7 +90,10 @@ class EmbeddedDocumentsForm extends React.Component {
             <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
             <ModalHeader>Upload New Attachment</ModalHeader>
             <ModalBody>
-                <FileUpload1 pkg={this.props.pkg} emDoc={this.state.newAtt} handlePostSave={this.handlePostSave.bind(this)} />
+                <FileUpload1 pkg={this.props.pkg} emDoc={this.state.newAtt}
+                isSubmitting={this.props.isSubmitting}
+                handlePostSave={this.handlePostSave.bind(this)}
+                handlePreSave={this.handlePreSave.bind(this)} />
             </ModalBody>
             <ModalFooter>
                 <Button color="secondary" onClick={this.toggleAttModal.bind(this)}>Cancel</Button>
@@ -97,7 +104,10 @@ class EmbeddedDocumentsForm extends React.Component {
 
     renderAttachment(emDoc) {
         return(
-            <FileUpload1 pkg={this.props.pkg} emDoc={emDoc} handlePostSave={this.handlePostSave.bind(this)} />
+            <FileUpload1 pkg={this.props.pkg} emDoc={emDoc}
+            isSubmitting={this.props.isSubmitting}
+            handlePostSave={this.handlePostSave.bind(this)}
+            handlePreSave={this.handlePreSave.bind(this)} />
         );
     }
 
@@ -112,7 +122,7 @@ class EmbeddedDocumentsForm extends React.Component {
                         { emDoc.index }. {emDoc.showAs}
                         <Label className="float-right mb-0">
                         <Button type="reset" size="sm"
-                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger">
+                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
                             <i className="fa fa-minus-circle"></i> Remove</Button>
                         </Label>
                     </CardHeader>
