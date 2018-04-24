@@ -7,7 +7,6 @@ import TopNav from './ui_elements/TopNav';
 import SideBar from './sidebar/SideBar';
 import Dashboard from '../views/Dashboard';
 //import Login from '../views/pages/Login/Login';
-import EditForm from '../views/forms/EditForm';
 import DocumentForm from '../views/forms/DocumentForm';
 
 import {PropsRoute, getRoute} from '../utils/RoutesHelper';
@@ -37,9 +36,6 @@ export const LoggedInPage = ({i18n}) => (
 
                 <PropsRoute path={ getRoute("document-add") } 
                     name="InputForm" component={DocumentForm} mode="add" i18n={i18n} />
-
-                <PropsRoute path={ getRoute("document-comp-open") } 
-                        name="EditCompForm" component={EditForm} mode="edit" i18n={i18n} />
 
                 <Redirect from="/" to="/dashboard"/>
 

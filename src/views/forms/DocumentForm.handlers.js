@@ -6,7 +6,7 @@ import {STATE_ACTION_IS_NOT_SUBMITTING} from './DocumentForm.constants';
 import {applyActionToState} from './DocumentForm.stateManager';
 
 /** EVENT HANDLERS */
-export const handleSuccess =  (THIS, data) => {
+export const handleSuccess =  (data) => {
     const {success, error} = data ; 
     if (success) {
         let {code, message} = success ; 
@@ -79,3 +79,26 @@ export const handleApiException = (THIS, err) => {
     console.log(" Error while adding ", err);
 };
 
+/**
+ * Remove Attachment (embedded doc)
+ */
+export const handleRemoveAttachment = (THIS, data, postRemove) => {
+    axios.post(
+      apiUrl('document-remove'), {
+        data: data
+      }
+      )
+    .then(
+      (response) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleSuccess(response.data);
+        postRemove();
+      }
+    )
+    .catch(
+      (err) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleApiException(err);
+      }
+    );
+}

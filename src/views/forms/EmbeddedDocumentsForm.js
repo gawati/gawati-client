@@ -4,17 +4,11 @@ import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label, Modal, 
 import {T} from '../../utils/i18nHelper';
 import StdCompContainer from '../../components/general/StdCompContainer';
 
-import FileUpload1 from './FileUpload1';
+import FileUpload from './FileUpload';
 import {MAX_ATTACHMENTS} from '../../constants';
 import StatefulForm from './StatefulForm';
 import { notifyWarning } from '../../utils/NotifHelper';
-
-/**
- * To-Do:
- * a. Remove Attachments functionality.
- * b. Remove next -> components button at the bottom from IdentityMetadata page.
- *    It is broken.
- */
+import { iriDate } from '../../utils/DateHelper';
 
 /**
  * This needs to be converted to use the baseformHOC
@@ -27,15 +21,33 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     handleRemoveAtt(e, emDoc) {
-        alert("Removed attachment");
+        e.preventDefault();
+
+        //pkgAttachments on the client strips 'value'.
+        //Add it back since the server expects it.
+        let pkg = {
+            pkgIdentity: this.props.pkg.pkgIdentity,
+            pkgAttachments : {value: this.props.pkg.pkgAttachments }
+        }
+
+        let offDate = iriDate(pkg.pkgIdentity['docOfficialDate'].value);
+        pkg.pkgIdentity['docOfficialDate'].value = offDate;
+
+        let data = { emDoc, pkg };
+        this.props.handleRemove(data);
     }
 
     toggleAttModal() {
         this.setState({ attModal: !this.state.attModal });
     }
 
+    handlePreSave() {
+        this.props.setSubmitting(true);
+    }
+
     handlePostSave() {
         this.setState({ attModal: false });
+        this.props.setSubmitting(false);
         this.props.reload();
     }
 
@@ -68,12 +80,14 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttModal() {
-        const form = this.props.pkg.pkgIdentity;
         return (
             <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
             <ModalHeader>Upload New Attachment</ModalHeader>
             <ModalBody>
-                <FileUpload1 form={form} emDoc={this.state.newAtt} handlePostSave={this.handlePostSave.bind(this)} />
+                <FileUpload pkg={this.props.pkg} emDoc={this.state.newAtt}
+                isSubmitting={this.props.isSubmitting}
+                handlePostSave={this.handlePostSave.bind(this)}
+                handlePreSave={this.handlePreSave.bind(this)} />
             </ModalBody>
             <ModalFooter>
                 <Button color="secondary" onClick={this.toggleAttModal.bind(this)}>Cancel</Button>
@@ -83,24 +97,26 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttachment(emDoc) {
-        const form = this.props.pkg.pkgIdentity;
         return(
-            <FileUpload1 form={form} emDoc={emDoc} handlePostSave={this.handlePostSave.bind(this)} />
+            <FileUpload pkg={this.props.pkg} emDoc={emDoc}
+            isSubmitting={this.props.isSubmitting}
+            handlePostSave={this.handlePostSave.bind(this)}
+            handlePreSave={this.handlePreSave.bind(this)} />
         );
     }
 
     renderAttachments(emDocs) {
         let attachments =
-        emDocs.map(emDoc => {
+        emDocs.map((emDoc, i) => {
             return (
                 <Row key={emDoc.index}>
                 <Col xs="12">
                     <Card>
                     <CardHeader>
-                        { emDoc.index }. {emDoc.showAs}
+                        {i + 1}. {emDoc.showAs}
                         <Label className="float-right mb-0">
                         <Button type="reset" size="sm"
-                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger">
+                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
                             <i className="fa fa-minus-circle"></i> Remove</Button>
                         </Label>
                     </CardHeader>
