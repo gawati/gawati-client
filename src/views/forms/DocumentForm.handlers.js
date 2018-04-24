@@ -6,6 +6,9 @@ import {STATE_ACTION_IS_NOT_SUBMITTING} from './DocumentForm.constants';
 import {applyActionToState} from './DocumentForm.stateManager';
 
 /** EVENT HANDLERS */
+/**
+ * {"success":{"code":"save_file","message":"/db/docs/gawati-client-data/akn/ke/judgment/courtjudgment/2018-04-26/akn_ke_judgment_courtjudgment_2018-04-26_Blah_Test_eng_main.xml"}}
+ */
 export const handleSuccess =  (THIS, data) => {
     const {success, error} = data ; 
     if (success) {

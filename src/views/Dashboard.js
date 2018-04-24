@@ -61,7 +61,7 @@ export const DocCountryColumn = ({ doc }) =>
   <div>{doc.docCountry.value}</div>
 ;
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 5;
 
 class Dashboard extends Component {
 

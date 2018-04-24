@@ -31,7 +31,7 @@ export const loadFormWithDocument = (THIS) => {
     .then(
         (response) => {
             const {error, akomaNtoso, workflow, permissions} = response.data;
-            console.log("loadFormWithDocument: error, akomaNtoso ", response.data);
+            console.log("loadFormWithDocument: error, akomaNtoso ", error, response.data);
             if (error) {
                 applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
             } else {
@@ -40,12 +40,13 @@ export const loadFormWithDocument = (THIS) => {
                     aknDoc,
                     ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
                 );
-                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {aknDoc: aknDoc, workflow: workflow, permissions: permissions}});
+                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {akomaNtoso: aknDoc, workflow: workflow, permissions: permissions}});
             } 
         }
     )
     .catch(
         (err) => {
+            console.log(" ERROR ERROR ", err);
             applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
             handleApiException(err);
         }
