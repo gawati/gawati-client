@@ -11,4 +11,4 @@ export const docWorkflowState = (pkg) => {
 
 export const docTitle = (pkg) => {
     return pkg.pkgIdentity.docTitle.value ; 
-}
+};
