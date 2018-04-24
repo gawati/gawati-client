@@ -8,12 +8,13 @@ import FileUpload1 from './FileUpload1';
 import {MAX_ATTACHMENTS} from '../../constants';
 import StatefulForm from './StatefulForm';
 import { notifyWarning } from '../../utils/NotifHelper';
-
+import { iriDate } from '../../utils/DateHelper';
 /**
  * To-Do:
- * a. Remove Attachments functionality.
+ * a. Use `isSubmitting` to disable when required
  * b. Remove next -> components button at the bottom from IdentityMetadata page.
  *    It is broken.
+ * c. Index displayed should be ordered. Don't take it from file index
  */
 
 /**
@@ -27,7 +28,20 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     handleRemoveAtt(e, emDoc) {
-        alert("Removed Attachment");
+        e.preventDefault();
+
+        //pkgAttachments on the client strips 'value'.
+        //Add it back since the server expects it.
+        let pkg = {
+            pkgIdentity: this.props.pkg.pkgIdentity,
+            pkgAttachments : {value: this.props.pkg.pkgAttachments }
+        }
+
+        let offDate = iriDate(pkg.pkgIdentity['docOfficialDate'].value);
+        pkg.pkgIdentity['docOfficialDate'].value = offDate;
+
+        let data = { emDoc, pkg };
+        this.props.handleRemove(data);
     }
 
     toggleAttModal() {

@@ -27,7 +27,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -115,6 +115,12 @@ class DocumentForm extends React.Component {
         loadFormWithDocument(this);
     }
 
+    handleRemoveAttachment = (data) => {
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleRemoveAttachment(this, data, this.reloadAttachments);
+        return;
+    }
+
     render() {
         const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
@@ -150,6 +156,7 @@ class DocumentForm extends React.Component {
                     mode={mode}
                     pkg={pkg}
                     reload={this.reloadAttachments}
+                    handleRemove={this.handleRemoveAttachment}
                 />
             </TabPanel>
             <TabPanel>
