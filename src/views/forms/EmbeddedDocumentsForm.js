@@ -9,11 +9,6 @@ import {MAX_ATTACHMENTS} from '../../constants';
 import StatefulForm from './StatefulForm';
 import { notifyWarning } from '../../utils/NotifHelper';
 import { iriDate } from '../../utils/DateHelper';
-/**
- * To-Do:
- * a. Remove next -> components button at the bottom from IdentityMetadata page.
- *    It is broken.
- */
 
 /**
  * This needs to be converted to use the baseformHOC
