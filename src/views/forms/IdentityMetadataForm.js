@@ -220,16 +220,6 @@ class IdentityMetadataForm extends React.Component {
               </Row>
             </CardBody>
             <CardFooter>
-              <Button type="submit" name="btnNext" size="sm" 
-                color="primary" disabled={isSubmitting || !formValid}
-                onClick={ 
-                  (evt) => {
-                    this.setNextClicked();
-                    }
-                  }
-                >
-                <i className="fa fa-chevron-right"></i> Next - Components
-              </Button>
               { " " }
               <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
               { " " }

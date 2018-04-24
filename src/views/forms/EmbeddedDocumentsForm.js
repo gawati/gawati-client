@@ -4,7 +4,7 @@ import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label, Modal, 
 import {T} from '../../utils/i18nHelper';
 import StdCompContainer from '../../components/general/StdCompContainer';
 
-import FileUpload1 from './FileUpload1';
+import FileUpload from './FileUpload';
 import {MAX_ATTACHMENTS} from '../../constants';
 import StatefulForm from './StatefulForm';
 import { notifyWarning } from '../../utils/NotifHelper';
@@ -89,7 +89,7 @@ class EmbeddedDocumentsForm extends React.Component {
             <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
             <ModalHeader>Upload New Attachment</ModalHeader>
             <ModalBody>
-                <FileUpload1 pkg={this.props.pkg} emDoc={this.state.newAtt}
+                <FileUpload pkg={this.props.pkg} emDoc={this.state.newAtt}
                 isSubmitting={this.props.isSubmitting}
                 handlePostSave={this.handlePostSave.bind(this)}
                 handlePreSave={this.handlePreSave.bind(this)} />
@@ -103,7 +103,7 @@ class EmbeddedDocumentsForm extends React.Component {
 
     renderAttachment(emDoc) {
         return(
-            <FileUpload1 pkg={this.props.pkg} emDoc={emDoc}
+            <FileUpload pkg={this.props.pkg} emDoc={emDoc}
             isSubmitting={this.props.isSubmitting}
             handlePostSave={this.handlePostSave.bind(this)}
             handlePreSave={this.handlePreSave.bind(this)} />

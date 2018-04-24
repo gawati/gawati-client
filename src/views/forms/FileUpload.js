@@ -4,74 +4,99 @@ import { Label, Input, Row, Col, Button} from 'reactstrap';
 import axios from 'axios';
 import {dataProxyServer} from '../../constants';
 import { iriDate } from '../../utils/DateHelper';
+import { notifySuccess, notifyWarning } from '../../utils/NotifHelper';
 
 /**
- * Upload component for files. Event handlers for File input and Title input need to be 
- * passed in , along with a key to identify the group of fields
- * 
+ * Upload component for files. Handles both update and new.
+ * Leave `index` empty for new files. The server will generate one.
+ *  
  * @class FileUpload
  * @extends {React.Component}
  */
 class FileUpload extends React.Component {
+    constructor(props) {
+        super(props);
+        const {index, showAs, fileType, fileName} = this.props.emDoc;
+        this.state = {
+            index: index,
+            file: null,
+            title: showAs,
+            fileName: fileName,
+            fileType: fileType
+        }
+    }
 
     handleSuccess(response) {
         if (response.hasOwnProperty("success")) {
-            alert("File Saved");
+            notifySuccess('Attachment was saved');
+            //Call Post Save handler in the parent.
+            this.props.handlePostSave();
         }
+    }
+
+    handleChangeFile(e) {
+        this.setState({
+            file: e.target.files[0],
+            fileName: e.target.files[0].name,
+            fileType: e.target.files[0].type
+        })
     }
 
     handleSaveFile() {
-        const {fileValue, title, fileType, fileName, getDocIndex, commonkey} = this.props ;
-        let index = getDocIndex(commonkey);
-        console.log("Save attachment: ", index, title);
-        let iri = "/" + this.props.iri;
+        //Call Pre Save handler in the parent.
+        this.props.handlePreSave();
+
+        const {index, file, title, fileType, fileName} = this.state;
+        const {pkgAttachments, pkgIdentity} = this.props.pkg;
+        let iri = pkgIdentity['docIri'].value;
 
         let data = new FormData();
-        if (fileValue) {
-            if (title) {
-                data.append(`file`, fileValue);
-                data.append(`fileName`, fileName);
-                data.append(`title`, title);
-                data.append(`fileType`, fileType);
-                data.append(`key`, commonkey);
-                data.append(`iri`, iri);
-            }
-        }
-        // add document metadata to submit formData
-        for (let field in this.props.form) {
-           let formField = this.props.form[field];
-           console.log(" docLang ",  this.props.form['docLang']);
-           if (field === 'docOfficialDate') {
-              let offDate = iriDate(formField.value);
-              console.log(" OFFICIAL DATE = ", offDate);
-              data.append(field, JSON.stringify({value: offDate}));
-           } else {
-              data.append(field, JSON.stringify({value: formField.value}));
-           }
-        }
+        if (!file || !title) {
+            notifyWarning("Please select the file to upload and enter a title");
+        } else {
+            data.append(`index`, index);
+            data.append(`file`, file);
+            data.append(`fileName`, fileName);
+            data.append(`title`, title);
+            data.append(`fileType`, fileType);
+            data.append(`iri`, iri);
 
-        axios.post(dataProxyServer() + '/gwc/document/upload', data, {
-            headers: { "X-Requested-With": "XMLHttpRequest" }
-        }).then((response) => {
-            console.log(" RESPONSE >  DATA ", response.data);
-            this.handleSuccess(response.data);
-        }).catch((err) => {
-            console.log(" ERROR RESPONSE ", err);
-            //handleApiException(err);
-        });
+            // add document metadata to submit formData
+            for (let field in pkgIdentity) {
+            let formField = pkgIdentity[field];
+            if (field === 'docOfficialDate') {
+                let offDate = iriDate(formField.value);
+                data.append(field, JSON.stringify({value: offDate}));
+            } else {
+                data.append(field, JSON.stringify({value: formField.value}));
+            }
+            }
+
+            // add document attachments info
+            data.append(`pkgAttachments`, JSON.stringify({value: pkgAttachments}));
+
+            axios.post(dataProxyServer() + '/gwc/document/upload', data, {
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            }).then((response) => {
+                console.log(" RESPONSE >  DATA ", response.data);
+                this.handleSuccess(response.data);
+            }).catch((err) => {
+                console.log(" ERROR RESPONSE ", err);
+                //handleApiException(err);
+            });
+        }
     }
 
     render() {
-        const {fileValue, title, fileType, fileName} = this.props ;
-        console.log(" PROPS = fileValue, title, fileType, fileName ", fileValue, title, fileType, fileName);
-        const {onChangeFile, onChangeFileTitle, commonkey} = this.props ;
+        const {index, title, fileType, fileName} = this.state;
+        console.log("index, title, fileType, fileName ", index, title, fileType, fileName);
         return (
             <div>
                 <Row className="mb-4">
                     <Col xs="12">
                         <Row>
                         <Col xs="12">
-                            <input type="file" className="form-control-file" forkey={commonkey} id="file" name="file" onChange={onChangeFile} />
+                            <input type="file" className="form-control-file" forkey={index} id="file" name="file" onChange={this.handleChangeFile.bind(this)} />
                         </Col>
                         </Row>
                         <Row>
@@ -79,9 +104,9 @@ class FileUpload extends React.Component {
                             <FormControl>
                                 <Label htmlFor="docAttType">Upload File Type</Label>
                                 <input type="text" name="docAttType"
-                                    forkey={commonkey}
+                                    forkey={index}
                                     className="form-control"
-                                    value={ fileType }
+                                    value={fileType}
                                     id="doctype"
                                     readOnly="true"
                                     placeholder="Upload File Type" required/>
@@ -91,10 +116,10 @@ class FileUpload extends React.Component {
                             <FormControl>
                                 <Label htmlFor="docAttTitle">File Title</Label>
                                 <Input type="text" name="docAttTitle"
-                                    forkey={commonkey}
+                                    forkey={index}
                                     className="form-control"
-                                    onChange={ onChangeFileTitle }
-                                    value={ title }
+                                    onChange={e => this.setState({title: e.target.value})}
+                                    value={title}
                                     id="doctitle"
                                     placeholder="File Title" required/>
                             </FormControl>
@@ -102,7 +127,9 @@ class FileUpload extends React.Component {
                         </Row>
                     </Col>
                 </Row>
-                <Button size="sm" color="primary" className="float-right" onClick={this.handleSaveFile.bind(this)}>
+                <Button size="sm" color="primary" className="float-right"
+                disabled={this.props.isSubmitting}
+                onClick={this.handleSaveFile.bind(this)}>
                     <i className="fa fa-dot-circle-o"></i> Save
                 </Button>
             </div>
