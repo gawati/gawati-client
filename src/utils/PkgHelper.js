@@ -8,3 +8,7 @@ export const docWorkflowState = (pkg) => {
     console.log(" docWorkflowState = ", pkg);
     return pkg.workflow.state; 
 };
+
+export const docTitle = (pkg) => {
+    return pkg.pkgIdentity.docTitle.value ; 
+}
