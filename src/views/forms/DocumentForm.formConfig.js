@@ -9,9 +9,9 @@ export const identityInitialState = () => (
         docAknType: {value: '', error: null },
         docCountry: {value: '', error: null },
         docTitle: {value: '', error: null},
-        docOfficialDate: {value: undefined, error: null },
-        docPublicationDate: {value: undefined, error:null},
-        docEntryIntoForceDate: {value: undefined, error:null},
+        docOfficialDate: {value: '', error: null },
+        docPublicationDate: {value: '', error:null},
+        docEntryIntoForceDate: {value: '', error:null},
         docNumber: {value: '', error: null },
         docPart: {value: '', error: null },
         docIri : {value: '', error: null }
