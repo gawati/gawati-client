@@ -21,7 +21,7 @@ const FieldDate = ({onChange, onBlur, readOnly, name, label, value, error}) => {
     );
 };
 
- 
+ /*
 FieldDate.propTypes =  {
   onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func,
@@ -30,7 +30,7 @@ FieldDate.propTypes =  {
   label: PropTypes.string.isRequired,
   value: PropTypes.instanceOf(Date).isRequired
 };
-
+*/
   
 
 export default FieldDate ; 
