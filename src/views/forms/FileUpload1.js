@@ -44,7 +44,8 @@ class FileUpload1 extends React.Component {
 
     handleSaveFile() {
         const {index, file, title, fileType, fileName} = this.state;
-        let iri = this.props.form['docIri'].value;
+        const {pkgAttachments, pkgIdentity} = this.props.pkg;
+        let iri = pkgIdentity['docIri'].value;
 
         let data = new FormData();
         if (!file || !title) {
@@ -58,8 +59,8 @@ class FileUpload1 extends React.Component {
             data.append(`iri`, iri);
 
             // add document metadata to submit formData
-            for (let field in this.props.form) {
-            let formField = this.props.form[field];
+            for (let field in pkgIdentity) {
+            let formField = pkgIdentity[field];
             if (field === 'docOfficialDate') {
                 let offDate = iriDate(formField.value);
                 data.append(field, JSON.stringify({value: offDate}));
@@ -67,6 +68,9 @@ class FileUpload1 extends React.Component {
                 data.append(field, JSON.stringify({value: formField.value}));
             }
             }
+
+            // add document attachments info
+            data.append(`pkgAttachments`, JSON.stringify({value: pkgAttachments}));
 
             axios.post(dataProxyServer() + '/gwc/document/upload', data, {
                 headers: { "X-Requested-With": "XMLHttpRequest" }

@@ -27,7 +27,7 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     handleRemoveAtt(e, emDoc) {
-        alert("Removed attachment");
+        alert("Removed Attachment");
     }
 
     toggleAttModal() {
@@ -68,12 +68,11 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttModal() {
-        const form = this.props.pkg.pkgIdentity;
         return (
             <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
             <ModalHeader>Upload New Attachment</ModalHeader>
             <ModalBody>
-                <FileUpload1 form={form} emDoc={this.state.newAtt} handlePostSave={this.handlePostSave.bind(this)} />
+                <FileUpload1 pkg={this.props.pkg} emDoc={this.state.newAtt} handlePostSave={this.handlePostSave.bind(this)} />
             </ModalBody>
             <ModalFooter>
                 <Button color="secondary" onClick={this.toggleAttModal.bind(this)}>Cancel</Button>
@@ -83,9 +82,8 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttachment(emDoc) {
-        const form = this.props.pkg.pkgIdentity;
         return(
-            <FileUpload1 form={form} emDoc={emDoc} handlePostSave={this.handlePostSave.bind(this)} />
+            <FileUpload1 pkg={this.props.pkg} emDoc={emDoc} handlePostSave={this.handlePostSave.bind(this)} />
         );
     }
 
