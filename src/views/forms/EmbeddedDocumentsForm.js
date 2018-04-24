@@ -13,7 +13,6 @@ import { iriDate } from '../../utils/DateHelper';
  * To-Do:
  * a. Remove next -> components button at the bottom from IdentityMetadata page.
  *    It is broken.
- * b. Index displayed should be ordered. Don't take it from file index
  */
 
 /**
@@ -113,13 +112,13 @@ class EmbeddedDocumentsForm extends React.Component {
 
     renderAttachments(emDocs) {
         let attachments =
-        emDocs.map(emDoc => {
+        emDocs.map((emDoc, i) => {
             return (
                 <Row key={emDoc.index}>
                 <Col xs="12">
                     <Card>
                     <CardHeader>
-                        { emDoc.index }. {emDoc.showAs}
+                        {i + 1}. {emDoc.showAs}
                         <Label className="float-right mb-0">
                         <Button type="reset" size="sm"
                         onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
