@@ -15,14 +15,13 @@ const GAWATI_CLIENT_APIS = [
             'document-edit': '/gwc/document/edit',
             'document-upload': '/gwc/document/upload',
             'document-remove': '/gwc/document/remove',
-            'workflows-meta': '/gwc/workflows/meta'
+            'workflows-meta': '/gwc/workflows/meta',
+            'keycloak': '/gwc/auth/config'
         }
     },
     {
         name: "local",
-        apis: {
-            'keycloak': '/authRealm.json'
-        }
+        apis: {}
     }
 ]
 
