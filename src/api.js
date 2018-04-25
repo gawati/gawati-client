@@ -20,9 +20,7 @@ const GAWATI_CLIENT_APIS = [
     },
     {
         name: "local",
-        apis: {
-            'keycloak': '/authRealm.json'
-        }
+        apis: {}
     }
 ]
 
