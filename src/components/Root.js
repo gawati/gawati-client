@@ -5,9 +5,6 @@ import React from 'react';
 
 import { LoggedInPage } from './LoggedInPage';
 
-//import GawatiAuthHelper from '../utils/GawatiAuthHelper';
-
-
 class Root extends React.Component {
 
     render() {

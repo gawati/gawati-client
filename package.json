@@ -42,8 +42,8 @@
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/ --watch --recursive",
-    "start": "shx cp src/configs/authRealm.json public && react-scripts start",
-    "build": "react-scripts build && shx cp src/configs/authRealm.json build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "react-start": "react-scripts start",
