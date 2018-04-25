@@ -29,10 +29,10 @@ import './globalize';
 
 //import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
-import {apiLocalGetCall} from './api';
+import {apiGetCall} from './api';
 
 setup(
-    apiLocalGetCall('keycloak', {})
+    apiGetCall('keycloak', {})
 ).then(() => {
     initLoginRequired(
         () => {

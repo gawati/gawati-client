@@ -14,7 +14,8 @@ const GAWATI_CLIENT_APIS = [
             'document-open': '/gwc/document/load',
             'document-edit': '/gwc/document/edit',
             'document-upload': '/gwc/document/upload',
-            'document-remove': '/gwc/document/remove'
+            'document-remove': '/gwc/document/remove',
+            'keycloak': '/gwc/auth/config'
         }
     },
     {
