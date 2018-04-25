@@ -29,3 +29,12 @@ export const getDocTypeFromAknType = (aknType) => {
 export const getDocTypeFromLocalType = (localTypeNameNormalized) => {
     return getDocTypes().find(dType => dType['localTypeNameNormalized'] === localTypeNameNormalized)
 };
+
+export const getLocalTypeName = (localTypeNameNormalized) => {
+    const docType = getDocTypeFromLocalType(localTypeNameNormalized);
+    if (docType == null ) {
+        return "Unknown";
+    } else {
+        return docType.localTypeName;
+    }
+}

@@ -85,6 +85,7 @@ export const validWorkflowsCheck = () => {
  * @param {function} appLoader function that launches the application if the sanity checks pass. 
  */
 export const sanityChecker = (appLoader) => {
+    console.log(" APPLOADER = ", appLoader);
     const docTypesCheck = validDocTypesCheck();
     if (docTypesCheck.status === true) {
         validWorkflowsCheck()

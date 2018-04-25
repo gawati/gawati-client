@@ -31,12 +31,6 @@ import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/Sa
 import {apiLocalGetCall} from './api';
 import { T } from './utils/i18nHelper';         
 
-/** 
- * Launch with various Sanity checks
-*/
-sanityChecker(appLoader);
-
-
 const appLoader = () => {
     setup(
         apiLocalGetCall('keycloak', {})
@@ -60,6 +54,14 @@ const appLoader = () => {
         alert("There was an error while setting up authentication");
     });
 };
+
+
+
+/** 
+ * Launch with various Sanity checks
+*/
+sanityChecker(appLoader);
+
 
 
 

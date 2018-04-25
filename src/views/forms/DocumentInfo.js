@@ -35,7 +35,7 @@ const conditionalDocNumber = (mode, pkg) => {
 
 const conditionalDocTitle = (mode, pkg) => {
     switch (mode) {
-        case "add": docTitle(pkg) === "" ? T("Title not set yet") : docTitle(pkg) ;
+        case "add": return docTitle(pkg) === "" ? T("Title not set yet") : docTitle(pkg) ;
         default: return docTitle(pkg);
     }
 };
