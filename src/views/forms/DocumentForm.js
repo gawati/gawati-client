@@ -5,7 +5,7 @@ import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 
 import {T} from '../../utils/i18nHelper';
-import {DocumentFormActions} from './DocumentFormActions';
+import DocumentFormActions from './DocumentFormActions';
 
 import 'react-tabs/style/react-tabs.css';
 
@@ -50,6 +50,8 @@ class DocumentForm extends React.Component {
           <input name="docTitle" .... /> in the form
           */ 
           pkg: {
+            created: undefined,
+            modified: undefined,
             pkgIdentity: identityInitialState(),
             pkgAttachments: [],
             workflow: {state: {status: 'draft', 'label': 'Draft'}},
@@ -134,18 +136,19 @@ class DocumentForm extends React.Component {
         return;
     }
 
+
     render() {
         const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
         const {lang} = match.params;
         const {pkg, isSubmitting} = this.state ;
-        console.log(" THIS IS STATE = = ", pkg);
+        console.log(" RENDER_STATE == ", pkg);
         return (
           <StdCompContainer breadcrumb={breadcrumb}>
-            <DocumentFormActions lang={lang} />
+            <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
             <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
             <Tabs>
-            <TabList>
+            <TabList className={`document-form-tabs react-tabs__tab-list`}>
               <Tab>{T("Identity")}</Tab>
               <Tab>Attachments</Tab>
               <Tab>Signature</Tab>

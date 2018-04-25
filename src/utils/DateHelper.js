@@ -1,11 +1,13 @@
 import moment from 'moment';
+import {displayDateFormat, displayDateTimeFormat} from '../constants';
 
-export const displayDate = (date) => moment(date).format('MMMM D YYYY') ;
+export const displayDate = (date) => moment(date).format(displayDateFormat()) ;
 
 export const displayXmlDateTime = (dateTime) => {
   let date = moment(dateTime);
-  let datePart = date.utc().format('MMMM D YYYY');
-  let timePart = date.utc().format('HH:mm');
+  const dispDateTimeFormat = displayDateTimeFormat();
+  let datePart = date.utc().format(dispDateTimeFormat.date);
+  let timePart = date.utc().format(dispDateTimeFormat.time);
   return `${datePart} at ${timePart}`;
 };
 

@@ -30,7 +30,7 @@ export const loadFormWithDocument = (THIS) => {
     )
     .then(
         (response) => {
-            const {error, akomaNtoso, workflow, permissions} = response.data;
+            const {error, created, modified, akomaNtoso, workflow, permissions} = response.data;
             console.log("loadFormWithDocument: error, akomaNtoso ", error, response.data);
             if (error) {
                 applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
@@ -40,7 +40,21 @@ export const loadFormWithDocument = (THIS) => {
                     aknDoc,
                     ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
                 );
-                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {akomaNtoso: aknDoc, workflow: workflow, permissions: permissions}});
+                const createdDate = convertDateString(created);
+                const modifiedDate = convertDateString(modified);
+
+                applyActionToState(THIS, 
+                    {
+                        type: STATE_ACTION_LOADED_DATA, 
+                        params: {
+                            created: createdDate, 
+                            modified: modifiedDate, 
+                            akomaNtoso: aknDoc, 
+                            workflow: workflow, 
+                            permissions: permissions
+                        }
+                    }
+                );
             } 
         }
     )
@@ -68,6 +82,16 @@ const convertDateData = (aknDoc, dateFields) => {
     });
     return aknDoc;
 };
+
+
+/**
+ * Converts a date string to a JS dateTime string
+ * @param {string} dateString in iso8601 date format
+ */
+const convertDateString = (dateString) => {
+    return moment(dateString).toDate();
+}
+
 
 export const loadViewWithDocument = (THIS, iri) => {
     return THIS;
@@ -116,7 +140,6 @@ export const validateFormFields = (THIS) => {
  * using the Yup validator specified in the validationSchema
  */
 export const validateFormField = (THIS, validationSchema, fieldName, fieldValue) => {
-    console.log(" VALIDATE_FORM_FIELD = ", fieldName, fieldValue, validationSchema);
     validationSchema[fieldName].validate
         .validate(fieldValue)
         .then((value) => {

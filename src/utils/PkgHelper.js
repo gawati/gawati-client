@@ -12,3 +12,21 @@ export const docWorkflowState = (pkg) => {
 export const docTitle = (pkg) => {
     return pkg.pkgIdentity.docTitle.value ; 
 };
+
+
+export const docWorkflowTransitions = (pkg) => {
+    return pkg.workflow.transitionsFromState || [];
+};
+
+export const docCreatedDate = (pkg) => {
+    return pkg.created ;
+};
+
+export const docModifiedDate = (pkg) => {
+    return pkg.modified ;
+};
+
+
+export const docOfficialDate = (pkg) => {
+    return pkg.pkgIdentity.docOfficialDate.value;
+};

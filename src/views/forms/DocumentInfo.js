@@ -3,16 +3,53 @@ import {Card, CardBody} from 'reactstrap';
 
 import {SpanNormal} from '../../components/general/Spans';
 import {T} from '../../utils/i18nHelper';
-import { docNumber, docWorkflowState, docTitle } from '../../utils/PkgHelper';
+import { docNumber, docWorkflowState, docTitle, docOfficialDate, docCreatedDate, docModifiedDate } from '../../utils/PkgHelper';
+import {displayDate, displayXmlDateTime} from '../../utils/DateHelper';
+import { Aux } from '../../utils/GeneralHelper';
+
+const ModeAndState = ({mode, pkg}) => 
+    <Aux>
+        <SpanNormal>{ modeString(mode) }</SpanNormal>{ " " } { conditionalDocNumber(mode, pkg) }
+        <CaretSpacer />Current State: {T(docWorkflowState(pkg).label)}    
+    </Aux>
+;
+
+const TitleAndDateInfo = ({ mode, pkg }) => {
+
+    const officialDate = displayDate(docOfficialDate(pkg));
+    const createdDate = displayXmlDateTime(docCreatedDate(pkg));
+    const modifiedDate = displayXmlDateTime(docModifiedDate(pkg));
+    console.log(" off, created, modified ", officialDate, createdDate, modifiedDate);
+    return (
+        <Aux>
+            <SpanNormal>Title:</SpanNormal> {conditionalDocTitle(mode, pkg)}
+            <br />
+            <CaretSpacer />
+            <SpanNormal>Official Date: </SpanNormal> {officialDate}
+            <CaretSpacer />
+            <small>Created: {createdDate}</small><CaretSpacer />
+            <small>Modified: {modifiedDate}</small>
+        </Aux>
+    )
+}
+;
+
+const CaretSpacer = () => 
+    <Aux>
+        { " " }<i className="fa fa-caret-right"></i>{ " " }
+    </Aux>
+;
 
 export const DocumentInfo = ({mode, lang, pkg}) => 
     (
     <Card className="card-accent-warning">
       <CardBody>
         <h4>
-            <SpanNormal>{ modeString(mode) }</SpanNormal>{ " " } { conditionalDocNumber(mode, pkg) }
-            { " " }<i className="fa fa-caret-right"></i>{ " " }Current State: {T(docWorkflowState(pkg).label)} </h4>
-            <h5><SpanNormal>Title:</SpanNormal> {conditionalDocTitle(mode, pkg)}</h5>
+            <ModeAndState mode={mode} pkg={pkg} />
+        </h4>
+        <h5>
+            <TitleAndDateInfo mode={mode} pkg={pkg} />
+        </h5>
         </CardBody>
     </Card>
 );

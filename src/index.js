@@ -14,8 +14,8 @@ import { BrowserRouter } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 // Import Simple Line Icons Set
 import 'simple-line-icons/css/simple-line-icons.css';
-//import './css/custom.css';
-//import './css/custom-media.css';
+import './css/custom.css';
+import './css/custom-media.css';
 
 // Views 
 //import Register from './views/pages/Register/Register';
@@ -25,7 +25,7 @@ import 'simple-line-icons/css/simple-line-icons.css';
 
 import './globalize';
 
-import {setup, initLoginRequired} from './utils/GawatiAuthClient';
+import {setup, initLoginRequired, siteLogout} from './utils/GawatiAuthClient';
 import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
 import {apiGetCall} from './api';
 import { T } from './utils/i18nHelper';         
@@ -46,6 +46,7 @@ const appLoader = () => {
             (error) => {
                 console.log("ERROR initLoginRequired ", "Error while logging in", error );
                 alert("There was an error while initializing login");
+                siteLogout();
             }
         );
     }).catch((e) => {

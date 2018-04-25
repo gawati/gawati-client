@@ -42,17 +42,17 @@
 
 
 /** REACT-TABS*/
-.react-tabs__tab-list {
+.document-form-tabs {
     margin:0 0 0px !important;
+    margin-bottom: 0px;
 }
 
-/*
-#root .react-tabs__tab.react-tabs__tab--selected {
+
+/*  .react-tabs__tab.react-tabs__tab--selected {
     background: var(--reacttabs-selected-bg-color);
     color: var(--reacttabs-selected-color);
     border-bottom: 0px!important;
     border-left: var(--reacttabs-selected-border);
     border-right: var(--reacttabs-selected-border);
     border-top: var(--reacttabs-selected-border);
-}
-*/
+} */

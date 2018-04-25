@@ -37,4 +37,10 @@ export const dataProxyServer = () =>
  */
 export const documentTypes = () => ["act", "doc", "judgment"];
 
+export const displayDateFormat = () => "Do MMM YYYY" ;
+
+export const displayDateTimeFormat = () =>( {date: "Do MMM YYYY", time: "HH:mm:ss"} );
+
+
+
 export const MAX_ATTACHMENTS = 10;

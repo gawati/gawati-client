@@ -30,7 +30,10 @@ const actionIsSubmitting = (state, isSubmitting) => {
 */
 
 export const applyActionToState = (THIS, action) => {
-  THIS.setState(stateAction(THIS.state, action));
+  const newState = stateAction(THIS.state, action);
+  console.log("APPLY_ACTION_TO_STATE = ", action.type, action);
+  console.log("APPLY_ACTION_TO_STATE (NEW STATE) = ", newState);
+  THIS.setState(newState);
 };
 
 export const stateAction = (state, action) => {
@@ -80,7 +83,6 @@ const actionPkg = (state, action) => {
 };
 
 const actionPkgCreated = (state, action) => {
-  console.log(" ACTION_PKG_CREATED ", action);
   switch (action.type) {
     case STATE_ACTION_LOADED_DATA: return action.params.created ;
     default: return state.pkg.created;
@@ -115,8 +117,10 @@ const actionPkgAttachments = (state, action) => {
 };
 
 const actionWorkflow = (state, action) => {
+  console.log(" actionWorkflow ", state.pkg.workflow);
   switch(action.type) {
-    case STATE_ACTION_LOADED_DATA: return action.params.workflow;
+    case STATE_ACTION_LOADED_DATA: 
+      return action.params.workflow;
     default: return state.pkg.workflow;
   }
 };
@@ -129,102 +133,6 @@ const actionPermissions = (state, action) => {
 };
 
 
-/*
-export const stateAction = (state = initialState, action) => {
-  switch (action.type) {
-    case STATE_ACTION_RESET_IDENTITY:
-      return Object.assign(
-        {}, 
-        state, 
-        { 
-          ...state,
-          pkg: {
-          ...state.pkg,
-          pkgIdentity: identityInitialState()},
-          pkgAttachments: __pkgAttachments(state)
-        }
-      );
-    case STATE_ACTION_IS_SUBMITTING:
-      return Object.assign(
-        {}, 
-        state, 
-        actionIsSubmitting(state, true)
-      );
-    case STATE_ACTION_IS_NOT_SUBMITTING:
-      return Object.assign(
-        {}, 
-        state, 
-        actionIsSubmitting(state, false)
-      );
-    case STATE_ACTION_LOADED_DATA:
-      // action.params = {isSubmitting: true / false,   pkg: {pkgIdentity: aknDoc}}
-      return Object.assign(
-        {}, 
-        state, 
-        {
-          ...state,
-          isSubmitting: false, 
-          pkg: {
-            ...state.pkg,
-            created: action.params.created,
-            modified: action.params.modified,
-            pkgIdentity: {...action.params.aknDoc},
-            pkgAttachments: action.params.aknDoc['docComponents'].value,
-            workflow: {...action.params.workflow},
-            permissions: {...action.params.permissions}
-          }
-        }
-      );
-    case STATE_ACTION_SET_FIELD_VALUE:
-      return Object.assign(
-        {},
-        state,
-        {
-          ...state,
-          pkg: {
-              ...state.pkg,
-              pkgIdentity: __pkgIdentity(
-                  state, 
-                  actions.params.fieldName, 
-                  action.params.fieldValue
-                ),
-              pkgAttachments: __pkgAttachments(state),
-              workflow: __workflow(state),
-              permissions: __permissions(state)
-          }
-        }
-      );
-    case STATE_ACTION_SET_FIELD_ERROR:
-      return Object.assign(
-        {},
-        state,
-        {
-          pkg:{
-              pkgIdentity: {
-                  ...state.pkg.pkgIdentity, 
-                    [action.params.fieldName]: {
-                      ...state.pkg.pkgIdentity[action.params.fieldName], 
-                      value: action.params.err.value === null ? '': action.params.err.value,
-                      error: action.params.err.message
-                  }
-              },
-              pkgAttachments: __pkgAttachments(state),
-              workflow: __workflow(state),
-              permissions: __permissions(state)
-            }
-        }
-      );
-    case STATE_ACTION_SET_DOCUMENT_LOAD_ERROR:
-      return Object.assign(
-        {},
-        state,
-        actionDocumentLoadError(state, true)
-      );
-    default:
-      return state;
-  }
-};
-*/
 
 
 
