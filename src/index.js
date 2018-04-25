@@ -25,15 +25,14 @@ import 'simple-line-icons/css/simple-line-icons.css';
 
 import './globalize';
 
-//import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
 import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
-import {apiLocalGetCall} from './api';
+import {apiGetCall} from './api';
 import { T } from './utils/i18nHelper';         
 
 const appLoader = () => {
     setup(
-        apiLocalGetCall('keycloak', {})
+        apiGetCall('keycloak', {})
     ).then(() => {
         initLoginRequired(
             () => {
@@ -61,9 +60,6 @@ const appLoader = () => {
  * Launch with various Sanity checks
 */
 sanityChecker(appLoader);
-
-
-
 
 /*         <Switch>
             <Route path="/register" name="Register" component={Register} />
