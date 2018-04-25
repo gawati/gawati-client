@@ -110,7 +110,8 @@ export const siteLogout = () => {
 };
 
 /**
- * Refreshes the token every ``minValidity`` seconds
+ * Updates the Access Token using the Refresh Token, every
+ * ``minValidity`` seconds.
  * @param {integer} minValidity in seconds
  */
 export const refreshToken = (minValidity = 5) => {

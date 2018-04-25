@@ -25,15 +25,25 @@ import 'simple-line-icons/css/simple-line-icons.css';
 
 import './globalize';
 
-import {setup, initLoginRequired} from './utils/GawatiAuthClient';
+import {setup, initLoginRequired, refreshToken, siteLogout} from './utils/GawatiAuthClient';
 import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
 import {apiGetCall} from './api';
-import { T } from './utils/i18nHelper';         
+import { T } from './utils/i18nHelper';
+import { REFRESH_TOKEN_VALIDITY, REFRESH_TOKEN_INTERVAL } from './constants';
 
 const appLoader = () => {
     setup(
         apiGetCall('keycloak', {})
     ).then(() => {
+
+        setInterval(() => {
+            refreshToken(REFRESH_TOKEN_VALIDITY)
+            .catch(err => {
+                alert("The authentication session has expired. Please sign-in again.");
+                siteLogout();
+            });
+        }, REFRESH_TOKEN_INTERVAL);
+
         initLoginRequired(
             () => {
                 ReactDOM.render(
