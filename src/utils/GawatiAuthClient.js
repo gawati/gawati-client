@@ -110,7 +110,10 @@ export const siteLogout = () => {
 };
 
 /**
- * Refreshes the token every ``minValidity`` seconds
+ * Refreshes the token every ``minValidity`` seconds.
+ * See Realm Settings -> Tokens -> Access Token Lifespan (default is 5 minutes)
+ * Timeout in keycloak.updateToken() function is expressed in seconds, not in
+ * minutes. Use timeout < Access Token Lifespan.
  * @param {integer} minValidity in seconds
  */
 export const refreshToken = (minValidity = 5) => {

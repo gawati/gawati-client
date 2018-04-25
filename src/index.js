@@ -25,15 +25,29 @@ import 'simple-line-icons/css/simple-line-icons.css';
 
 import './globalize';
 
-import {setup, initLoginRequired} from './utils/GawatiAuthClient';
+import {setup, initLoginRequired, refreshToken, siteLogout} from './utils/GawatiAuthClient';
 import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
 import {apiGetCall} from './api';
 import { T } from './utils/i18nHelper';         
+
+//60 seconds * 3 = 3 minutes. Keep it less that token minValidity.
+const TOKEN_REFRESH_INTERVAL = 60000 * 3;
 
 const appLoader = () => {
     setup(
         apiGetCall('keycloak', {})
     ).then(() => {
+
+        //Call Refresh token with minValidity = 4 minutes.
+        setInterval(() => {
+            refreshToken(240)
+            .then(() => console.log("Token refreshed."))
+            .catch(err => {
+                alert("The authentication session has expired. Please sign-in again.");
+                siteLogout();
+            });
+        }, TOKEN_REFRESH_INTERVAL);
+
         initLoginRequired(
             () => {
                 ReactDOM.render(
