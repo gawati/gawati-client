@@ -25,7 +25,6 @@ import 'simple-line-icons/css/simple-line-icons.css';
 
 import './globalize';
 
-//import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
 import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
 import {apiGetCall} from './api';
