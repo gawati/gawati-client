@@ -34,12 +34,14 @@ export const applyActionToState = (THIS, action) => {
 };
 
 export const stateAction = (state, action) => {
-  return {
+  const stateObject = {
     isSubmitting: actionIsSubmitting(state, action),
     documentLoadError: actionDocumentLoadError(state, action),
     mode: actionMode(state, action),
     pkg: actionPkg(state, action)
-  }
+  };
+  console.log("STATE_ACTION: ", stateObject);
+  return stateObject;
 };
 
 
@@ -65,7 +67,7 @@ const actionMode = (state, action) => {
 };
 
 const actionPkg = (state, action) => {
-  return {
+  const pkgObject = {
     created: actionPkgCreated(state, action),
     modified: actionPkgModified(state, action),
     pkgIdentity: actionPkgIdentity(state, action),
@@ -73,9 +75,12 @@ const actionPkg = (state, action) => {
     workflow: actionWorkflow(state, action),
     permissions: actionPermissions(state, action)
   };
+  console.log(" ACTION_PKG ", pkgObject);
+  return pkgObject;
 };
 
 const actionPkgCreated = (state, action) => {
+  console.log(" ACTION_PKG_CREATED ", action);
   switch (action.type) {
     case STATE_ACTION_LOADED_DATA: return action.params.created ;
     default: return state.pkg.created;
@@ -92,7 +97,7 @@ const actionPkgModified = (state, action) => {
 const actionPkgIdentity = (state, action) => {
   switch (action.type) {
     case STATE_ACTION_RESET_IDENTITY: return identityInitialState();
-    case STATE_ACTION_LOADED_DATA: return {...action.params.aknDoc};
+    case STATE_ACTION_LOADED_DATA: return {...action.params.akomaNtoso};
     case STATE_ACTION_SET_FIELD_VALUE: 
       return __pkgIdentity(state, action.params.fieldName, action.params.fieldValue);
     case STATE_ACTION_SET_FIELD_ERROR:
@@ -104,7 +109,7 @@ const actionPkgIdentity = (state, action) => {
 const actionPkgAttachments = (state, action) => {
   switch (action.type) {
     case STATE_ACTION_RESET_IDENTITY: return state.pkg.pkgAttachments;
-    case STATE_ACTION_LOADED_DATA: return action.params.aknDoc['attachments'].value;
+    case STATE_ACTION_LOADED_DATA: return action.params.akomaNtoso['attachments'].value;
     default: return state.pkg.pkgAttachments;
   }
 };

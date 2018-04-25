@@ -3,7 +3,7 @@ import {Card, CardBody} from 'reactstrap';
 
 import {SpanNormal} from '../../components/general/Spans';
 import {T} from '../../utils/i18nHelper';
-import { docNumber, docWorkflowState } from '../../utils/PkgHelper';
+import { docNumber, docWorkflowState, docTitle } from '../../utils/PkgHelper';
 
 export const DocumentInfo = ({mode, lang, pkg}) => 
     (
@@ -11,10 +11,8 @@ export const DocumentInfo = ({mode, lang, pkg}) =>
       <CardBody>
         <h4>
             <SpanNormal>{ modeString(mode) }</SpanNormal>{ " " } { conditionalDocNumber(mode, pkg) }
-            { " " }<i className="fa fa-caret-right"></i>{ " " }Current State: {docWorkflowState(pkg).label} </h4>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-        laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-        ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+            { " " }<i className="fa fa-caret-right"></i>{ " " }Current State: {T(docWorkflowState(pkg).label)} </h4>
+            <h5><SpanNormal>Title:</SpanNormal> {conditionalDocTitle(mode, pkg)}</h5>
         </CardBody>
     </Card>
 );
@@ -32,6 +30,13 @@ const conditionalDocNumber = (mode, pkg) => {
     switch (mode) {
         case "add": return "";
         default: return docNumber(pkg);
+    }
+};
+
+const conditionalDocTitle = (mode, pkg) => {
+    switch (mode) {
+        case "add": return docTitle(pkg) === "" ? T("Title not set yet") : docTitle(pkg) ;
+        default: return docTitle(pkg);
     }
 };
 

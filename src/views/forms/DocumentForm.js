@@ -52,7 +52,8 @@ class DocumentForm extends React.Component {
           pkg: {
             pkgIdentity: identityInitialState(),
             pkgAttachments: [],
-            workflow: {}
+            workflow: {state: {status: 'draft', 'label': 'Draft'}},
+            permissions: {}
           }
         };
         /** 
@@ -138,6 +139,7 @@ class DocumentForm extends React.Component {
         const {match, mode} = this.props;
         const {lang} = match.params;
         const {pkg, isSubmitting} = this.state ;
+        console.log(" THIS IS STATE = = ", pkg);
         return (
           <StdCompContainer breadcrumb={breadcrumb}>
             <DocumentFormActions lang={lang} />

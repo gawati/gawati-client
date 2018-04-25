@@ -14,6 +14,7 @@ import { iriFromPackage } from '../utils/DataHelper';
 import { T } from '../utils/i18nHelper';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
+import { getDocTypeFromLocalType, getLocalTypeName } from '../utils/DocTypesHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 import StdCompContainer from '../components/general/StdCompContainer';
 import Paginater from "../components/ui_elements/Paginater";
@@ -43,7 +44,7 @@ export const TitleAndDateColumn = ({docPkg}) =>  {
   return (
     <Aux>
       <div>
-        <RRNavLink to={ navLinkTo }>{doc.docTitle.value}</RRNavLink>
+        <RRNavLink to={ navLinkTo }>{getLocalTypeName(doc.docType.value)}: {doc.docTitle.value}</RRNavLink>
       </div>
       <div className="small text-muted">
        { showCreatedAndModified(created, modified) }
@@ -61,7 +62,7 @@ export const DocCountryColumn = ({ doc }) =>
   <div>{doc.docCountry.value}</div>
 ;
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 5;
 
 class Dashboard extends Component {
 

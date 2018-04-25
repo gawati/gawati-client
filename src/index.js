@@ -14,8 +14,6 @@ import { BrowserRouter } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 // Import Simple Line Icons Set
 import 'simple-line-icons/css/simple-line-icons.css';
-
-
 //import './css/custom.css';
 //import './css/custom-media.css';
 
@@ -29,29 +27,43 @@ import './globalize';
 
 //import GawatiAuthHelper from '../utils/GawatiAuthHelper';
 import {setup, initLoginRequired} from './utils/GawatiAuthClient';
+import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
 import {apiLocalGetCall} from './api';
+import { T } from './utils/i18nHelper';         
 
-setup(
-    apiLocalGetCall('keycloak', {})
-).then(() => {
-    initLoginRequired(
-        () => {
-            ReactDOM.render(
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>,
-                document.getElementById('root')
-            );
-        },
-        (error) => {
-            console.log("ERROR initLoginRequired ", "Error while logging in", error );
-            alert("There was an error while initializing login");
-        }
-    );
-}).catch((e) => {
-    console.log("ERROR retreieing json" , e);
-    alert("There was an error while setting up authentication");
-});
+const appLoader = () => {
+    setup(
+        apiLocalGetCall('keycloak', {})
+    ).then(() => {
+        initLoginRequired(
+            () => {
+                ReactDOM.render(
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>,
+                    document.getElementById('root')
+                );
+            },
+            (error) => {
+                console.log("ERROR initLoginRequired ", "Error while logging in", error );
+                alert("There was an error while initializing login");
+            }
+        );
+    }).catch((e) => {
+        console.log("ERROR retreieing json" , e);
+        alert("There was an error while setting up authentication");
+    });
+};
+
+
+
+/** 
+ * Launch with various Sanity checks
+*/
+sanityChecker(appLoader);
+
+
+
 
 /*         <Switch>
             <Route path="/register" name="Register" component={Register} />
