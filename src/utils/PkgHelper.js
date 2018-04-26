@@ -1,11 +1,8 @@
-import React from 'react';
-
 export const docNumber = (pkg) => {
     return pkg.pkgIdentity.docNumber.value ; 
 };
 
 export const docWorkflowState = (pkg) => {
-    console.log(" docWorkflowState = ", pkg);
     return pkg.workflow.state ? pkg.workflow.state : '';
 };
 
@@ -16,6 +13,15 @@ export const docTitle = (pkg) => {
 
 export const docWorkflowTransitions = (pkg) => {
     return pkg.workflow.transitionsFromState || [];
+};
+
+export const docWorkflowCurrentState = (pkg) => {
+    return pkg.workflow.state;
+};
+
+export const docWorkflowStateInfo = (pkg, stateName) => {
+    const wfStateInfo = pkg.workflow.allStates.filter( (wfState) => wfState.name === stateName );
+    return wfStateInfo;
 };
 
 export const docCreatedDate = (pkg) => {

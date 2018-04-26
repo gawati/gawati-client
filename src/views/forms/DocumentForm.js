@@ -3,7 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import IdentityMetadataForm from './IdentityMetadataForm';
 import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
-
+import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
 import DocumentFormActions from './DocumentFormActions';
 
@@ -41,6 +41,7 @@ class DocumentForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+          isLoading: true,
           isSubmitting: false,
           documentLoadError: false,
           mode: props.mode,
@@ -138,24 +139,41 @@ class DocumentForm extends React.Component {
 
 
     render() {
-        const breadcrumb = getBreadcrumb(this);
         const {match, mode} = this.props;
         const {lang} = match.params;
-        const {pkg, isSubmitting} = this.state ;
-        console.log(" RENDER_STATE == ", pkg);
-        return (
-          <StdCompContainer breadcrumb={breadcrumb}>
-            <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
-            <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
-            <Tabs>
+        const {pkg, isSubmitting, isLoading} = this.state ;
+
+        const breadcrumb = getBreadcrumb(this, isLoading);
+
+        console.log(" RENDER_STATE == ", this.state);
+        if (isLoading) {
+            return (
+              <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
+                <h1>Loading...</h1>
+              </StdCompContainer>
+              );      
+        } else {
+            return (
+                <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
+                    <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} />
+                </StdCompContainer>
+            );
+        }
+    }
+
+};
+
+const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) => 
+    <Aux>
+        <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
+        <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
+        <Tabs>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>
-              <Tab>{T("Identity")}</Tab>
-              <Tab>Attachments</Tab>
-              <Tab>Signature</Tab>
-              <Tab>Extended Metadata</Tab>
+                <Tab>{T("Identity")}</Tab>
+                <Tab>{T("Attachments")}</Tab>
             </TabList>
             <TabPanel>
-               <IdentityMetadataForm 
+                <IdentityMetadataForm 
                     lang={lang} 
                     mode={mode} 
                     pkg={pkg} 
@@ -165,7 +183,7 @@ class DocumentForm extends React.Component {
                     handleSubmit={this.handleIdentitySubmit} 
                     updateIriValue={this.updateIriValue}
                     validateFormField={this.validateFormField}
-                />
+                    />
             </TabPanel>
             <TabPanel>
                 <EmbeddedDocumentsForm
@@ -178,18 +196,9 @@ class DocumentForm extends React.Component {
                     handleRemove={this.handleRemoveAttachment}
                 />
             </TabPanel>
-            <TabPanel>
-              <h2>Any content 2</h2>
-            </TabPanel>
-            <TabPanel>
-              <h2>Any content 2</h2>
-            </TabPanel>
+        </Tabs>
+    </Aux>;
 
-          </Tabs>
-        </StdCompContainer>
-        );
-    }
 
-};
 
 export default DocumentForm ; 

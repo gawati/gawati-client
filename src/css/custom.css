@@ -47,7 +47,20 @@
     margin-bottom: 0px;
 }
 
+.document-form-action-current-info {
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
 
+.embedded-form-action {
+    margin-top:0px;
+    margin-bottom:0px;
+    border: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
 /*  .react-tabs__tab.react-tabs__tab--selected {
     background: var(--reacttabs-selected-bg-color);
     color: var(--reacttabs-selected-color);

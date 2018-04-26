@@ -26,9 +26,8 @@ import './css/custom-media.css';
 import './globalize';
 
 import {setup, initLoginRequired, siteLogout} from './utils/GawatiAuthClient';
-import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
+import {sanityChecker} from './utils/SanityHelper';
 import {apiGetCall} from './api';
-import { T } from './utils/i18nHelper';         
 
 const appLoader = () => {
     setup(
