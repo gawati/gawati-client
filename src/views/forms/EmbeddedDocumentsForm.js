@@ -136,17 +136,13 @@ class EmbeddedDocumentsForm extends React.Component {
         const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
         return (
             <div >
-                <Card className="bg-white text-right mt-1 mb-1">
+                <Card className="bg-white text-right embedded-form-action">
                     <CardBody className="pt-0 pb-0">
                     <Button type="button" onClick={this.handleAddMore.bind(this)}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add File</Button>
                     </CardBody>
                 </Card>        
                 <StatefulForm encType="multipart/form-data" ref="docsForm" noValidate>
                 <Card>
-                    <CardHeader>
-                        <strong>Components</strong>
-                        <small> Form</small>
-                    </CardHeader>
                     <CardBody>
                         {this.renderMetadata(form)}
                         { 
