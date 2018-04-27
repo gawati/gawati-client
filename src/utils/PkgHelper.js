@@ -2,6 +2,19 @@ export const docNumber = (pkg) => {
     return pkg.pkgIdentity.docNumber.value ; 
 };
 
+export const docIri = (pkg) => {
+    return pkg.pkgIdentity.docIri.value ; 
+};
+
+export const docType = (pkg) => {
+    return pkg.pkgIdentity.docType.value;
+};
+
+export const docAknType = (pkg) => {
+    return pkg.pkgIdentity.docAknType.value ; 
+};
+
+
 export const docWorkflowState = (pkg) => {
     return pkg.workflow.state ? pkg.workflow.state : '';
 };
@@ -31,7 +44,6 @@ export const docCreatedDate = (pkg) => {
 export const docModifiedDate = (pkg) => {
     return pkg.modified ;
 };
-
 
 export const docOfficialDate = (pkg) => {
     return pkg.pkgIdentity.docOfficialDate.value;

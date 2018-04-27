@@ -188,5 +188,3 @@ const __pkgIdentity = (state, fieldName, fieldValue, err) => {
     }
   }
 };
-
-
