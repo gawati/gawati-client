@@ -48,3 +48,6 @@ export const MAX_ATTACHMENTS = 10;
  */
 export const REFRESH_TOKEN_INTERVAL = 60000 * 3; //3 minutes
 export const REFRESH_TOKEN_VALIDITY = 240; //4 minutes
+
+export const displayDateFormat = () => "Do MMM YYYY" ;
+export const displayDateTimeFormat = () =>( {date: "Do MMM YYYY", time: "HH:mm:ss"} );

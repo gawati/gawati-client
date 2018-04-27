@@ -4,17 +4,17 @@ import {Breadcrumb, BreadcrumbItem, Button, Table, Progress, CardHeader, CardBod
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
-import { linkDocumentEdit } from '../components/utils/QuickRoutes';
+//import { linkDocumentEdit } from '../components/utils/QuickRoutes';
 
 import { apiUrl } from '../api';
 
-import { getTokenParsed, getRolesForClient, getRolesForCurrentClient } from '../utils/GawatiAuthClient';
+//import { getTokenParsed, getRolesForClient, getRolesForCurrentClient } from '../utils/GawatiAuthClient';
 import RRNavLink from '../components/utils/RRNavLink';
-import { iriFromPackage } from '../utils/DataHelper';
+//import { iriFromPackage } from '../utils/DataHelper';
 import { T } from '../utils/i18nHelper';
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
-import { getDocTypeFromLocalType, getLocalTypeName } from '../utils/DocTypesHelper';
+import { getLocalTypeName } from '../utils/DocTypesHelper';
 import { setInRoute } from '../utils/RoutesHelper';
 import StdCompContainer from '../components/general/StdCompContainer';
 import Paginater from "../components/ui_elements/Paginater";

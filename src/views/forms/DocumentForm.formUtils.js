@@ -11,7 +11,7 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING } from './DocumentForm.constants';
 
 /**
  * Loads a form context with  a document
@@ -20,7 +20,7 @@ import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_
 export const loadFormWithDocument = (THIS) => {
     let {params} = THIS.props.match ; 
     let {iri} = params;
-    applyActionToState(THIS, {type: STATE_ACTION_IS_SUBMITTING});
+    applyActionToState(THIS, {type: STATE_ACTION_IS_LOADING});
     iri = iri.startsWith("/") ? iri : `/${iri}` ;
     console.log("loadFormWithDocument: IRI FOUND = ", iri);
     axios.post(
@@ -30,7 +30,7 @@ export const loadFormWithDocument = (THIS) => {
     )
     .then(
         (response) => {
-            const {error, akomaNtoso, workflow, permissions} = response.data;
+            const {error, created, modified, akomaNtoso, workflow, permissions} = response.data;
             console.log("loadFormWithDocument: error, akomaNtoso ", error, response.data);
             if (error) {
                 applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
@@ -40,7 +40,21 @@ export const loadFormWithDocument = (THIS) => {
                     aknDoc,
                     ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
                 );
-                applyActionToState(THIS, {type: STATE_ACTION_LOADED_DATA, params: {akomaNtoso: aknDoc, workflow: workflow, permissions: permissions}});
+                const createdDate = convertDateString(created);
+                const modifiedDate = convertDateString(modified);
+
+                applyActionToState(THIS, 
+                    {
+                        type: STATE_ACTION_LOADED_DATA, 
+                        params: {
+                            created: createdDate, 
+                            modified: modifiedDate, 
+                            akomaNtoso: aknDoc, 
+                            workflow: workflow, 
+                            permissions: permissions
+                        }
+                    }
+                );
             } 
         }
     )
@@ -69,6 +83,16 @@ const convertDateData = (aknDoc, dateFields) => {
     return aknDoc;
 };
 
+
+/**
+ * Converts a date string to a JS dateTime string
+ * @param {string} dateString in iso8601 date format
+ */
+const convertDateString = (dateString) => {
+    return moment(dateString).toDate();
+}
+
+
 export const loadViewWithDocument = (THIS, iri) => {
     return THIS;
 };
@@ -77,13 +101,22 @@ export const loadViewWithDocument = (THIS, iri) => {
 /**
  * @memberof IdentityMetadata
  */
-export const getBreadcrumb = (THIS) => {
+export const getBreadcrumb = (THIS, isLoading=false) => {
+    
     const {mode} = THIS.props;
     const {params} = THIS.props.match;
     const {pkgIdentity} = THIS.state.pkg;
     let title = pkgIdentity.docTitle.value ;
     let type = pkgIdentity.docAknType.value;
+
     let crumbLinks = getCrumbLinks("document-ident-open", params);
+    if (isLoading) {
+        return (
+        <Breadcrumb>
+            <BreadcrumbItem>Loading...</BreadcrumbItem>
+        </Breadcrumb>
+        )   ;     
+    } else
     if (mode === "edit") {
         return (
         <Breadcrumb>
@@ -116,7 +149,6 @@ export const validateFormFields = (THIS) => {
  * using the Yup validator specified in the validationSchema
  */
 export const validateFormField = (THIS, validationSchema, fieldName, fieldValue) => {
-    console.log(" VALIDATE_FORM_FIELD = ", fieldName, fieldValue, validationSchema);
     validationSchema[fieldName].validate
         .validate(fieldValue)
         .then((value) => {

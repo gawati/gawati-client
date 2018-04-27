@@ -1,50 +1,54 @@
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING } from './DocumentForm.constants';
 import {identityInitialState} from './DocumentForm.formConfig';
-/** STATE HANDLERS  */
 
-
-const initialState = {
-  isSubmitting: false,
-  documentLoadError: false,
-  pkg: {
-    pkgIdentity: identityInitialState(),
-    pkgAttachments: [],
-    workflow: {}
-  }
-};
-
-/*
-****NOT SURE IF THE BELOW TYPE OF API is required...leaving it for refrence
-**** The below creates TRUE clones of sub objects
-***
-const actionIsSubmitting = (state, isSubmitting) => {
-  return  {
-    isSubmitting: isSubmitting,
-    pkg: {
-      ...state.pkg,
-      pkgIdentity: __pkgIdentity(state),
-      pkgAttachments: __pkgAttachments(state)
-    }
-  }
-};
-*/
-
+/**
+ * All setState() calls are routed via applyActionToState, 
+ * there is no direct setState() done in the forms. 
+ * This is borrowed from the action, state routing model used in redux.
+ */
 export const applyActionToState = (THIS, action) => {
-  THIS.setState(stateAction(THIS.state, action));
+  const newState = stateAction(THIS.state, action);
+  //console.log("APPLY_ACTION_TO_STATE = ", action.type, action);
+  //console.log("APPLY_ACTION_TO_STATE (NEW STATE) = ", newState);
+  THIS.setState(newState);
 };
 
+/**
+ * Creates the state object based on the current state and action params
+ * @param {*} state  the current state
+ * @param {*} action the action {type:..., params:{.... }}
+ */
 export const stateAction = (state, action) => {
   const stateObject = {
+    isLoading: actionIsLoading(state, action),
     isSubmitting: actionIsSubmitting(state, action),
     documentLoadError: actionDocumentLoadError(state, action),
     mode: actionMode(state, action),
     pkg: actionPkg(state, action)
   };
-  console.log("STATE_ACTION: ", stateObject);
+  //console.log("STATE_ACTION: ", stateObject);
   return stateObject;
 };
 
+/**
+ * action for the isLoading state variable
+ * @param {*} state 
+ * @param {*} action 
+ */
+const actionIsLoading = (state, action) => {
+  switch (action.type) {
+    case STATE_ACTION_IS_LOADING: return true;
+    case STATE_ACTION_IS_NOT_LOADING: return false;
+    case STATE_ACTION_LOADED_DATA: return false;
+    default: return state.isLoading;
+  }
+};
 
+/**
+ * action handler for isSubmitting state variable
+ * @param {*} state 
+ * @param {*} action 
+ */
 const actionIsSubmitting = (state, action) => {
   switch (action.type) {
     case STATE_ACTION_IS_SUBMITTING: return true;
@@ -62,10 +66,20 @@ const actionDocumentLoadError = (state, action) => {
   }
 };
 
+/**
+ * We just set return the current mode for now
+ * @param {*} state 
+ * @param {*} action 
+ */
 const actionMode = (state, action) => {
   return state.mode;
 };
 
+/**
+ * Builds the pkg object. 
+ * @param {*} state 
+ * @param {*} action 
+ */
 const actionPkg = (state, action) => {
   const pkgObject = {
     created: actionPkgCreated(state, action),
@@ -75,12 +89,11 @@ const actionPkg = (state, action) => {
     workflow: actionWorkflow(state, action),
     permissions: actionPermissions(state, action)
   };
-  console.log(" ACTION_PKG ", pkgObject);
+  //console.log(" ACTION_PKG ", pkgObject);
   return pkgObject;
 };
 
 const actionPkgCreated = (state, action) => {
-  console.log(" ACTION_PKG_CREATED ", action);
   switch (action.type) {
     case STATE_ACTION_LOADED_DATA: return action.params.created ;
     default: return state.pkg.created;
@@ -115,8 +128,10 @@ const actionPkgAttachments = (state, action) => {
 };
 
 const actionWorkflow = (state, action) => {
+  console.log(" actionWorkflow ", state.pkg.workflow);
   switch(action.type) {
-    case STATE_ACTION_LOADED_DATA: return action.params.workflow;
+    case STATE_ACTION_LOADED_DATA: 
+      return action.params.workflow;
     default: return state.pkg.workflow;
   }
 };
@@ -129,102 +144,6 @@ const actionPermissions = (state, action) => {
 };
 
 
-/*
-export const stateAction = (state = initialState, action) => {
-  switch (action.type) {
-    case STATE_ACTION_RESET_IDENTITY:
-      return Object.assign(
-        {}, 
-        state, 
-        { 
-          ...state,
-          pkg: {
-          ...state.pkg,
-          pkgIdentity: identityInitialState()},
-          pkgAttachments: __pkgAttachments(state)
-        }
-      );
-    case STATE_ACTION_IS_SUBMITTING:
-      return Object.assign(
-        {}, 
-        state, 
-        actionIsSubmitting(state, true)
-      );
-    case STATE_ACTION_IS_NOT_SUBMITTING:
-      return Object.assign(
-        {}, 
-        state, 
-        actionIsSubmitting(state, false)
-      );
-    case STATE_ACTION_LOADED_DATA:
-      // action.params = {isSubmitting: true / false,   pkg: {pkgIdentity: aknDoc}}
-      return Object.assign(
-        {}, 
-        state, 
-        {
-          ...state,
-          isSubmitting: false, 
-          pkg: {
-            ...state.pkg,
-            created: action.params.created,
-            modified: action.params.modified,
-            pkgIdentity: {...action.params.aknDoc},
-            pkgAttachments: action.params.aknDoc['docComponents'].value,
-            workflow: {...action.params.workflow},
-            permissions: {...action.params.permissions}
-          }
-        }
-      );
-    case STATE_ACTION_SET_FIELD_VALUE:
-      return Object.assign(
-        {},
-        state,
-        {
-          ...state,
-          pkg: {
-              ...state.pkg,
-              pkgIdentity: __pkgIdentity(
-                  state, 
-                  actions.params.fieldName, 
-                  action.params.fieldValue
-                ),
-              pkgAttachments: __pkgAttachments(state),
-              workflow: __workflow(state),
-              permissions: __permissions(state)
-          }
-        }
-      );
-    case STATE_ACTION_SET_FIELD_ERROR:
-      return Object.assign(
-        {},
-        state,
-        {
-          pkg:{
-              pkgIdentity: {
-                  ...state.pkg.pkgIdentity, 
-                    [action.params.fieldName]: {
-                      ...state.pkg.pkgIdentity[action.params.fieldName], 
-                      value: action.params.err.value === null ? '': action.params.err.value,
-                      error: action.params.err.message
-                  }
-              },
-              pkgAttachments: __pkgAttachments(state),
-              workflow: __workflow(state),
-              permissions: __permissions(state)
-            }
-        }
-      );
-    case STATE_ACTION_SET_DOCUMENT_LOAD_ERROR:
-      return Object.assign(
-        {},
-        state,
-        actionDocumentLoadError(state, true)
-      );
-    default:
-      return state;
-  }
-};
-*/
 
 
 
@@ -271,22 +190,3 @@ const __pkgIdentity = (state, fieldName, fieldValue, err) => {
 };
 
 
-/**
- * Clones every attachment in pkgAttachments using map and Object.assign
- * There aren't further nested levels within array items
- * @param {*} state 
- */
-const __pkgAttachments = (state) => {
-  return state.pkg.pkgAttachments.map( 
-      (item ) => Object.assign({}, item )
-    );
-};
-
-const __workflow = (state) => {
-  return copyObject(state.pkg.workflow);
-};
-
-
-const __permissions = (state) => {
-  return copyObject(state.pkg.permissions);
-};
