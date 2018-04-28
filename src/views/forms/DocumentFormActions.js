@@ -3,7 +3,7 @@ import axios from 'axios';
 import {Card, CardBody, ButtonGroup} from 'reactstrap';
 import RRNavLink from '../../components/utils/RRNavLink';
 import {linkDocumentAdd} from '../../components/utils/QuickRoutes';
-import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docAknType } from '../../utils/PkgHelper';
+import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docType, docAknType } from '../../utils/PkgHelper';
 import { getRolesForCurrentClient } from '../../utils/GawatiAuthClient';
 import { T } from '../../utils/i18nHelper';
 import { Aux } from '../../utils/GeneralHelper';
@@ -45,16 +45,22 @@ class DocumentFormActions extends React.Component {
         }
     };
 
+
+    transitDataEnvelope = (pkg, from, to, name) => (
+            {
+                docIri: docIri(pkg),
+                aknType : docAknType(pkg),
+                aknSubType: docType(pkg),
+                stateFrom: from, 
+                stateTo: to, 
+                transitionName: name
+         }
+    );
+
     transitDocument = (pkg, from, to, name) => {
         
-        const transition = {
-            docIri: docIri(pkg),
-            aknType : docAknType(pkg),
-            ankSubType: docType(pkg),
-            stateFrom: from, 
-            stateTo: to, 
-            transitionName: name
-        };
+        const transition = this.transitDataEnvelope(pkg, from, to, name);
+
         axios.post(apiUrl("workflows-transit"), {data: transition})
             .then( (response) => {
                 console.log("transitDocument ", response);
