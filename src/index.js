@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 //import 'bootstrap/dist/css/bootstrap-reboot.css';
 //import 'bootstrap/dist/css/bootstrap.css';
+
 // Styles
 // Import Font Awesome Icons Set
 import 'font-awesome/css/font-awesome.min.css';
@@ -79,6 +80,5 @@ sanityChecker(appLoader);
             <PrivateRoute path="/" name="App" component={App} />
         </Switch>
  */
-
 
 registerServiceWorker();

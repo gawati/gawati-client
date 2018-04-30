@@ -1,39 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { confirmable } from 'react-confirm';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
+//import ReactModal from 'react-modal';
 
-class ConfirmDialog extends React.Component {
+class ConfirmModal extends React.Component {
+  constructor () {
+    super();
+  }
 
-  render() {
-    const {
-        okLabbel = 'OK',
-        cancelLabel = 'Cancel',
-        title,
-        confirmation,
-        show,
-        proceed,
-        dismiss,
-        cancel,
-        enableEscape = true,
-      } = this.props;      
+  render () {
+    const {show, onClose, title, onOK, onOKLabel, onCloseLabel, children} = this.props;
     return (
-      <div className="static-modal">
-        <Modal show={show} onHide={dismiss} keyboard={true} className={this.props.className} backdrop={true}>
+      <div>
+        <Modal isOpen={show}>
           <ModalHeader>{title}</ModalHeader>
           <ModalBody>
-            {confirmation}
+            {children}
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={proceed}>Transit</Button>{' '}
-            <Button color="secondary" onClick={cancel}>Cancel</Button>
+            <Button color="primary" onClick={onOK}>{onOKLabel}</Button>{' '}
+            <Button color="secondary" onClick={onClose}>{onCloseLabel}</Button>
           </ModalFooter>
         </Modal>
       </div>
     );
   }
-}
-;
+};
 
 
-export default confirmable(ConfirmDialog);
+
+export default ConfirmModal;
