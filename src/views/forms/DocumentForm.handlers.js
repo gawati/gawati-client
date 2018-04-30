@@ -84,7 +84,7 @@ export const handleApiException = (THIS, err) => {
  */
 export const handleRemoveAttachment = (THIS, data, postRemove) => {
     axios.post(
-      apiUrl('document-remove'), {
+      apiUrl('attachment-remove'), {
         data: data
       }
       )

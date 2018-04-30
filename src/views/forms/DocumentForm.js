@@ -26,7 +26,7 @@ import {
     generateIRI,
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB } from './DocumentForm.constants';
 import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
@@ -45,6 +45,7 @@ class DocumentForm extends React.Component {
           isSubmitting: false,
           documentLoadError: false,
           mode: props.mode,
+          activeTab: 0,
           /* 
           form has field names as state values 
           i.e. docTitle has to have a corresponding 
@@ -129,6 +130,10 @@ class DocumentForm extends React.Component {
 
     reloadAttachments = () => {
         loadFormWithDocument(this);
+        applyActionToState(this, {
+            type: STATE_ACTION_SWITCH_TAB, 
+            params: {activeTab: 1}
+        });
     }
 
     handleRemoveAttachment = (data) => {
@@ -155,7 +160,7 @@ class DocumentForm extends React.Component {
         } else {
             return (
                 <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
-                    <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} />
+                    <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} THIS={this} />
                 </StdCompContainer>
             );
         }
@@ -163,11 +168,11 @@ class DocumentForm extends React.Component {
 
 };
 
-const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) => 
+const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) => 
     <Aux>
         <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
         <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
-        <Tabs>
+        <Tabs defaultIndex={THIS.state.activeTab}>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
@@ -178,11 +183,11 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) =>
                     mode={mode} 
                     pkg={pkg} 
                     isSubmitting={isSubmitting}
-                    validationSchema={this.identityValidationSchema}
-                    handleReset={this.handleIdentityReset} 
-                    handleSubmit={this.handleIdentitySubmit} 
-                    updateIriValue={this.updateIriValue}
-                    validateFormField={this.validateFormField}
+                    validationSchema={THIS.identityValidationSchema}
+                    handleReset={THIS.handleIdentityReset} 
+                    handleSubmit={THIS.handleIdentitySubmit} 
+                    updateIriValue={THIS.updateIriValue}
+                    validateFormField={THIS.validateFormField}
                     />
             </TabPanel>
             <TabPanel>
@@ -191,9 +196,9 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) =>
                     mode={mode}
                     pkg={pkg}
                     isSubmitting={isSubmitting}
-                    setSubmitting={this.setSubmitting}
-                    reload={this.reloadAttachments}
-                    handleRemove={this.handleRemoveAttachment}
+                    setSubmitting={THIS.setSubmitting}
+                    reload={THIS.reloadAttachments}
+                    handleRemove={THIS.handleRemoveAttachment}
                 />
             </TabPanel>
         </Tabs>
