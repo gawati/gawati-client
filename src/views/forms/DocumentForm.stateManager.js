@@ -1,4 +1,4 @@
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB } from './DocumentForm.constants';
 import {identityInitialState} from './DocumentForm.formConfig';
 
 /**
@@ -24,10 +24,23 @@ export const stateAction = (state, action) => {
     isSubmitting: actionIsSubmitting(state, action),
     documentLoadError: actionDocumentLoadError(state, action),
     mode: actionMode(state, action),
-    pkg: actionPkg(state, action)
+    pkg: actionPkg(state, action),
+    activeTab: actionSwitchTab(state, action)
   };
   //console.log("STATE_ACTION: ", stateObject);
   return stateObject;
+};
+
+/**
+ * action for the activeTab state variable
+ * @param {*} state 
+ * @param {*} action 
+ */
+const actionSwitchTab = (state, action) => {
+  switch (action.type) {
+    case STATE_ACTION_SWITCH_TAB: return action.params.activeTab;
+    default: return state.activeTab;
+  }
 };
 
 /**
