@@ -75,7 +75,7 @@ class FileUpload extends React.Component {
             // add document attachments info
             data.append(`pkgAttachments`, JSON.stringify({value: pkgAttachments}));
 
-            axios.post(dataProxyServer() + '/gwc/document/upload', data, {
+            axios.post(dataProxyServer() + '/gwc/attachments/upload', data, {
                 headers: { "X-Requested-With": "XMLHttpRequest" }
             }).then((response) => {
                 console.log(" RESPONSE >  DATA ", response.data);
