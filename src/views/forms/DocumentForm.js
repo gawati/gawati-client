@@ -155,7 +155,7 @@ class DocumentForm extends React.Component {
         } else {
             return (
                 <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
-                    <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} />
+                    <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} THIS={this} />
                 </StdCompContainer>
             );
         }
@@ -163,7 +163,7 @@ class DocumentForm extends React.Component {
 
 };
 
-const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) => 
+const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) => 
     <Aux>
         <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
         <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
@@ -178,11 +178,11 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) =>
                     mode={mode} 
                     pkg={pkg} 
                     isSubmitting={isSubmitting}
-                    validationSchema={this.identityValidationSchema}
-                    handleReset={this.handleIdentityReset} 
-                    handleSubmit={this.handleIdentitySubmit} 
-                    updateIriValue={this.updateIriValue}
-                    validateFormField={this.validateFormField}
+                    validationSchema={THIS.identityValidationSchema}
+                    handleReset={THIS.handleIdentityReset} 
+                    handleSubmit={THIS.handleIdentitySubmit} 
+                    updateIriValue={THIS.updateIriValue}
+                    validateFormField={THIS.validateFormField}
                     />
             </TabPanel>
             <TabPanel>
@@ -191,9 +191,9 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting}) =>
                     mode={mode}
                     pkg={pkg}
                     isSubmitting={isSubmitting}
-                    setSubmitting={this.setSubmitting}
-                    reload={this.reloadAttachments}
-                    handleRemove={this.handleRemoveAttachment}
+                    setSubmitting={THIS.setSubmitting}
+                    reload={THIS.reloadAttachments}
+                    handleRemove={THIS.handleRemoveAttachment}
                 />
             </TabPanel>
         </Tabs>
