@@ -64,14 +64,17 @@ const getTokenParsed = () => {
  * @returns array of roles 
  */
 export const getRolesForClient = (client) => {
+    let roles = [];
     const token = getTokenParsed();
     if (token.resource_access) {
         if (token.resource_access[client]) {
-            return token.resource_access[client].roles;
+            roles = token.resource_access[client].roles;
         }
-        return [];
     }
-    return [];
+    if (token.realm_access) {
+        roles = roles.concat(token.realm_access.roles);
+    }
+    return roles;
 };
 
 export const getRolesForCurrentClient = () => {
