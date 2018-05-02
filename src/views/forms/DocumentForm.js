@@ -67,6 +67,7 @@ class DocumentForm extends React.Component {
          */
         this.identityValidationSchema = identityValidationSchema();
         // bindings
+        this.refreshDocument = this.refreshDocument.bind(this);
         //this.handleSubmit = this.handleSubmit.bind(this);
         //this.handleReset = this.handleReset.bind(this);
     }
@@ -86,7 +87,6 @@ class DocumentForm extends React.Component {
     }
 
     updateIriValue = () => {
-        console.log(" THIS UPDATEIRIVALUE = docIRI ", this.state);
         setFieldValue(this, "docIri", generateIRI(this.state.pkg.pkgIdentity));
     };
 
@@ -128,11 +128,19 @@ class DocumentForm extends React.Component {
         }
     }
 
+    refreshDocument = () => {
+        this.reloadForm(this.state.activeTab);
+    }
+
     reloadAttachments = () => {
+        this.reloadForm(1);
+    }
+
+    reloadForm = (activeTab) => {
         loadFormWithDocument(this);
         applyActionToState(this, {
             type: STATE_ACTION_SWITCH_TAB, 
-            params: {activeTab: 1}
+            params: {activeTab: activeTab}
         });
     }
 
@@ -170,7 +178,7 @@ class DocumentForm extends React.Component {
 
 const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) => 
     <Aux>
-        <DocumentFormActions lang={lang} mode={mode} pkg={pkg} />
+        <DocumentFormActions lang={lang} mode={mode} pkg={pkg} refreshDocument={ THIS.refreshDocument} />
         <DocumentInfo lang={lang} mode={mode} pkg={pkg} />
         <Tabs defaultIndex={THIS.state.activeTab}>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>

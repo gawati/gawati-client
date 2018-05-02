@@ -10,43 +10,16 @@ import { Aux } from '../../utils/GeneralHelper';
 import {modeString, conditionalDocNumber, CaretSpacer} from '../../utils/FormHelper';
 import { SpanNormal } from '../../components/general/Spans';
 import { apiUrl } from '../../api';
-import ConfirmModal from '../utils/ConfirmModal';
+import TransitAction from './TransitAction';
+import { notifySuccess } from '../../utils/NotifHelper';
+//import ConfirmModal from '../utils/ConfirmModal';
 
 class DocumentFormActions extends React.Component {
 
     constructor(props) {
         super(props);
-        // used for the transit action confirmaton dialog
-        this.state = {
-            isOpen: false,
-            onTransit: null
-        };
-        this.confirmationText = "";
+        this.transitDocument = this.transitDocument.bind(this);
     }
-
-    setConfirmationText = (text) => {
-        this.confirmationText = text;
-    };
-
-    toggleModal = () => {
-        this.setState({
-          isOpen: !this.state.isOpen
-        });
-    };
-
-    closeModal = () => {
-        this.setState({
-            isOpen: false
-        });
-    };
-
-    openModal = (transitFunc) => {
-        this.setState({
-            isOpen: true,
-            onTransit: transitFunc
-        });
-    };
-
 
     // 1 - check if any of the current roles has transit permission in the current state
     // 2 - if it has transit permission, enable the transits to the subsequent states
@@ -95,14 +68,20 @@ class DocumentFormActions extends React.Component {
 
     transitDocument = (pkg, from, to, name) => {
         const transition = this.transitDataEnvelope(pkg, from, to, name);
+        const {refreshDocument} = this.props;
+        console.log(" TRANSIT DOCUMENT PROPS ", this.props);
         axios.post(apiUrl("workflows-transit"), {data: transition})
             .then( (response) => {
-                this.closeModal();
                 // {"success":{"code":"save_file","message":"/db/docs/gawati-client-data/akn/ke/act/legge/1970-06-03/akn_ke_act_legge_1970-06-03_Cap_44_eng_main.xml"}}
-                console.log("transitDocument ", response);
+                //console.log("transitDocument ", response);
+                const data = response.data;
+                if (data.success) {
+                    console.log(" Refreshing document success");
+                    notifySuccess(T(`The state of the document has changed to ${to}`));
+                    refreshDocument();
+                }
             })
             .catch( (err) => {
-                this.closeModal();
                 console.log("transitDocument ", err);
             });
     };
@@ -111,23 +90,13 @@ class DocumentFormActions extends React.Component {
         const transitions = docWorkflowTransitions(pkg) ;
         // [ {from:"draft", icon:"fa-thumbs-up", name:"make_editable", title:"Send for Editing",to:"editable" }]
         return transitions.map( (transition) => {
-            const {from, to, icon, name, title } = transition;
+            const {name} = transition;
             return (
-            <Aux key={name}>
-            <button className={`btn btn-warning`} onClick={
-                () => {   
-                    //this.transitDocument(pkg, from, to, name);
-                    // show the Modal dialog
-                    this.setConfirmationText(`Are you sure you want to transit the document from the state: ${from} to the state: ${to} ?`);
-                    const transit = () => {
-                        this.transitDocument(pkg, from, to, name);
-                    };
-                    this.openModal(transit);
-                }  
-            }>
-                <i className={`fa ${icon}`}></i> {T(title)}
-            </button>&#160;
-            </Aux>
+                <TransitAction key={name} 
+                    pkg={pkg} 
+                    transition={transition} 
+                    transitAction={this.transitDocument} 
+                />
             );
         });
     };
@@ -138,15 +107,6 @@ class DocumentFormActions extends React.Component {
         const transitionButtons = this.renderTransitionActions(pkg, lang);
         return(
         <Aux>
-            <ConfirmModal show={this.state.isOpen} 
-                onClose={this.closeModal} 
-                title={T("Transiting Document")}
-                onOK={this.state.onTransit}
-                onOKLabel={T("Confirm")}
-                onCloseLabel={T("Close")}
-                >
-                {this.confirmationText}
-            </ConfirmModal>            
             <Card className={`text-white bg-info text-right mt-1 mb-1 doc-toolbar-actions`}>
                <CardBody className={`pt-0 pb-0 pl-0 pr-0`}>
                <div className={`float-left document-form-action-current-info`}><ModeAndState mode={mode} pkg={pkg} /></div>

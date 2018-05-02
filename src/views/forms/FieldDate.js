@@ -20,17 +20,15 @@ const FieldDate = ({onChange, onBlur, readOnly, name, label, value, error}) => {
     </FormControl>
     );
 };
-
- /*
 FieldDate.propTypes =  {
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   onBlur: PropTypes.func,
-  readOnly: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.instanceOf(Date).isRequired
+  readOnly: PropTypes.bool,
+  name: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.instanceOf(Date)
 };
-*/
+
   
 
 export default FieldDate ; 

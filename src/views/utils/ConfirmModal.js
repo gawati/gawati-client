@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+//import Spinner from 'react-spinkit';
 //import ReactModal from 'react-modal';
 
 class ConfirmModal extends React.Component {
-  constructor () {
-    super();
-  }
 
   render () {
     const {show, onClose, title, onOK, onOKLabel, onCloseLabel, children} = this.props;
@@ -27,6 +25,15 @@ class ConfirmModal extends React.Component {
   }
 };
 
+// show, onClose, title, onOK, onOKLabel, onCloseLabel
+ConfirmModal.propTypes =  {
+  show: PropTypes.bool,
+  title: PropTypes.string,
+  onOK: PropTypes.func,
+  onClose: PropTypes.func,
+  onOKLabel: PropTypes.string,
+  onCloseLabel: PropTypes.string
+};
 
 
 export default ConfirmModal;

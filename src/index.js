@@ -28,9 +28,9 @@ import './globalize';
 
 import { REFRESH_TOKEN_VALIDITY, REFRESH_TOKEN_INTERVAL } from './constants';
 import {setup, initLoginRequired, refreshToken, siteLogout} from './utils/GawatiAuthClient';
-import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
+import {sanityChecker} from './utils/SanityHelper';
 import {apiGetCall} from './api';
-import { T } from './utils/i18nHelper';
+//import { T } from './utils/i18nHelper';
 
 const appLoader = () => {
     setup(
