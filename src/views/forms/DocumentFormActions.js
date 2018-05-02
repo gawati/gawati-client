@@ -10,8 +10,16 @@ import { Aux } from '../../utils/GeneralHelper';
 import {modeString, conditionalDocNumber, CaretSpacer} from '../../utils/FormHelper';
 import { SpanNormal } from '../../components/general/Spans';
 import { apiUrl } from '../../api';
+import TransitAction from './TransitAction';
+import { notifySuccess } from '../../utils/NotifHelper';
+//import ConfirmModal from '../utils/ConfirmModal';
 
 class DocumentFormActions extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.transitDocument = this.transitDocument.bind(this);
+    }
 
     // 1 - check if any of the current roles has transit permission in the current state
     // 2 - if it has transit permission, enable the transits to the subsequent states
@@ -57,13 +65,21 @@ class DocumentFormActions extends React.Component {
          }
     );
 
-    transitDocument = (pkg, from, to, name) => {
-        
-        const transition = this.transitDataEnvelope(pkg, from, to, name);
 
+    transitDocument = (pkg, from, to, name) => {
+        const transition = this.transitDataEnvelope(pkg, from, to, name);
+        const {refreshDocument} = this.props;
+        console.log(" TRANSIT DOCUMENT PROPS ", this.props);
         axios.post(apiUrl("workflows-transit"), {data: transition})
             .then( (response) => {
-                console.log("transitDocument ", response);
+                // {"success":{"code":"save_file","message":"/db/docs/gawati-client-data/akn/ke/act/legge/1970-06-03/akn_ke_act_legge_1970-06-03_Cap_44_eng_main.xml"}}
+                //console.log("transitDocument ", response);
+                const data = response.data;
+                if (data.success) {
+                    console.log(" Refreshing document success");
+                    notifySuccess(T(`The state of the document has changed to ${to}`));
+                    refreshDocument();
+                }
             })
             .catch( (err) => {
                 console.log("transitDocument ", err);
@@ -73,32 +89,24 @@ class DocumentFormActions extends React.Component {
     renderTransitionActions = (pkg, lang) => {
         const transitions = docWorkflowTransitions(pkg) ;
         // [ {from:"draft", icon:"fa-thumbs-up", name:"make_editable", title:"Send for Editing",to:"editable" }]
-        
         return transitions.map( (transition) => {
-            console.log(" TRANSIITON = ", transition);
-            const {from, to, icon, name, title } = transition;
+            const {name} = transition;
             return (
-            <Aux key={name}>
-            <button className={`btn btn-warning`} onClick={
-                () => {   
-                    this.transitDocument(pkg, from, to, name);
-                }  
-            }>
-                <i className={`fa ${icon}`}></i> {T(title)}
-            </button>{" "}
-            </Aux>
+                <TransitAction key={name} 
+                    pkg={pkg} 
+                    transition={transition} 
+                    transitAction={this.transitDocument} 
+                />
             );
         });
     };
 
     render() {
         const {lang, mode, pkg} = this.props;
-        //const pkg = this.state;
-        //const wfRoleTransitions = this.getRoleTransitions(pkg);
         const transitAllowed = this.isTransitPermissionPresent(pkg);
         const transitionButtons = this.renderTransitionActions(pkg, lang);
-        console.log(" TRANSITION ALLOWED & BUTTONS ", transitAllowed, transitionButtons);
         return(
+        <Aux>
             <Card className={`text-white bg-info text-right mt-1 mb-1 doc-toolbar-actions`}>
                <CardBody className={`pt-0 pb-0 pl-0 pr-0`}>
                <div className={`float-left document-form-action-current-info`}><ModeAndState mode={mode} pkg={pkg} /></div>
@@ -109,6 +117,7 @@ class DocumentFormActions extends React.Component {
                 </ButtonGroup>
                 </CardBody>
             </Card>        
+        </Aux>
         );
             
     }

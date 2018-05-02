@@ -11,7 +11,7 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING } from './DocumentForm.constants';
 
 /**
  * Loads a form context with  a document

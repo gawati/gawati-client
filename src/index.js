@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 //import 'bootstrap/dist/css/bootstrap-reboot.css';
 //import 'bootstrap/dist/css/bootstrap.css';
+
 // Styles
 // Import Font Awesome Icons Set
 import 'font-awesome/css/font-awesome.min.css';
@@ -27,9 +28,9 @@ import './globalize';
 
 import { REFRESH_TOKEN_VALIDITY, REFRESH_TOKEN_INTERVAL } from './constants';
 import {setup, initLoginRequired, refreshToken, siteLogout} from './utils/GawatiAuthClient';
-import {sanityChecker, validDocTypesCheck, validWorkflowsCheck} from './utils/SanityHelper';
+import {sanityChecker} from './utils/SanityHelper';
 import {apiGetCall} from './api';
-import { T } from './utils/i18nHelper';
+//import { T } from './utils/i18nHelper';
 
 const appLoader = () => {
     setup(
@@ -79,6 +80,5 @@ sanityChecker(appLoader);
             <PrivateRoute path="/" name="App" component={App} />
         </Switch>
  */
-
 
 registerServiceWorker();

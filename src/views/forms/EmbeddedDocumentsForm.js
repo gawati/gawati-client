@@ -1,8 +1,7 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardFooter, Row, Col, Button, Label, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {Card, CardHeader, CardBody, Row, Col, Button, Label, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
-import StdCompContainer from '../../components/general/StdCompContainer';
 
 import FileUpload from './FileUpload';
 import {MAX_ATTACHMENTS} from '../../constants';
@@ -54,7 +53,7 @@ class EmbeddedDocumentsForm extends React.Component {
     handleAddMore(event) {
         const {pkgAttachments: attachments} = this.props.pkg ;
         if (attachments.length === MAX_ATTACHMENTS) {
-          notifyWarning("Maximum number of attachments reached");
+          notifyWarning(T("Maximum number of attachments reached"));
         } else {
           event.preventDefault();
           let newAtt = {
@@ -132,7 +131,7 @@ class EmbeddedDocumentsForm extends React.Component {
     }
 
     renderAttForm = () => {
-        const {mode} = this.props;
+        //const {mode} = this.props;
         const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
         return (
             <div >
@@ -147,7 +146,7 @@ class EmbeddedDocumentsForm extends React.Component {
                         {this.renderMetadata(form)}
                         { 
                             attachments.length === 0 ?
-                            "There are no file attachments yet, you can use Add File to add an attachment" :
+                            T("There are no file attachments yet, you can use Add File to add an attachment") :
                             this.renderAttachments(attachments)
                         }
                         {this.renderAttModal()}
