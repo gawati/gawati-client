@@ -48,3 +48,7 @@ export const docModifiedDate = (pkg) => {
 export const docOfficialDate = (pkg) => {
     return pkg.pkgIdentity.docOfficialDate.value;
 };
+
+export const permissions = (pkg) => {
+    return pkg.permissions.permission;
+};
