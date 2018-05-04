@@ -13,6 +13,7 @@ const GAWATI_CLIENT_APIS = [
             'document-add': '/gwc/document/add',
             'document-open': '/gwc/document/load',
             'document-edit': '/gwc/document/edit',
+            'document-auth': '/gwc/document/auth',
             'attachment-upload': '/gwc/attachments/upload',
             'attachment-remove': '/gwc/attachments/remove',
             'workflows-meta': '/gwc/workflows/meta',
