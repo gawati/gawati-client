@@ -69,7 +69,6 @@ class DocumentFormActions extends React.Component {
     transitDocument = (pkg, from, to, name) => {
         const transition = this.transitDataEnvelope(pkg, from, to, name);
         const {refreshDocument} = this.props;
-        console.log(" TRANSIT DOCUMENT PROPS ", this.props);
         axios.post(apiUrl("workflows-transit"), {data: transition})
             .then( (response) => {
                 // {"success":{"code":"save_file","message":"/db/docs/gawati-client-data/akn/ke/act/legge/1970-06-03/akn_ke_act_legge_1970-06-03_Cap_44_eng_main.xml"}}
