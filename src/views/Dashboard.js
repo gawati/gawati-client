@@ -21,6 +21,8 @@ import Paginater from "../components/ui_elements/Paginater";
 import DocActions from "../components/DocActions";
 import Checkbox from "../components/widgets/Checkbox";
 
+import {getToken, generateBearerToken} from "../utils/GawatiAuthClient";
+
 export const StateColumn = ({ stateInfo }) =>  {
   return (
     <div data-status={stateInfo.state.status}>{ stateInfo.state.label }</div>
@@ -115,15 +117,16 @@ class Dashboard extends Component {
   }
   
   getDocs = (itemsFrom) => {
-    axios.post(
-      apiUrl('documents'), {
-        data: {
+    const headers = generateBearerToken(getToken());
+    const config = { headers: headers };
+    const body = {
+      data: {
           "docTypes": "all", 
           "itemsFrom": itemsFrom,
           "pageSize": PAGE_SIZE
         }
-      }
-      )
+    }
+    axios.post(apiUrl('documents'), body, config)
     .then(
       (response) => {
           this.setState({docs: response.data.documents, totalDocs: response.data.total});
