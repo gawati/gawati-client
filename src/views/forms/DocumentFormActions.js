@@ -3,7 +3,7 @@ import axios from 'axios';
 import {Card, CardBody, ButtonGroup} from 'reactstrap';
 import RRNavLink from '../../components/utils/RRNavLink';
 import {linkDocumentAdd} from '../../components/utils/QuickRoutes';
-import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docType, docAknType } from '../../utils/PkgHelper';
+import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docType, docAknType } from '../../utils/StatePkgHelper';
 import { getRolesForCurrentClient } from '../../utils/GawatiAuthClient';
 import { T } from '../../utils/i18nHelper';
 import { Aux } from '../../utils/GeneralHelper';

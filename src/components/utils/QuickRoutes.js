@@ -13,7 +13,7 @@ export const linkDocumentAdd = (uiLang) => {
 export const linkDocumentEdit = (uiLang, linkIri) => {
     const lang = uiLang || "en" ;
     return setInRoute(
-        "document-ident-open", 
+        "document-ident-edit", 
         {"lang": lang, "iri": linkIri }
     );    
 };

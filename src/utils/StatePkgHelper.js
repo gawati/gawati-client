@@ -1,3 +1,10 @@
+/**
+ *  Helper for state pkg in DocumentForm
+ *  NOT FOR USE WITH DASHBOARD LISTINGS !
+ */
+
+
+
 export const docNumber = (pkg) => {
     return pkg.pkgIdentity.docNumber.value ; 
 };
@@ -49,6 +56,6 @@ export const docOfficialDate = (pkg) => {
     return pkg.pkgIdentity.docOfficialDate.value;
 };
 
-export const permissions = (pkg) => {
+export const statePermissions = (pkg) => {
     return pkg.permissions.permission;
 };

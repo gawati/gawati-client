@@ -11,10 +11,11 @@ import DocumentForm from '../views/forms/DocumentForm';
 
 import {PropsRoute, getRoute} from '../utils/RoutesHelper';
 import { ToastContainer } from 'react-toastify';
-
+import {T} from '../utils/i18nHelper';
 
 export const LoggedInPage = ({i18n}) => (
     <div className="app">
+        {console.log(" LOGGEDINPAGE == ", i18n, T("ET.Dashboard.Column.NextStates"))}
         <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
         <div className="app-body">
         <PropsRoute path="*" component={SideBar} i18n={i18n} />
@@ -31,7 +32,7 @@ export const LoggedInPage = ({i18n}) => (
 
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 
-                <PropsRoute path={ getRoute("document-ident-open") }
+                <PropsRoute path={ getRoute("document-ident-edit") }
                     name="EditForm" component={DocumentForm} mode="edit" i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-add") } 
