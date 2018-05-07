@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
 
 import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
@@ -25,9 +25,9 @@ export const LoggedInPage = ({i18n}) => (
         */ }
             <Switch>
 
-                <PropsRoute exact path="/dashboard" i18n={i18n}>
+                <Route exact path="/dashboard" >
                     <Redirect to="/_lang/en/dashboard" />
-                </PropsRoute>
+                </Route>
 
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 
