@@ -14,7 +14,7 @@
     "classnames": "^2.2.5",
     "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
-    "gawati-editor-lang-packs": "^1.0.2",
+    "gawati-editor-lang-packs": "^1.0.3",
     "i18next": "11.2.3",
     "i18next-browser-languagedetector": "2.2.0",
     "i18next-xhr-backend": "^1.5.1",
