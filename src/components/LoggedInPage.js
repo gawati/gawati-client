@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 
 import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
@@ -11,11 +11,10 @@ import DocumentForm from '../views/forms/DocumentForm';
 
 import {PropsRoute, getRoute} from '../utils/RoutesHelper';
 import { ToastContainer } from 'react-toastify';
-import {T} from '../utils/i18nHelper';
+
 
 export const LoggedInPage = ({i18n}) => (
     <div className="app">
-        {console.log(" LOGGEDINPAGE == ", i18n, T("ET.Dashboard.Column.NextStates"))}
         <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
         <div className="app-body">
         <PropsRoute path="*" component={SideBar} i18n={i18n} />
@@ -26,9 +25,9 @@ export const LoggedInPage = ({i18n}) => (
         */ }
             <Switch>
 
-                <Route exact path="/dashboard">
+                <PropsRoute exact path="/dashboard" i18n={i18n}>
                     <Redirect to="/_lang/en/dashboard" />
-                </Route>
+                </PropsRoute>
 
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 

@@ -47,7 +47,6 @@ export const AllowedActions = ({docPkg}) => {
         `document-ident-${action.name}`, 
         {"lang": "en", "iri": linkIri }
       );
-      console.log(" NAVLINKTO ", navLinkTo);
       if (origArr.length - 1 ===  i) {
         // last item
         return <RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>;

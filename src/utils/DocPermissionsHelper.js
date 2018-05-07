@@ -1,11 +1,11 @@
 import {serverPermissions} from "./ServerPkgHelper.js";
 
 export const PERMISSIONS = {
-    "VIEW": {name: "view", label: "Permissions.View"},
-    "EDIT": {name: "edit", label: "Permissions.Edit"},
-    "DELETE": {name: "delete", label: "Permissions.Delete"},
-    "TRANSIT": {name: "transit", label: "Permissions.Transit"},
-    "LIST": {name: "list", label: "Permissions.List"}
+    "VIEW": {name: "view", label: "Action.View"},
+    "EDIT": {name: "edit", label: "Action.Edit"},
+    "DELETE": {name: "delete", label: "Action.Delete"},
+    "TRANSIT": {name: "transit", label: "Action.Transit"},
+    "LIST": {name: "list", label: "Action.List"}
 };
 
 export const hasViewPermission = (pkg, roles) => {

@@ -61,7 +61,7 @@ const appLoader = () => {
             }
         );
     }).catch((e) => {
-        console.log("ERROR retreieing json" , e);
+        console.log("ERROR retreiving json" , e);
         alert("There was an error while setting up authentication");
     });
 };
