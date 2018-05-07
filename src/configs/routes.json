@@ -23,20 +23,20 @@
         ]
     },
     {
-        "route": "/_lang/:lang/document/open/ident/_iri/:iri*",
-        "name": "document-ident-open",
+        "route": "/_lang/:lang/document/edit/ident/_iri/:iri*",
+        "name": "document-ident-edit",
         "label": "Document Identity",
         "breadcrumb": [
             "logged-in-root"
         ]
     },
     {
-        "route": "/_lang/:lang/document/open/comp/_iri/:iri*",
-        "name": "document-comp-open",
+        "route": "/_lang/:lang/document/edit/comp/_iri/:iri*",
+        "name": "document-comp-edit",
         "label": "Document Components",
         "breadcrumb": [
             "logged-in-root",
-            "document-ident-open"
+            "document-ident-edit"
         ]
     }
 ]}

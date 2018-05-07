@@ -40,6 +40,7 @@ class DocumentForm extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(" I18n_BLAH ", props.i18n);
         this.state = {
           isLoading: true,
           isSubmitting: false,

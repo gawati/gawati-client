@@ -3,7 +3,7 @@ import {Card, CardBody} from 'reactstrap';
 
 import {SpanNormal} from '../../components/general/Spans';
 
-import {docOfficialDate, docCreatedDate, docModifiedDate } from '../../utils/PkgHelper';
+import {docOfficialDate, docCreatedDate, docModifiedDate } from '../../utils/StatePkgHelper';
 import {displayDate, displayXmlDateTime} from '../../utils/DateHelper';
 
 import { conditionalDocTitle, CaretSpacer} from '../../utils/FormHelper';

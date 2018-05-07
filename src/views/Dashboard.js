@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 
-import {Breadcrumb, BreadcrumbItem, Button, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
+import {Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
-//import { linkDocumentEdit } from '../components/utils/QuickRoutes';
 
 import { apiUrl } from '../api';
 
-//import { getTokenParsed, getRolesForClient, getRolesForCurrentClient } from '../utils/GawatiAuthClient';
 import RRNavLink from '../components/utils/RRNavLink';
-//import { iriFromPackage } from '../utils/DataHelper';
 import { T } from '../utils/i18nHelper';
+
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
 import { getLocalTypeName } from '../utils/DocTypesHelper';
+import {typicalDashboardPermissions} from "../utils/DocPermissionsHelper";
 import { setInRoute } from '../utils/RoutesHelper';
+
 import StdCompContainer from '../components/general/StdCompContainer';
 import Paginater from "../components/ui_elements/Paginater";
 import DocActions from "../components/DocActions";
 import Checkbox from "../components/widgets/Checkbox";
 
-import {getToken, generateBearerToken} from "../utils/GawatiAuthClient";
+import {getToken, generateBearerToken, getRolesForCurrentClient} from "../utils/GawatiAuthClient";
+import { docIri } from '../utils/ServerPkgHelper';
 
 export const StateColumn = ({ stateInfo }) =>  {
   return (
@@ -35,18 +36,35 @@ const showCreatedAndModified = (created, modified) => {
         `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
 };
 
+
+export const AllowedActions = ({docPkg}) => {
+  const roles = getRolesForCurrentClient();
+  const typical = typicalDashboardPermissions(docPkg, roles);
+  const documentIri = docIri(docPkg);
+  const linkIri = documentIri.startsWith("/") ? documentIri.slice(1): documentIri ; 
+  return typical.map( (action, i, origArr) => {
+      const navLinkTo = setInRoute(
+        `document-ident-${action.name}`, 
+        {"lang": "en", "iri": linkIri }
+      );
+      if (origArr.length - 1 ===  i) {
+        // last item
+        return <RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>;
+      } else {
+        // any other item
+        return <Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>;
+      }
+    })
+ ;
+}
+
 export const TitleAndDateColumn = ({docPkg}) =>  {
   const {created, modified} = docPkg;
   const doc = docPkg.akomaNtoso;
-  let linkIri = doc.docIri.value.startsWith("/") ? doc.docIri.value.slice(1): doc.docIri.value ; 
-  let navLinkTo = setInRoute(
-      "document-ident-open", 
-      {"lang": "en", "iri": linkIri }
-  );
   return (
     <Aux>
       <div>
-        <RRNavLink to={ navLinkTo }>{getLocalTypeName(doc.docType.value)}: {doc.docTitle.value}</RRNavLink>
+        {getLocalTypeName(doc.docType.value)}: {doc.docTitle.value}
       </div>
       <div className="small text-muted">
        { showCreatedAndModified(created, modified) }
@@ -157,7 +175,8 @@ class Dashboard extends Component {
    * @memberof Dashboard
    */
   getBreadcrumb = () => 
-    <Breadcrumb><BreadcrumbItem active>Home</BreadcrumbItem></Breadcrumb>;
+    <Breadcrumb><BreadcrumbItem active>{T("Home")}</BreadcrumbItem></Breadcrumb>;
+
   
   renderDashboardTableRow = (lang, docs) => {
     return docs.map(
@@ -191,9 +210,7 @@ class Dashboard extends Component {
               }
             </td>
             <td className="text-center">
-                <Button >View</Button>&#160;
-                <Button>Edit</Button>&#160;
-                <Button >Delete</Button>
+                <AllowedActions docPkg={docPkg} />
             </td>
             <td className="text-center">
               <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
@@ -216,6 +233,7 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
+    console.log("DASHBOARD/COLUMN/STATE ", T("ET.Dashboard.Column.State"));
     const {lang} = this.props.match.params; 
     const breadcrumb = this.getBreadcrumb();
     return (
@@ -225,17 +243,17 @@ class Dashboard extends Component {
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <Card>
           <CardHeader>
-            <i className="fa fa-align-justify"></i> {T("Documents")}
+            <i className="fa fa-align-justify"></i> {T("ET.Dashboard.Listing.Documents")}
           </CardHeader>
           <CardBody>
             <Table hover responsive>
             <thead className="thead-light">
             <tr>
-              <th className="text-center">{T("State")}</th>
+              <th className="text-center">{T("ET.Dashboard.Column.State")}</th>
               <th>Title</th>
-              <th className="text-center">{T("Language")}</th>
+              <th className="text-center">{T("ET.Dashboard.Column.Language")}</th>
               <th>Workflow</th>
-              <th className="text-center">{T("Next States")}</th>
+              <th className="text-center">{T("ET.Dashboard.Column.NextStates")}</th>
               <th></th>
               <th></th>
                 </tr>

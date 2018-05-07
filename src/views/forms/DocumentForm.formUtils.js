@@ -109,7 +109,7 @@ export const getBreadcrumb = (THIS, isLoading=false) => {
     let title = pkgIdentity.docTitle.value ;
     let type = pkgIdentity.docAknType.value;
 
-    let crumbLinks = getCrumbLinks("document-ident-open", params);
+    let crumbLinks = getCrumbLinks("document-ident-edit", params);
     if (isLoading) {
         return (
         <Breadcrumb>

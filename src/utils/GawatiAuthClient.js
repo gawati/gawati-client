@@ -59,7 +59,7 @@ const getTokenParsed = () => {
 };
 
 /**
- * Returns applicable roles for a client
+ * Returns applicable roles for a client; Also returns global roles
  * @param {*} client name of client
  * @returns array of roles 
  */

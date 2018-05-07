@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 
 import FooterNav from './ui_elements/FooterNav';
 //import Aside from './Aside';
@@ -25,13 +25,13 @@ export const LoggedInPage = ({i18n}) => (
         */ }
             <Switch>
 
-                <Route exact path="/dashboard">
+                <PropsRoute exact path="/dashboard" i18n={i18n}>
                     <Redirect to="/_lang/en/dashboard" />
-                </Route>
+                </PropsRoute>
 
                 <PropsRoute path={ getRoute("logged-in-root") } name="Dashboard" component={Dashboard} i18n={i18n} />
 
-                <PropsRoute path={ getRoute("document-ident-open") }
+                <PropsRoute path={ getRoute("document-ident-edit") }
                     name="EditForm" component={DocumentForm} mode="edit" i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-add") } 

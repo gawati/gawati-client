@@ -1,7 +1,7 @@
 import React from 'react';
 import {Aux} from './GeneralHelper';
 import {T} from './i18nHelper';
-import {docNumber, docTitle} from './PkgHelper';
+import {docNumber, docTitle} from './StatePkgHelper';
 
 export const conditionalDocNumber = (mode, pkg) => {
     switch (mode) {

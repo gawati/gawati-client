@@ -28,7 +28,6 @@ class TransitAction extends React.Component {
         // transition props 
         const {from, to, icon, name, title } = this.props.transition;
         const {pkg, transitAction} = this.props;
-        console.log(" TransitAction :" , this.props);
         const {isOpen} = this.state;
         return (
             <Aux>
