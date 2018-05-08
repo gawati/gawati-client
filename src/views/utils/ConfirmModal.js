@@ -17,7 +17,11 @@ class ConfirmModal extends React.Component {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={onOK}>{onOKLabel}</Button>{' '}
-            <Button color="secondary" onClick={onClose}>{onCloseLabel}</Button>
+            {
+              onCloseLabel
+              ? <Button color="secondary" onClick={onClose}>{onCloseLabel}</Button>
+              : ''
+            }
           </ModalFooter>
         </Modal>
       </div>

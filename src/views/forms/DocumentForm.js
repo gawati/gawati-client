@@ -6,7 +6,7 @@ import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
 import DocumentFormActions from './DocumentFormActions';
-
+import PromptDocType from './PromptDocType';
 import 'react-tabs/style/react-tabs.css';
 
 /*
@@ -79,14 +79,16 @@ class DocumentForm extends React.Component {
         if (mode === "edit") {
             // load iri date
             loadFormWithDocument(this);
-        } else if (mode === "add") {
-            workflowsInitialState(this);
-            // add mode ... validate empty form
-            validateFormFields(this);
-        } else {
+        } else if (mode === "view") {
             // mode === view 
-            loadViewWithDocument(this);  
+            loadViewWithDocument(this);
         }
+    }
+
+    getWFInitialState = (docType, aknType) => {
+        // add mode ... validate empty form
+        validateFormFields(this);
+        workflowsInitialState(this, docType, aknType);
     }
 
     updateIriValue = () => {
@@ -121,7 +123,7 @@ class DocumentForm extends React.Component {
 
     /**
      * Set `isSubmitting`
-     * @val Boolean
+     * @val Boolean 
      */
     setSubmitting = (val) => {
         if (val) {
@@ -153,6 +155,12 @@ class DocumentForm extends React.Component {
         return;
     }
 
+    renderPrompt() {
+        const {mode} = this.props;
+        return (
+            <PromptDocType isOpen={mode === "add"} validationSchema={this.identityValidationSchema} sendDocTypes={this.getWFInitialState.bind(this)}/>
+        );
+    }
 
     render() {
         const {match, mode} = this.props;
@@ -166,6 +174,7 @@ class DocumentForm extends React.Component {
             return (
               <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
                 <h1>Loading...</h1>
+                {this.renderPrompt()}
               </StdCompContainer>
               );      
         } else {

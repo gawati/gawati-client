@@ -17,9 +17,15 @@ import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_
  * Loads a default Workflow object (along with a set of Permissions)
  * @param {*} THIS the ``this`` of the calling Component.
  */
-export const workflowsInitialState = (THIS) => {
-    axios.get(apiUrl('workflows-defaults'))
+export const workflowsInitialState = (THIS, docType, aknType) => {
+    axios.post(
+        apiUrl('workflows-defaults'), {
+        data: {"aknType": aknType, "aknSubType": docType}
+        }
+    )
     .then((response) => {
+        setFieldValue(THIS, 'docType', docType);
+        setFieldValue(THIS, 'docAknType', aknType);
         applyActionToState(THIS,
                     {
                         type: STATE_ACTION_LOADED_DEFAULTS,
