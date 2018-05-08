@@ -17,6 +17,7 @@ import {
     identityValidationSchema
 } from './DocumentForm.formConfig';
 import {
+    workflowsInitialState,
     loadFormWithDocument,
     loadViewWithDocument,
     setFieldValue,
@@ -79,6 +80,7 @@ class DocumentForm extends React.Component {
             // load iri date
             loadFormWithDocument(this);
         } else if (mode === "add") {
+            workflowsInitialState(this);
             // add mode ... validate empty form
             validateFormFields(this);
         } else {

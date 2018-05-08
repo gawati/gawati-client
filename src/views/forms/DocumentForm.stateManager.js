@@ -1,4 +1,4 @@
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
 import {identityInitialState} from './DocumentForm.formConfig';
 
 /**
@@ -53,6 +53,7 @@ const actionIsLoading = (state, action) => {
     case STATE_ACTION_IS_LOADING: return true;
     case STATE_ACTION_IS_NOT_LOADING: return false;
     case STATE_ACTION_LOADED_DATA: return false;
+    case STATE_ACTION_LOADED_DEFAULTS: return false;
     default: return state.isLoading;
   }
 };
@@ -145,12 +146,14 @@ const actionWorkflow = (state, action) => {
   switch(action.type) {
     case STATE_ACTION_LOADED_DATA: 
       return action.params.workflow;
+    case STATE_ACTION_LOADED_DEFAULTS: return action.params.workflow;
     default: return state.pkg.workflow;
   }
 };
 
 const actionPermissions = (state, action) => {
   switch(action.type) {
+    case STATE_ACTION_LOADED_DEFAULTS: return action.params.permissions;
     case STATE_ACTION_LOADED_DATA: return action.params.permissions;
     default: return state.pkg.permissions;
   }
