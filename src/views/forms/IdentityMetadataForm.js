@@ -94,7 +94,7 @@ class IdentityMetadataForm extends React.Component {
                 <Col xs="4">
                     <FieldDocType name="docType"
                       value={form.docType.value} 
-                      readOnly={ mode === "edit" }
+                      readOnly={ mode === "edit" || mode === "add" }
                       onChange={
                         (evt)=> {
                           const fieldValue = evt.target.value ;
