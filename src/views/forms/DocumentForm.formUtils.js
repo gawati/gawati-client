@@ -11,7 +11,30 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
+
+/**
+ * Loads a default Workflow object (along with a set of Permissions)
+ * @param {*} THIS the ``this`` of the calling Component.
+ */
+export const workflowsInitialState = (THIS) => {
+    axios.get(apiUrl('workflows-defaults'))
+    .then((response) => {
+        applyActionToState(THIS,
+                    {
+                        type: STATE_ACTION_LOADED_DEFAULTS,
+                        params: {
+                            workflow: response.data.workflow,
+                            permissions: response.data.permissions
+                        }
+                    }
+                );
+    })
+    .catch((err) => {
+        console.log(" Error in workflows-defaults ", err);
+        throw err;
+    });
+}
 
 /**
  * Loads a form context with  a document

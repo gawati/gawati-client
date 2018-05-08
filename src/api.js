@@ -18,6 +18,7 @@ const GAWATI_CLIENT_APIS = [
             'attachment-remove': '/gwc/attachments/remove',
             'workflows-meta': '/gwc/workflows/meta',
             'workflows-transit': '/gwc/workflows/transit',
+            'workflows-defaults': '/gwc/workflows/defaults',
             'keycloak': '/gwc/auth/config'
         }
     },
