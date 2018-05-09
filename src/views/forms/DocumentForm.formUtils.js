@@ -257,5 +257,11 @@ export const generateIRI = ({
     );
 };
 
-
-    
+export const getFreshPkg = (pkg) => {
+    const {pkgIdentity: form} = pkg;
+    //Generate docIri with fresh values
+    const docIri = {value: generateIRI(form), error: null }
+    const pkgIdentity = Object.assign({}, form, {docIri});
+    const newPkg = Object.assign({}, pkg, {pkgIdentity});
+    return newPkg;
+}

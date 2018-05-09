@@ -5,6 +5,8 @@ import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
+import { setInRoute } from '../../utils/RoutesHelper';
+import { aknExprIriThis } from '../../utils/UriHelper.js'
 import DocumentFormActions from './DocumentFormActions';
 import PromptDocType from './PromptDocType';
 import 'react-tabs/style/react-tabs.css';
@@ -25,6 +27,7 @@ import {
     validateFormField,
     getBreadcrumb,
     generateIRI,
+    getFreshPkg
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB } from './DocumentForm.constants';
@@ -110,13 +113,14 @@ class DocumentForm extends React.Component {
         console.log("IN: handleIdentitySubmit ", evt);
         const {mode} = this.props;
         evt.preventDefault();
+        const newPkg = getFreshPkg(this.state.pkg);
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         if (mode === "edit") {
-            handleSubmitEdit(this, this.state.pkg)
+            handleSubmitEdit(this, newPkg)
             return;
         }
         if (mode === "add") {
-          handleSubmitAdd(this, this.state.pkg);
+          handleSubmitAdd(this, newPkg);
           return;
         }
     }
@@ -147,6 +151,18 @@ class DocumentForm extends React.Component {
             type: STATE_ACTION_SWITCH_TAB, 
             params: {activeTab: activeTab}
         });
+    }
+
+    //Reload newly added doc in `edit` mode
+    reloadAddedDoc = () => {
+        const {pkgIdentity: form} = this.state.pkg;
+        const iri = aknExprIriThis(generateIRI(form), form.docPart.value);
+        const linkIri = iri.startsWith("/") ? iri.slice(1): iri;
+        let pushLink = setInRoute(
+            `document-ident-edit`,
+            {"lang": "en", "iri": linkIri }
+        );
+        this.props.history.push(pushLink);
     }
 
     handleRemoveAttachment = (data) => {
@@ -206,6 +222,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     validationSchema={THIS.identityValidationSchema}
                     handleReset={THIS.handleIdentityReset} 
                     handleSubmit={THIS.handleIdentitySubmit} 
+                    generateIRI={generateIRI}
                     updateIriValue={THIS.updateIriValue}
                     validateFormField={THIS.validateFormField}
                     />
