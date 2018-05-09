@@ -1,6 +1,6 @@
 {
   "name": "gawati-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
     "name": "Ashok Hariharan",
     "email": "ashok+github@hariharan.org.in"
@@ -23,7 +23,7 @@
     "node-sass-chokidar": "0.0.3",
     "react": "^16.3.2",
     "react-cookie": "^2.1.4",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.3.2",
     "react-i18next": "7.6.1",
     "react-paginate": "^5.2.2",
     "react-router": "^4.2.0",
