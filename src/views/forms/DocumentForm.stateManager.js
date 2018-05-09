@@ -159,18 +159,26 @@ const actionPermissions = (state, action) => {
   }
 };
 
-
-
-
-
+/**
+ * 2018-05-09 Switched to making a shallow copy here
+ * JSON.stringify doesnt correctly process object types like date
+ * so will swtich to shallow copy; if there are side effects we will 
+ * need to rewrite copyObject() to use JSON.stringify() with type awareness
+ * (for an example of that see loadFormWithDocument() )
+ * @param {*} obj 
+ */
 const copyObject = (obj) => {
-  return JSON.parse(JSON.stringify(obj));
+/*   let newObj = JSON.parse(JSON.stringify(obj));
+ */  
+ let newObj = Object.assign({}, obj);
+ return newObj;
 }
 
 
 /**
  * Clones identity object, it has multiple levels of nesting, so to keep 
  * things impler we use copyObject
+ * 2018-05-09 - use correctErrorValue() to get the error default value from identityInitialState()
  * @param {object} state 
  * @param {string} fieldName
  * @param {object} fieldValue
@@ -197,10 +205,20 @@ const __pkgIdentity = (state, fieldName, fieldValue, err) => {
         ...pkgIdent,
         [fieldName]: {
           ...pkgIdent[fieldName],
-          value: err.value === null ? '': err.value,
+          value: correctErrorValue(fieldName, err.value),
           error: err.message
         }
       }
     }
   }
+};
+
+/**
+ * Get the default value for the field from identity initial state
+ * @param {*} fieldName 
+ * @param {*} errValue 
+ */
+const correctErrorValue = (fieldName, errValue) => {
+  const defaultValue = identityInitialState()[fieldName].value ; 
+  return defaultValue;
 };

@@ -1,5 +1,8 @@
 import Yup from 'yup';
 
+/**
+ * 2018-05-09 Set all date fields to have a null error / default value
+ */
 export const identityInitialState = () => (
     {
         //docCreatedDate: {value: undefined, error: null},
@@ -9,9 +12,9 @@ export const identityInitialState = () => (
         docAknType: {value: '', error: null },
         docCountry: {value: '', error: null },
         docTitle: {value: '', error: null},
-        docOfficialDate: {value: '', error: null },
-        docPublicationDate: {value: '', error:null},
-        docEntryIntoForceDate: {value: '', error:null},
+        docOfficialDate: {value: null, error: null },
+        docPublicationDate: {value:  null, error:null},
+        docEntryIntoForceDate: {value:  null, error:null},
         docNumber: {value: '', error: null },
         docPart: {value: '', error: null },
         docIri : {value: '', error: null }
