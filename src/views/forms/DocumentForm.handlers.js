@@ -1,4 +1,4 @@
-import { notifySuccess, notifyError} from '../../utils/NotifHelper';
+import { notifySuccess, notifyError, notifyWarning} from '../../utils/NotifHelper';
 import axios from 'axios';
 
 import { apiUrl } from '../../api';
@@ -59,7 +59,12 @@ export const handleSubmitAdd = (THIS, data) => {
     .then(
       (response) => {
         applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
-        handleSuccess(response.data);
+        if (response.data === 'doc_exists_on_portal') {
+          notifyWarning( "Document not saved. Document with the same name already exists on Gawati Portal.");
+        } else {
+          handleSuccess(response.data);
+          THIS.reloadAddedDoc();
+        }
       }
     )
     .catch(
