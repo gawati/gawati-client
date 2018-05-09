@@ -61,8 +61,9 @@ class IdentityMetadataForm extends React.Component {
     preSaveCheck = (formValid, mode) => {
       if (formValid && mode === 'add') {
         const {pkgIdentity: form} = this.props.pkg;
+        const {generateIRI} = this.props;
         if (form.docIri.value) {
-            const iri = aknExprIriThis(form.docIri.value, form.docPart.value);
+            const iri = aknExprIriThis(generateIRI(form), form.docPart.value);
             axios.post(
                 apiUrl('document-exists'), {
                 data: {"iri": iri}
