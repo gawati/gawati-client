@@ -15,7 +15,7 @@ const FieldDate = ({onChange, onBlur, readOnly, name, label, value, error}) => {
         onChange={onChange}  
         onBlur={onBlur} 
         readOnly={readOnly} 
-        value={ value } required />
+        value={ value }  />
       <FieldError error={error} />
     </FormControl>
     );

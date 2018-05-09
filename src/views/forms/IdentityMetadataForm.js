@@ -74,7 +74,7 @@ class IdentityMetadataForm extends React.Component {
                   notifyWarning(T("A document with the same name already exists."));
                 }
                 //Set only if different. Otherwise it keeps rerendering since preSaveCheck is called in the render() method.
-                if (this.state.preSave != preSave) {
+                if (this.state.preSave !== preSave) {
                   this.setState({preSave});
                 }
             })
@@ -112,7 +112,7 @@ class IdentityMetadataForm extends React.Component {
     }
 
     render() {
-      const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
+      const {handleSubmit, handleReset, mode} = this.props ; 
       const {pkgIdentity: form} = this.props.pkg ; 
       const errors = formHasErrors(form);
       console.log(" FORM VALUES = ", form);
