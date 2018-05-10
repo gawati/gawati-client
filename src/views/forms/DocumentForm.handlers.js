@@ -59,6 +59,10 @@ export const handleSubmitAdd = (THIS, data) => {
     .then(
       (response) => {
         applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        const {error} = response.data;
+        if (error != null) {
+          notifyWarning(error.message);
+        } else 
         if (response.data === 'doc_exists_on_portal') {
           notifyWarning( "Document not saved. Document with the same name already exists on Gawati Portal.");
         } else {

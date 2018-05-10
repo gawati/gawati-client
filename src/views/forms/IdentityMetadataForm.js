@@ -58,8 +58,8 @@ class IdentityMetadataForm extends React.Component {
      * Checks if the document with the iri already exists on
      * the client data server.
      */
-    preSaveCheck = (formValid, mode) => {
-      if (formValid && mode === 'add') {
+    preSaveCheck = (formValid, mode, isSubmitting) => {
+      if (formValid && mode === 'add' && !isSubmitting) {
         const {pkgIdentity: form} = this.props.pkg;
         const {generateIRI} = this.props;
         if (form.docIri.value) {
@@ -113,12 +113,12 @@ class IdentityMetadataForm extends React.Component {
     }
 
     render() {
-      const {handleSubmit, handleReset, mode} = this.props ; 
+      const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
       const {pkgIdentity: form} = this.props.pkg ; 
       const errors = formHasErrors(form);
       console.log(" FORM VALUES = ", form);
       const formValid = isEmpty(errors);
-      this.preSaveCheck(formValid, mode);
+      this.preSaveCheck(formValid, mode, isSubmitting);
 
       return (
         <StatefulForm ref="identityForm" onSubmit={handleSubmit} noValidate>
