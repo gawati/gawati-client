@@ -9,6 +9,7 @@ import { setInRoute } from '../../utils/RoutesHelper';
 import { aknExprIriThis } from '../../utils/UriHelper.js'
 import DocumentFormActions from './DocumentFormActions';
 import PromptDocType from './PromptDocType';
+import ConfirmModal from '../utils/ConfirmModal';
 import 'react-tabs/style/react-tabs.css';
 
 /*
@@ -30,7 +31,7 @@ import {
     getFreshPkg
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
 import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
@@ -51,6 +52,7 @@ class DocumentForm extends React.Component {
           documentLoadError: false,
           mode: props.mode,
           activeTab: 0,
+          confirmAdd: false,
           /* 
           form has field names as state values 
           i.e. docTitle has to have a corresponding 
@@ -171,6 +173,31 @@ class DocumentForm extends React.Component {
         return;
     }
 
+    handleConfirmAdd = (confirmed) => {
+        if (confirmed) {
+            const newPkg = getFreshPkg(this.state.pkg);
+            applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+            handleSubmitAdd(this, newPkg, true); //last param skipCheck=true
+        }
+        applyActionToState(this, {type: STATE_ACTION_CONFIRM_ADD_CLOSE});
+    }
+
+    /**
+     * Confirm if the new doc should be added even though
+     * it already exists on the portal data server.
+     */
+    renderConfirmAdd() {
+        return (
+            <ConfirmModal show={this.state.confirmAdd}
+                    title={T(MSG_DOC_EXISTS_ON_PORTAL)}
+                    onOK={() => this.handleConfirmAdd(true)}
+                    onOKLabel={T("Yes")}
+                    onClose={() => this.handleConfirmAdd(false)}
+                    onCloseLabel={T("No")} >
+            </ConfirmModal>
+        );
+    }
+
     renderPrompt() {
         const {mode} = this.props;
         return (
@@ -197,6 +224,7 @@ class DocumentForm extends React.Component {
             return (
                 <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
                     <DocumentFormLoaded lang={lang} mode={mode} pkg={pkg} isSubmitting={isSubmitting} THIS={this} />
+                    {this.renderConfirmAdd()}
                 </StdCompContainer>
             );
         }

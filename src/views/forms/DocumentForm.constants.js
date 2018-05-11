@@ -11,4 +11,8 @@ export const STATE_ACTION_SET_DOCUMENT_LOAD_ERROR="DOCUMENT_LOAD_ERROR";
 export const STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR="UNSET_DOCUMENT_LOAD_ERROR";
 export const STATE_ACTION_SWITCH_TAB="SWITCH_TAB";
 export const STATE_ACTION_LOADED_DEFAULTS="LOADED_DEFAULTS";
+export const STATE_ACTION_CONFIRM_ADD_OPEN="CONFIRM_ADD_OPEN";
+export const STATE_ACTION_CONFIRM_ADD_CLOSE="CONFIRM_ADD_CLOSE";
 
+export const MSG_DOC_EXISTS_ON_CLIENT="Document not saved. Document with the same name already exists on Gawati Client."
+export const MSG_DOC_EXISTS_ON_PORTAL="Document with the same name already exists on Gawati Portal. Do you still want to add it?"

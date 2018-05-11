@@ -2,7 +2,7 @@ import { notifySuccess, notifyError, notifyWarning} from '../../utils/NotifHelpe
 import axios from 'axios';
 
 import { apiUrl } from '../../api';
-import {STATE_ACTION_IS_NOT_SUBMITTING} from './DocumentForm.constants';
+import {STATE_ACTION_IS_NOT_SUBMITTING, MSG_DOC_EXISTS_ON_CLIENT, STATE_ACTION_CONFIRM_ADD_OPEN} from './DocumentForm.constants';
 import {applyActionToState} from './DocumentForm.stateManager';
 
 /** EVENT HANDLERS */
@@ -46,14 +46,14 @@ export const handleSubmitEdit = (THIS, data) => {
   };
 
 /**
- * Makes a call to the edit api and submits the document content to be edited.
+ * Makes a call to the add api and submits the document content to be added.
  * Returns a promise so the response can be handled further by the caller.
  * @param {object} the context "this" in the caller form 
  */
-export const handleSubmitAdd = (THIS, data) => {
+export const handleSubmitAdd = (THIS, pkg, skipCheck=false) => {
     axios.post(
       apiUrl('document-add'), {
-        data: data
+        data: {pkg, skipCheck}
       }
       )
     .then(
@@ -62,12 +62,18 @@ export const handleSubmitAdd = (THIS, data) => {
         const {error} = response.data;
         if (error != null) {
           notifyWarning(error.message);
-        } else 
-        if (response.data === 'doc_exists_on_portal') {
-          notifyWarning( "Document not saved. Document with the same name already exists on Gawati Portal.");
         } else {
-          handleSuccess(response.data);
-          THIS.reloadAddedDoc();
+          switch(response.data) {
+            case 'doc_exists_on_client':
+              notifyWarning(MSG_DOC_EXISTS_ON_CLIENT);
+              break;
+            case 'doc_exists_on_portal':
+              applyActionToState(THIS, {type: STATE_ACTION_CONFIRM_ADD_OPEN});
+              break;
+            default:
+              handleSuccess(response.data);
+              THIS.reloadAddedDoc();
+          }
         }
       }
     )

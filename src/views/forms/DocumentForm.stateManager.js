@@ -1,4 +1,4 @@
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_CONFIRM_ADD_OPEN, STATE_ACTION_CONFIRM_ADD_CLOSE } from './DocumentForm.constants';
 import {identityInitialState} from './DocumentForm.formConfig';
 
 /**
@@ -25,7 +25,8 @@ export const stateAction = (state, action) => {
     documentLoadError: actionDocumentLoadError(state, action),
     mode: actionMode(state, action),
     pkg: actionPkg(state, action),
-    activeTab: actionSwitchTab(state, action)
+    activeTab: actionSwitchTab(state, action),
+    confirmAdd: actionConfirmAdd(state, action)
   };
   //console.log("STATE_ACTION: ", stateObject);
   return stateObject;
@@ -40,6 +41,19 @@ const actionSwitchTab = (state, action) => {
   switch (action.type) {
     case STATE_ACTION_SWITCH_TAB: return action.params.activeTab;
     default: return state.activeTab;
+  }
+};
+
+/**
+ * action for the confirmAdd state variable
+ * @param {*} state 
+ * @param {*} action 
+ */
+const actionConfirmAdd = (state, action) => {
+  switch (action.type) {
+    case STATE_ACTION_CONFIRM_ADD_OPEN: return true;
+    case STATE_ACTION_CONFIRM_ADD_CLOSE: return false;
+    default: return state.confirmAdd;
   }
 };
 
