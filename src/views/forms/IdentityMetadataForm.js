@@ -54,44 +54,6 @@ class IdentityMetadataForm extends React.Component {
     }
 
     /**
-     * Only for new documents i.e. 'Add Document'
-     * Checks if the document with the iri already exists on
-     * the client data server.
-     */
-    preSaveCheck = (formValid, mode, isSubmitting) => {
-      if (formValid && mode === 'add' && !isSubmitting) {
-        const {pkgIdentity: form} = this.props.pkg;
-        const {generateIRI} = this.props;
-        if (form.docIri.value) {
-            const iri = aknExprIriThis(generateIRI(form), form.docPart.value);
-            axios.post(
-                apiUrl('document-exists'), {
-                data: {"iri": iri}
-                }
-            )
-            .then(response => {
-                const preSave = (response.data === 'doc_not_found');
-                if (!preSave) {
-                  notifyWarning(T("A document with the same name already exists."));
-                }
-                //Set only if different. Otherwise it keeps rerendering since preSaveCheck is called in the render() method.
-                if (this.state.preSave !== preSave) {
-                  this.setState({preSave});
-                }
-            })
-            .catch(err => {
-                console.log(" Error in document-exists ", err);
-                //Set only if not already false.
-                if (this.state.preSave) {
-                  this.setState({preSave: false});
-                }
-                throw err;
-            });
-        }
-      }
-    }
-
-    /**
      * Wrapper on validateFormField passed in as a prop
      */
     validateFormField = (field, value) => {
@@ -102,23 +64,12 @@ class IdentityMetadataForm extends React.Component {
         return  this.props.updateIriValue(form);
     }
 
-    getSaveDisabled = (formValid) => {
-      const {mode, isSubmitting} = this.props;
-      const {preSave} = this.state;
-      if (mode === 'add') {
-        return isSubmitting || !formValid || !preSave;
-      } else {
-        return isSubmitting || !formValid;
-      }
-    }
-
     render() {
       const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
       const {pkgIdentity: form} = this.props.pkg ; 
       const errors = formHasErrors(form);
       console.log(" FORM VALUES = ", form);
       const formValid = isEmpty(errors);
-      this.preSaveCheck(formValid, mode, isSubmitting);
 
       return (
         <StatefulForm ref="identityForm" onSubmit={handleSubmit} noValidate>
@@ -277,7 +228,7 @@ class IdentityMetadataForm extends React.Component {
             </CardBody>
             <CardFooter>
               { " " }
-              <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={this.getSaveDisabled(formValid)}><i className="fa fa-dot-circle-o"></i> Save</Button>
+              <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
               { " " }
               <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
             </CardFooter>
