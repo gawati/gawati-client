@@ -147,7 +147,14 @@ class Dashboard extends Component {
     axios.post(apiUrl('documents'), body, config)
     .then(
       (response) => {
-          this.setState({docs: response.data.documents, totalDocs: response.data.total});
+          const {code, documents, total} = response.data;
+          // check if 0 records returned
+          // absence of code means data was returned
+          if (code == null && Array.isArray(documents)) {
+            this.setState({docs: documents, totalDocs: total});
+          } else {
+            this.setState({docs: [], totalDocs: 0});
+          }
         }
     )
     .catch(
@@ -233,7 +240,6 @@ class Dashboard extends Component {
 
   render() {
     const {docs} = this.state;
-    console.log("DASHBOARD/COLUMN/STATE ", T("ET.Dashboard.Column.State"));
     const {lang} = this.props.match.params; 
     const breadcrumb = this.getBreadcrumb();
     return (
