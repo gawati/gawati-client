@@ -6,7 +6,6 @@ import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
 import { setInRoute } from '../../utils/RoutesHelper';
-import { aknExprIriThis } from '../../utils/UriHelper.js'
 import DocumentFormActions from './DocumentFormActions';
 import PromptDocType from './PromptDocType';
 import ConfirmModal from '../utils/ConfirmModal';
@@ -157,8 +156,9 @@ class DocumentForm extends React.Component {
 
     //Reload newly added doc in `edit` mode
     reloadAddedDoc = () => {
+        this.updateIriValue();  //!Important: Update any stale values
         const {pkgIdentity: form} = this.state.pkg;
-        const iri = aknExprIriThis(generateIRI(form), form.docPart.value);
+        const iri = generateIRI(form);
         const linkIri = iri.startsWith("/") ? iri.slice(1): iri;
         let pushLink = setInRoute(
             `document-ident-edit`,

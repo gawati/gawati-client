@@ -1,13 +1,9 @@
 import React from 'react';
-import axios from 'axios';
-import { apiUrl } from '../../api';
 import {Card, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
 import { isEmpty} from '../../utils/GeneralHelper';
-import { aknExprIriThis } from '../../utils/UriHelper.js'
-import { notifyWarning } from '../../utils/NotifHelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';

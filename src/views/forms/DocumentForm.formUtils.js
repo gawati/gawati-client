@@ -10,7 +10,7 @@ import {applyActionToState} from './DocumentForm.stateManager';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
-import { aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
+import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
 import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
 
 /**
@@ -244,16 +244,18 @@ export const generateIRI = ({
     iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
     iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
     iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
-    return aknExprIri(
-      aknWorkIri(
-        iriCountry, 
-        iriType, 
-        iriSubType, 
-        iriOfficialDate, 
-        iriNumber
-      ),
-      iriLang, 
-      iriPart
+    return aknExprIriThis(
+            aknExprIri(
+                aknWorkIri(
+                    iriCountry,
+                    iriType,
+                    iriSubType,
+                    iriOfficialDate,
+                    iriNumber
+                ),
+                iriLang
+            ),
+            iriPart
     );
 };
 
