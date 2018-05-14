@@ -59,7 +59,7 @@ export const loadFormWithDocument = (THIS) => {
     )
     .then(
         (response) => {
-            const {error, created, modified, akomaNtoso, workflow, permissions} = response.data;
+            const {error, akomaNtoso, workflow, permissions} = response.data;
             console.log("loadFormWithDocument: error, akomaNtoso ", error, response.data);
             if (error) {
                 applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
@@ -69,15 +69,13 @@ export const loadFormWithDocument = (THIS) => {
                     aknDoc,
                     ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
                 );
-                const createdDate = convertDateString(created);
-                const modifiedDate = convertDateString(modified);
+
+                aknDoc = convertDateTime(aknDoc, ['docCreatedDate', 'docModifiedDate']);
 
                 applyActionToState(THIS, 
                     {
                         type: STATE_ACTION_LOADED_DATA, 
                         params: {
-                            created: createdDate, 
-                            modified: modifiedDate, 
                             akomaNtoso: aknDoc, 
                             workflow: workflow, 
                             permissions: permissions
@@ -114,11 +112,15 @@ const convertDateData = (aknDoc, dateFields) => {
 
 
 /**
- * Converts a date string to a JS dateTime string
- * @param {string} dateString in iso8601 date format
+ * Mutates the dateTime strings (iso8601 format) in the
+ * Akoma Ntoso object into a JS dateTime string
+ * @param {*} aknDoc
  */
-const convertDateString = (dateString) => {
-    return moment(dateString).toDate();
+const convertDateTime = (aknDoc, dateTimeFields) => {
+    dateTimeFields.forEach( (item) => {
+        aknDoc[item].value = moment(aknDoc[item].value).toDate();
+    });
+    return aknDoc;
 }
 
 

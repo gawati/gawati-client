@@ -59,15 +59,15 @@ export const AllowedActions = ({docPkg}) => {
 }
 
 export const TitleAndDateColumn = ({docPkg}) =>  {
-  const {created, modified} = docPkg;
   const doc = docPkg.akomaNtoso;
+  const {docCreatedDate, docModifiedDate} = doc;
   return (
     <Aux>
       <div>
         {getLocalTypeName(doc.docType.value)}: {doc.docTitle.value}
       </div>
       <div className="small text-muted">
-       { showCreatedAndModified(created, modified) }
+       { showCreatedAndModified(docCreatedDate, docModifiedDate) }
       </div>
     </Aux>
   )

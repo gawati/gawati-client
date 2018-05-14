@@ -110,8 +110,8 @@ const actionMode = (state, action) => {
  */
 const actionPkg = (state, action) => {
   const pkgObject = {
-    created: actionPkgCreated(state, action),
-    modified: actionPkgModified(state, action),
+    // created: actionPkgCreated(state, action),
+    // modified: actionPkgModified(state, action),
     pkgIdentity: actionPkgIdentity(state, action),
     pkgAttachments: actionPkgAttachments(state, action),
     workflow: actionWorkflow(state, action),
@@ -121,19 +121,19 @@ const actionPkg = (state, action) => {
   return pkgObject;
 };
 
-const actionPkgCreated = (state, action) => {
-  switch (action.type) {
-    case STATE_ACTION_LOADED_DATA: return action.params.created ;
-    default: return state.pkg.created;
-  }
-};
+// const actionPkgCreated = (state, action) => {
+//   switch (action.type) {
+//     case STATE_ACTION_LOADED_DATA: return action.params.created ;
+//     default: return state.pkg.created;
+//   }
+// };
 
-const actionPkgModified = (state, action) => {
-  switch (action.type) {
-    case STATE_ACTION_LOADED_DATA: return action.params.modified ;
-    default: return state.pkg.created;
-  }
-};
+// const actionPkgModified = (state, action) => {
+//   switch (action.type) {
+//     case STATE_ACTION_LOADED_DATA: return action.params.modified ;
+//     default: return state.pkg.created;
+//   }
+// };
 
 const actionPkgIdentity = (state, action) => {
   switch (action.type) {
