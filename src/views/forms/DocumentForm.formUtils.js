@@ -67,7 +67,7 @@ export const loadFormWithDocument = (THIS) => {
                 let aknDoc = akomaNtoso; 
                 aknDoc = convertDateData(
                     aknDoc,
-                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
+                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate', 'docVersionDate']
                 );
 
                 aknDoc = convertDateTime(aknDoc, ['docCreatedDate', 'docModifiedDate']);
@@ -234,17 +234,19 @@ export const generateIRI = ({
     docAknType, 
     docOfficialDate, 
     docNumber, 
-    docLang, 
+    docLang,
+    docVersionDate, 
     docPart 
 }) => {
     const unknown = unknownIriComponent(); 
-    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
+    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriVersionDate, iriPart , iriSubType; 
     iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
     iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
     iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
     iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
     iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
     iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
+    iriVersionDate = isValidDate(docVersionDate.value) ? iriDate(docVersionDate.value) : unknown ;
     iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
     return aknExprIriThis(
             aknExprIri(
@@ -255,7 +257,8 @@ export const generateIRI = ({
                     iriOfficialDate,
                     iriNumber
                 ),
-                iriLang
+                iriLang,
+                iriVersionDate
             ),
             iriPart
     );

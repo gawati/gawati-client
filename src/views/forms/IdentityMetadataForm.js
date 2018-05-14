@@ -13,7 +13,7 @@ import FieldDocTitle from './FieldDocTitle';
 import FieldDocType from './FieldDocType';
 import FieldDate from './FieldDate';
 import FieldDocPart from './FieldDocPart';
-
+import PromptDocVersionDate from './PromptDocVersionDate';
 import StatefulForm from './StatefulForm';
 
 import '../../css/IdentityMetadata.css';
@@ -35,7 +35,7 @@ class IdentityMetadataForm extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        preSave: false
+        versionOpen: false
       }
       this.parentContext = props.parentContext;
       this.validationSchema = props.validationSchema ; 
@@ -60,6 +60,23 @@ class IdentityMetadataForm extends React.Component {
         return  this.props.updateIriValue(form);
     }
 
+    updateVersion = (docVersionDate) => {
+      const {pkgIdentity: form} = this.props.pkg;
+      this.setState({versionOpen: false});
+      this.updateIriValue(form);
+      this.props.updateVersion(docVersionDate);
+    }
+
+    renderVersionPrompt() {
+        const {mode} = this.props;
+        const isOpen = mode === "edit" && this.state.versionOpen;
+        return (
+            <PromptDocVersionDate isOpen={isOpen}
+                                  validateFormField={this.validateFormField}
+                                  validationSchema={this.validationSchema} sendDocVersionDate={this.updateVersion.bind(this)}/>
+        );
+    }
+
     render() {
       const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
       const {pkgIdentity: form} = this.props.pkg ; 
@@ -69,6 +86,7 @@ class IdentityMetadataForm extends React.Component {
 
       return (
         <StatefulForm ref="identityForm" onSubmit={handleSubmit} noValidate>
+        {this.renderVersionPrompt()}
         <Card className="doc-form-card">
           <CardBody>
             <Row>
@@ -227,6 +245,8 @@ class IdentityMetadataForm extends React.Component {
               <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
               { " " }
               <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
+              { " " }
+              <Button type="button" size="sm" disabled={ isSubmitting || !formValid || mode === "add" } color="info" onClick={() => {this.setState({versionOpen: true})}}><i className="fa fa-dot-circle-o"></i> New Legal Version</Button>
             </CardFooter>
         </Card>
       </StatefulForm>

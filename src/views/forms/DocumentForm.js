@@ -124,6 +124,13 @@ class DocumentForm extends React.Component {
         }
     }
 
+    updateVersion = (docVersionDate) => {
+        setFieldValue(this, "docVersionDate", docVersionDate);
+        const newPkg = getFreshPkg(this.state.pkg);
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleSubmitAdd(this, newPkg);
+    }
+
     /**
      * Set `isSubmitting`
      * @val Boolean 
@@ -251,6 +258,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     generateIRI={generateIRI}
                     updateIriValue={THIS.updateIriValue}
                     validateFormField={THIS.validateFormField}
+                    updateVersion={THIS.updateVersion}
                     />
             </TabPanel>
             <TabPanel>
