@@ -45,11 +45,11 @@ export const docWorkflowStateInfo = (pkg, stateName) => {
 };
 
 export const docCreatedDate = (pkg) => {
-    return pkg.pkgIdentity.docCreatedDate;
+    return pkg.pkgIdentity.docCreatedDate.value;
 };
 
 export const docModifiedDate = (pkg) => {
-    return pkg.pkgIdentity.docModifiedDate;
+    return pkg.pkgIdentity.docModifiedDate.value;
 };
 
 export const docOfficialDate = (pkg) => {

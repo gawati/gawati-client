@@ -67,7 +67,7 @@ export const TitleAndDateColumn = ({docPkg}) =>  {
         {getLocalTypeName(doc.docType.value)}: {doc.docTitle.value}
       </div>
       <div className="small text-muted">
-       { showCreatedAndModified(docCreatedDate, docModifiedDate) }
+       { showCreatedAndModified(docCreatedDate.value, docModifiedDate.value) }
       </div>
     </Aux>
   )
