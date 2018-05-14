@@ -58,8 +58,6 @@ class DocumentForm extends React.Component {
           <input name="docTitle" .... /> in the form
           */ 
           pkg: {
-            created: undefined,
-            modified: undefined,
             pkgIdentity: identityInitialState(),
             pkgAttachments: [],
             workflow: {state: {status: 'draft', 'label': 'Draft'}},

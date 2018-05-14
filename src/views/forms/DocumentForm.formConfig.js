@@ -5,8 +5,8 @@ import Yup from 'yup';
  */
 export const identityInitialState = () => (
     {
-        //docCreatedDate: {value: undefined, error: null},
-        //docModifiedDate: {value: undefined, error: null},
+        docCreatedDate: {value: undefined, error: null},
+        docModifiedDate: {value: undefined, error: null},
         docLang: {value: {} , error: null },
         docType: {value: '', error: null },
         docAknType: {value: '', error: null },
@@ -23,6 +23,12 @@ export const identityInitialState = () => (
 
 export const identityValidationSchema = () => (
     {
+        docCreatedDate: {
+          validate: Yup.date().typeError(" Invalid date")
+        },
+        docModifiedDate: {
+          validate: Yup.date().typeError(" Invalid date")
+        },
         docLang: {
           validate:  Yup.object()
                         .shape({
