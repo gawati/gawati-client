@@ -51,6 +51,7 @@ export const handleSubmitEdit = (THIS, data) => {
  * @param {object} the context "this" in the caller form 
  */
 export const handleSubmitAdd = (THIS, pkg, skipCheck=false) => {
+    let iri = pkg.pkgIdentity.docIri.value;
     axios.post(
       apiUrl('document-add'), {
         data: {pkg, skipCheck}
@@ -72,7 +73,7 @@ export const handleSubmitAdd = (THIS, pkg, skipCheck=false) => {
               break;
             default:
               handleSuccess(response.data);
-              THIS.reloadAddedDoc();
+              THIS.reloadAddedDoc(iri);
           }
         }
       }

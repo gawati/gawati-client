@@ -125,11 +125,11 @@ class DocumentForm extends React.Component {
     }
 
     updateVersion = (docVersionDate) => {
-        setFieldValue(this, "docVersionDate", docVersionDate);
         const newFields = {
             "docVersionDate": {value: docVersionDate, error: null}
         }
-        const newPkg = getFreshPkg(this.state.pkg, newFields);
+        let newPkg = getFreshPkg(this.state.pkg, newFields);
+        newPkg.pkgAttachments = [];
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         handleSubmitAdd(this, newPkg);
     }
@@ -163,16 +163,14 @@ class DocumentForm extends React.Component {
     }
 
     //Reload newly added doc in `edit` mode
-    reloadAddedDoc = () => {
-        this.updateIriValue();  //!Important: Update any stale values
-        const {pkgIdentity: form} = this.state.pkg;
-        const iri = generateIRI(form);
+    reloadAddedDoc = (iri) => {
         const linkIri = iri.startsWith("/") ? iri.slice(1): iri;
         let pushLink = setInRoute(
             `document-ident-edit`,
             {"lang": "en", "iri": linkIri }
         );
         this.props.history.push(pushLink);
+        window.location.reload();
     }
 
     handleRemoveAttachment = (data) => {
