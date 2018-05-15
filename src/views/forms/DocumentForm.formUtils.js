@@ -8,7 +8,7 @@ import { apiUrl } from '../../api';
 import {handleApiException} from './DocumentForm.handlers';
 import {applyActionToState} from './DocumentForm.stateManager';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
-import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
+import { capitalizeFirst, isInvalidValue, isEmpty } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
 import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
@@ -67,7 +67,7 @@ export const loadFormWithDocument = (THIS) => {
                 let aknDoc = akomaNtoso; 
                 aknDoc = convertDateData(
                     aknDoc,
-                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate']
+                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate', 'docVersionDate']
                 );
 
                 aknDoc = convertDateTime(aknDoc, ['docCreatedDate', 'docModifiedDate']);
@@ -97,19 +97,20 @@ export const loadFormWithDocument = (THIS) => {
 /**
  * Mutates the date strings in the Akoma Ntoso object into 
  * Javascript Date Objects
+ * Set a time of 12:00:00 to avoid timezone related errors
  * @param {*} aknDoc 
  */
 const convertDateData = (aknDoc, dateFields) => {
     dateFields.forEach( (item) => {
+        let dateTime = aknDoc[item].value + ' 12:00:00 Z';
         aknDoc[item].value = moment(
-            aknDoc[item].value, 
-            "YYYY-MM-DD", 
+            dateTime,
+            "YYYY-MM-DD HH:mm:ss Z",
             true
         ).toDate();
     });
     return aknDoc;
 };
-
 
 /**
  * Mutates the dateTime strings (iso8601 format) in the
@@ -234,17 +235,19 @@ export const generateIRI = ({
     docAknType, 
     docOfficialDate, 
     docNumber, 
-    docLang, 
+    docLang,
+    docVersionDate, 
     docPart 
 }) => {
     const unknown = unknownIriComponent(); 
-    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriPart , iriSubType; 
+    var iriCountry, iriType, iriOfficialDate, iriNumber, iriLang, iriVersionDate, iriPart , iriSubType; 
     iriType = isInvalidValue(docAknType.value) ? unknown : docAknType.value ;
     iriSubType = isInvalidValue(docType.value) ? unknown: docType.value ;
     iriCountry = isInvalidValue(docCountry.value) ? unknown : docCountry.value ; 
     iriOfficialDate = isValidDate(docOfficialDate.value) ? iriDate(docOfficialDate.value) : unknown ;
     iriNumber = isInvalidValue(docNumber.value) ? unknown : normalizeDocNumber(docNumber.value); 
     iriLang = isInvalidValue(docLang.value.value) ? unknown : docLang.value.value ;
+    iriVersionDate = isValidDate(docVersionDate.value) ? iriDate(docVersionDate.value) : unknown ;
     iriPart = isInvalidValue(docPart.value) ? unknown : docPart.value ; 
     return aknExprIriThis(
             aknExprIri(
@@ -255,17 +258,34 @@ export const generateIRI = ({
                     iriOfficialDate,
                     iriNumber
                 ),
-                iriLang
+                iriLang,
+                iriVersionDate,
+                iriOfficialDate
             ),
             iriPart
     );
 };
 
-export const getFreshPkg = (pkg) => {
+/**
+ * State might not be udpated with new fields if in the midst of a state update
+ * cycle. This returns the package with the latest values.
+ * i.e what the state pkg will be when the update cycle completes.
+ * @param {pkg} current state pkg
+ * @params {newFields} latest pkgIdentity fields (Optional)
+ */
+export const getFreshPkg = (pkg, newFields={}) => {
     const {pkgIdentity: form} = pkg;
+    let pkgIdentity = Object.assign({}, form);
+    if (!isEmpty(newFields)) {
+        for (let field in newFields) {
+            if (newFields.hasOwnProperty(field)) {
+                let value = newFields[field];
+                pkgIdentity[field] = value;
+            }
+        }
+    }
     //Generate docIri with fresh values
-    const docIri = {value: generateIRI(form), error: null }
-    const pkgIdentity = Object.assign({}, form, {docIri});
+    pkgIdentity['docIri'] = {value: generateIRI(pkgIdentity), error: null }
     const newPkg = Object.assign({}, pkg, {pkgIdentity});
     return newPkg;
 }

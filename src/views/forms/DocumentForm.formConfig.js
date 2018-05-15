@@ -15,6 +15,7 @@ export const identityInitialState = () => (
         docOfficialDate: {value: null, error: null },
         docPublicationDate: {value:  null, error:null},
         docEntryIntoForceDate: {value:  null, error:null},
+        docVersionDate: {value:  null, error:null},
         docNumber: {value: '', error: null },
         docPart: {value: '', error: null },
         docIri : {value: '', error: null }
@@ -57,6 +58,9 @@ export const identityValidationSchema = () => (
         },
         docEntryIntoForceDate: {
           validate: Yup.date(" Entry into Force date is required").typeError(" You need to enter a date")
+        },
+        docVersionDate: {
+          validate: Yup.date().typeError(" You need to enter a date")
         },
         docNumber: {
           validate: Yup.string().required(" Document number is required ")

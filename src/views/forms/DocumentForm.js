@@ -124,6 +124,16 @@ class DocumentForm extends React.Component {
         }
     }
 
+    updateVersion = (docVersionDate) => {
+        const newFields = {
+            "docVersionDate": {value: docVersionDate, error: null}
+        }
+        let newPkg = getFreshPkg(this.state.pkg, newFields);
+        newPkg.pkgAttachments = [];
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleSubmitAdd(this, newPkg);
+    }
+
     /**
      * Set `isSubmitting`
      * @val Boolean 
@@ -153,16 +163,14 @@ class DocumentForm extends React.Component {
     }
 
     //Reload newly added doc in `edit` mode
-    reloadAddedDoc = () => {
-        this.updateIriValue();  //!Important: Update any stale values
-        const {pkgIdentity: form} = this.state.pkg;
-        const iri = generateIRI(form);
+    reloadAddedDoc = (iri) => {
         const linkIri = iri.startsWith("/") ? iri.slice(1): iri;
         let pushLink = setInRoute(
             `document-ident-edit`,
             {"lang": "en", "iri": linkIri }
         );
         this.props.history.push(pushLink);
+        window.location.reload();
     }
 
     handleRemoveAttachment = (data) => {
@@ -251,6 +259,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     generateIRI={generateIRI}
                     updateIriValue={THIS.updateIriValue}
                     validateFormField={THIS.validateFormField}
+                    updateVersion={THIS.updateVersion}
                     />
             </TabPanel>
             <TabPanel>
