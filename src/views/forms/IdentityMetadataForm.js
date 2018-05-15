@@ -70,8 +70,13 @@ class IdentityMetadataForm extends React.Component {
     renderVersionPrompt() {
         const {mode} = this.props;
         const isOpen = mode === "edit" && this.state.versionOpen;
+        const {pkgIdentity: form} = this.props.pkg;
+        const curDates = {
+          officialDate: form.docOfficialDate.value,
+          versionDate: form.docVersionDate.value,
+        }
         return (
-            <PromptDocVersionDate isOpen={isOpen}
+            <PromptDocVersionDate isOpen={isOpen} curDates={curDates}
                                   validateFormField={this.validateFormField}
                                   validationSchema={this.validationSchema} sendDocVersionDate={this.updateVersion.bind(this)}/>
         );

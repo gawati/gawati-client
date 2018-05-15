@@ -33,7 +33,8 @@ const displayIri = ({docCountry, docType, docAknType, docOfficialDate, docNumber
           iriNumber
         ), 
         iriLang,
-        iriVersionDate
+        iriVersionDate,
+        iriOfficialDate
       ),
       iriPart
     );

@@ -59,11 +59,8 @@ export const identityValidationSchema = () => (
         docEntryIntoForceDate: {
           validate: Yup.date(" Entry into Force date is required").typeError(" You need to enter a date")
         },
-        // docVersionDate: {
-        //   validate: Yup.date().default(() => null).nullable(true).notRequired()
-        // },
         docVersionDate: {
-          validate: Yup.date().default(() => null).nullable(true).notRequired()
+          validate: Yup.date().typeError(" You need to enter a date")
         },
         docNumber: {
           validate: Yup.string().required(" Document number is required ")

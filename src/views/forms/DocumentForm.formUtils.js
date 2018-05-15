@@ -258,7 +258,8 @@ export const generateIRI = ({
                     iriNumber
                 ),
                 iriLang,
-                iriVersionDate
+                iriVersionDate,
+                iriOfficialDate
             ),
             iriPart
     );
