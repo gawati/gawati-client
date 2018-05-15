@@ -12,7 +12,6 @@ class PromptDocVersionDate extends React.Component {
         error: false
     }
     this.validationSchema = props.validationSchema;
-    this.validateFormField = props.validateFormField;
   }
 
   componentWillReceiveProps(nextProps) {

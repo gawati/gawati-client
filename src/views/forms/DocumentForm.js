@@ -126,7 +126,10 @@ class DocumentForm extends React.Component {
 
     updateVersion = (docVersionDate) => {
         setFieldValue(this, "docVersionDate", docVersionDate);
-        const newPkg = getFreshPkg(this.state.pkg);
+        const newFields = {
+            "docVersionDate": {value: docVersionDate, error: null}
+        }
+        const newPkg = getFreshPkg(this.state.pkg, newFields);
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         handleSubmitAdd(this, newPkg);
     }

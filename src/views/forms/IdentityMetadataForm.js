@@ -77,7 +77,6 @@ class IdentityMetadataForm extends React.Component {
         }
         return (
             <PromptDocVersionDate isOpen={isOpen} curDates={curDates}
-                                  validateFormField={this.validateFormField}
                                   validationSchema={this.validationSchema} sendDocVersionDate={this.updateVersion.bind(this)}/>
         );
     }

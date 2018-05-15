@@ -8,7 +8,7 @@ import { apiUrl } from '../../api';
 import {handleApiException} from './DocumentForm.handlers';
 import {applyActionToState} from './DocumentForm.stateManager';
 import { getCrumbLinks } from '../../utils/RoutesHelper';
-import { capitalizeFirst, isInvalidValue } from '../../utils/GeneralHelper';
+import { capitalizeFirst, isInvalidValue, isEmpty } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
 import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
@@ -265,11 +265,26 @@ export const generateIRI = ({
     );
 };
 
-export const getFreshPkg = (pkg) => {
+/**
+ * State might not be udpated with new fields if in the midst of a state update
+ * cycle. This returns the package with the latest values.
+ * i.e what the state pkg will be when the update cycle completes.
+ * @param {pkg} current state pkg
+ * @params {newFields} latest pkgIdentity fields (Optional)
+ */
+export const getFreshPkg = (pkg, newFields={}) => {
     const {pkgIdentity: form} = pkg;
+    let pkgIdentity = Object.assign({}, form);
+    if (!isEmpty(newFields)) {
+        for (let field in newFields) {
+            if (newFields.hasOwnProperty(field)) {
+                let value = newFields[field];
+                pkgIdentity[field] = value;
+            }
+        }
+    }
     //Generate docIri with fresh values
-    const docIri = {value: generateIRI(form), error: null }
-    const pkgIdentity = Object.assign({}, form, {docIri});
+    pkgIdentity['docIri'] = {value: generateIRI(pkgIdentity), error: null }
     const newPkg = Object.assign({}, pkg, {pkgIdentity});
     return newPkg;
 }
