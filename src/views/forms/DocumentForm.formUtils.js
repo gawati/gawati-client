@@ -97,19 +97,20 @@ export const loadFormWithDocument = (THIS) => {
 /**
  * Mutates the date strings in the Akoma Ntoso object into 
  * Javascript Date Objects
+ * Set a time of 12:00:00 to avoid timezone related errors
  * @param {*} aknDoc 
  */
 const convertDateData = (aknDoc, dateFields) => {
     dateFields.forEach( (item) => {
+        let dateTime = aknDoc[item].value + ' 12:00:00 Z';
         aknDoc[item].value = moment(
-            aknDoc[item].value, 
-            "YYYY-MM-DD", 
+            dateTime,
+            "YYYY-MM-DD HH:mm:ss Z",
             true
         ).toDate();
     });
     return aknDoc;
 };
-
 
 /**
  * Mutates the dateTime strings (iso8601 format) in the
