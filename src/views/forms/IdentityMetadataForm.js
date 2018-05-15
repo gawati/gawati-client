@@ -168,6 +168,8 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Official Date")}
                       onChange={
                         (field, value)=> {
+                          // we set docVersionDate = docOfficialDate when a new document is being created 
+                          this.validateFormField('docVersionDate', value)
                           this.validateFormField(field, value);
                           this.updateIriValue(form);
                         }
