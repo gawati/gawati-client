@@ -1,22 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 
-import { Container, Row, Col, Nav, NavItem } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
+
+import { versionInfo } from "../../utils/AppVersionHelper";
 
 class FooterNav extends React.Component {
-    render() {
 
+
+    render() {
+        console.log(" VERSION INFO ", versionInfo());
         return (
         <Container fluid={ true }>
-        <Row><Col>Gawati Client<Nav pills>
-            <NavItem>
-                <NavLink to="/">Link</NavLink>
-            </NavItem>
-            <NavItem>
-                <NavLink to="/">Link</NavLink>
-            </NavItem>
-        </Nav></Col></Row>
-
+        <Row><Col>{versionInfo().name} = {versionInfo().version}</Col></Row>
         </Container>
         );
     }
