@@ -34,3 +34,17 @@ export const isValidDate = (date) => {
         return false;
       }
 };
+
+/**
+ * Set the time of current date to 12:00:00 to avoid 
+ * UTC <-> local conversion issues.
+ * Convert the date to UTC but retain the same date using the offset.
+ * JS does offset in reverse so multiply by -1
+ */
+export const fixTime = (jsDate) => {
+  const offset = jsDate.getTimezoneOffset();
+  const datePart = moment(jsDate).utcOffset(offset * -1).format('YYYY-MM-DD');
+  const dateTime = datePart + ' 12:00:00 Z';
+  const newDate = moment(dateTime, "YYYY-MM-DD HH:mm:ss Z", true).toDate();
+  return newDate;
+}

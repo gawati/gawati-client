@@ -1,9 +1,11 @@
 import React from 'react';
+import moment from 'moment';
 import {Card, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
 import {getDocTypeFromLocalType} from '../../utils/DocTypesHelper';
 import { isEmpty} from '../../utils/GeneralHelper';
+import {fixTime} from '../../utils/DateHelper';
 
 import FieldDocLanguage from './FieldDocLanguage2';
 import FieldIri from './FieldIri';
@@ -168,9 +170,11 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Official Date")}
                       onChange={
                         (field, value)=> {
+                          // we fix the time to avoid timezone issues
+                          let fixedValue = fixTime(value);
                           // we set docVersionDate = docOfficialDate when a new document is being created 
-                          this.validateFormField('docVersionDate', value)
-                          this.validateFormField(field, value);
+                          this.validateFormField('docVersionDate', fixedValue)
+                          this.validateFormField(field, fixedValue);
                           this.updateIriValue(form);
                         }
                       }
