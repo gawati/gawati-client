@@ -66,6 +66,7 @@ class EmbeddedDocumentsForm extends React.Component {
         }
     }
 
+    /*
     renderMetadata(form) {
       return (
         <ul className="list-inline custom-list">
@@ -77,6 +78,7 @@ class EmbeddedDocumentsForm extends React.Component {
         </ul>
       )
     }
+    */
 
     renderAttModal() {
         return (
@@ -132,7 +134,7 @@ class EmbeddedDocumentsForm extends React.Component {
 
     renderAttForm = () => {
         //const {mode} = this.props;
-        const {pkgAttachments: attachments, pkgIdentity: form} = this.props.pkg ;
+        const {pkgAttachments: attachments} = this.props.pkg ;
         return (
             <div >
                 <Card className="bg-white text-right embedded-form-action">
@@ -143,7 +145,6 @@ class EmbeddedDocumentsForm extends React.Component {
                 <StatefulForm encType="multipart/form-data" ref="docsForm" noValidate>
                 <Card>
                     <CardBody>
-                        {this.renderMetadata(form)}
                         { 
                             attachments.length === 0 ?
                             T("There are no file attachments yet, you can use Add File to add an attachment") :
