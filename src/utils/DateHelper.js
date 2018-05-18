@@ -36,6 +36,8 @@ export const isValidDate = (date) => {
 };
 
 /**
+ * Important! Use only when sending from Browser to Server
+ * OR when setting dates on a date widget. 
  * Set the time of current date to 12:00:00 to avoid 
  * UTC <-> local conversion issues.
  * Convert the date to UTC but retain the same date using the offset.
