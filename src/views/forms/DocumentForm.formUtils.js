@@ -94,6 +94,54 @@ export const loadFormWithDocument = (THIS) => {
     );
 };
 
+export const loadViewWithDocument = (THIS) => {
+    let {params} = THIS.props.match ; 
+    let {iri} = params;
+    applyActionToState(THIS, {type: STATE_ACTION_IS_LOADING});
+    iri = iri.startsWith("/") ? iri : `/${iri}` ;
+    console.log("loadViewWithDocument: IRI FOUND = ", iri);
+    axios.post(
+        apiUrl('document-open'), {
+        data: {"iri": iri}
+        }
+    )
+    .then(
+        (response) => {
+            const {error, akomaNtoso, workflow, permissions} = response.data;
+            console.log("loadViewWithDocument: error, akomaNtoso ", error, response.data);
+            if (error) {
+                applyActionToState(THIS, {type: STATE_ACTION_SET_DOCUMENT_LOAD_ERROR});
+            } else {
+                let aknDoc = akomaNtoso; 
+                aknDoc = convertDateData(
+                    aknDoc,
+                    ['docOfficialDate', 'docPublicationDate', 'docEntryIntoForceDate', 'docVersionDate']
+                );
+
+                aknDoc = convertDateTime(aknDoc, ['docCreatedDate', 'docModifiedDate']);
+
+                applyActionToState(THIS, 
+                    {
+                        type: STATE_ACTION_LOADED_DATA, 
+                        params: {
+                            akomaNtoso: aknDoc, 
+                            workflow: workflow, 
+                            permissions: permissions
+                        }
+                    }
+                );
+            } 
+        }
+    )
+    .catch(
+        (err) => {
+            console.log(" ERROR ERROR ", err);
+            applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+            handleApiException(err);
+        }
+    );
+};
+
 /**
  * Mutates the date strings in the Akoma Ntoso object into 
  * Javascript Date Objects
@@ -123,12 +171,6 @@ const convertDateTime = (aknDoc, dateTimeFields) => {
     });
     return aknDoc;
 }
-
-
-export const loadViewWithDocument = (THIS, iri) => {
-    return THIS;
-};
-
 
 /**
  * @memberof IdentityMetadata
