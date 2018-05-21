@@ -33,6 +33,9 @@ export const LoggedInPage = ({i18n}) => (
 
                 <PropsRoute path={ getRoute("document-ident-edit") }
                     name="EditForm" component={DocumentForm} mode="edit" i18n={i18n} />
+                
+                <PropsRoute path={ getRoute("document-ident-view") }
+                    name="EditForm" component={DocumentForm} mode="view" i18n={i18n} />
 
                 <PropsRoute path={ getRoute("document-add") } 
                     name="InputForm" component={DocumentForm} mode="add" i18n={i18n} />
