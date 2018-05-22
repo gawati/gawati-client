@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import {Card, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
 
 import {T} from '../../utils/i18nHelper';
