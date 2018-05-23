@@ -20,9 +20,11 @@ import StdCompContainer from '../components/general/StdCompContainer';
 import Paginater from "../components/ui_elements/Paginater";
 import DocActions from "../components/DocActions";
 import Checkbox from "../components/widgets/Checkbox";
+import SearchFilter from '../components/SearchFilter.js';
 
 import {getToken, generateBearerToken, getRolesForCurrentClient} from "../utils/GawatiAuthClient";
 import { docIri } from '../utils/ServerPkgHelper';
+import docTypes from '../configs/docTypes.json';
 
 export const StateColumn = ({ stateInfo }) =>  {
   return (
@@ -35,7 +37,6 @@ const showCreatedAndModified = (created, modified) => {
         `created: ${ displayXmlDateTime(created) }` : 
         `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
 };
-
 
 export const AllowedActions = ({docPkg}) => {
   const roles = getRolesForCurrentClient();
@@ -89,6 +90,11 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      titleFilter: '',
+      docType: [''],
+      subType: [''],
+      fromDate:null,
+      toDate:null,
       docs: [],
       totalDocs: 0,
       allSelected: false,
@@ -141,7 +147,8 @@ class Dashboard extends Component {
       data: {
           "docTypes": "all", 
           "itemsFrom": itemsFrom,
-          "pageSize": PAGE_SIZE
+          "pageSize": PAGE_SIZE,
+          "roles": getRolesForCurrentClient()
         }
     }
     axios.post(apiUrl('documents'), body, config)
@@ -172,7 +179,7 @@ class Dashboard extends Component {
   onPageClick(selected) {
     //ReactPaginate page indices start from 0.
     let itemsFrom = (selected * PAGE_SIZE) + 1;
-    this.getDocs(itemsFrom);
+    this.getFilteredDocs(itemsFrom);
     this.resetCheckboxes();
   }
 
@@ -237,6 +244,100 @@ class Dashboard extends Component {
     );
   }
   
+  handleTitleChange(titleFilter) {
+    this.setState({titleFilter: titleFilter})
+  }
+
+  handleChangeDocType (docTypeSelected) {
+    let docTypeChange = [];
+    let subTypeChange = [];
+    for(let dType of docTypes.docTypes){
+      if(dType['localTypeName'] === docTypeSelected){
+        docTypeChange.push(dType['aknType']);
+        subTypeChange.push(dType['localTypeNameNormalized']); 
+        break; 
+      }
+    }
+    this.setState({docType:docTypeChange , subType:subTypeChange }, () => {
+      this.submitForm();
+    });
+
+  }
+
+  handleChangeFromDate(fromDate) {
+    this.setState({fromDate: fromDate}, () => {
+      this.submitForm();
+    })
+  }
+
+  handleChangeToDate(toDate) {
+    this.setState({toDate: toDate} , () => {
+      this.submitForm();
+    })
+  }
+
+  dateFormatter = (date,id) => {
+    if(date === null && id === 0){
+      return "1700-01-01";
+    }else if (date === null && id === 1){
+      return "2100-12-12";
+    }else{
+      return JSON.stringify(date).substring(1,11) ;
+    }  
+  }
+
+  getFilteredDocs(itemsFrom) {
+    const headers = generateBearerToken(getToken());
+    const config = { headers: headers };
+    const body = {
+      data: {
+          "docTypes": "all", 
+          "itemsFrom": itemsFrom,
+          "pageSize": PAGE_SIZE,
+          "roles": getRolesForCurrentClient(),
+          "title": this.state.titleFilter,
+          "docType": this.state.docType,
+          "subType": this.state.subType,
+          "fromDate": this.dateFormatter(this.state.fromDate,0),
+          "toDate": this.dateFormatter(this.state.toDate,1)
+        }
+    }
+    console.log("data is" + JSON.stringify(body.data));
+    axios.post(apiUrl('documents-filter'), body, config)
+    .then(
+      (response) => {
+          const {code, documents, total} = response.data;
+          // check if 0 records returned
+          // absence of code means data was returned
+          if (code == null && Array.isArray(documents)) {
+            this.setState({docs: documents, totalDocs: total});
+          } else {
+            this.setState({docs: [], totalDocs: 0});
+          }
+        }
+    )
+    .catch(
+      (err) => {
+        handleApiException(err);
+      }
+    );
+  }
+
+  submitForm() {
+    this.getFilteredDocs(1);
+  };
+
+  clearForm() {
+    this.setState({
+      titleFilter: '',
+      docType: [''],
+      subType: [''],
+      fromDate:null,
+      toDate:null
+    }, () => {
+      this.getDocs(1);
+    })
+  }
 
   render() {
     const {docs} = this.state;
@@ -244,9 +345,17 @@ class Dashboard extends Component {
     const breadcrumb = this.getBreadcrumb();
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
-        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} match={this.props.match} />
+        <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} 
+         match={this.props.match}/>
         <br />   
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
+        <SearchFilter handleTitleChange={this.handleTitleChange.bind(this)}  
+         titleFilter={this.state.titleFilter}
+         handleChangeDocType = {this.handleChangeDocType.bind(this)}
+         handleChangeFromDate={this.handleChangeFromDate.bind(this)}
+         handleChangeToDate={this.handleChangeToDate.bind(this)}
+         submitForm={this.submitForm.bind(this)}
+         clearForm={this.clearForm.bind(this)}/>       
         <Card>
           <CardHeader>
             <i className="fa fa-align-justify"></i> {T("ET.Dashboard.Listing.Documents")}
