@@ -1,66 +1,57 @@
 {
-  "name": "gawati-client",
-  "version": "0.1.0",
-  "gawati-version": "1.0.7",
+  "name": "gawati-editor-ui",
+  "version": "1.0.8",
   "author": {
     "name": "Ashok Hariharan",
     "email": "ashok+github@hariharan.org.in"
   },
   "private": true,
   "license": "AGPLV3",
-  "proxy": "http://localhost",
+  "proxy": "http://gawati.local",
   "dependencies": {
-    "axios": "^0.17.1",
-    "bootstrap": "^4.0.0-beta.3",
+    "axios": "^0.18.0",
+    "bootstrap": "^4.0.0",
     "classnames": "^2.2.5",
     "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
-    "i18next": "^10.2.2",
-    "i18next-browser-languagedetector": "^2.1.0",
+    "gawati-editor-lang-packs": "^1.0.3",
+    "i18next": "^11.2.3",
+    "i18next-browser-languagedetector": "2.2.0",
     "i18next-xhr-backend": "^1.5.1",
-    "moment": "^2.20.1",
+    "keycloak-js": "^3.4.3",
+    "moment": "^2.22.0",
     "node-sass-chokidar": "0.0.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-i18next": "^7.3.0",
+    "react": "^16.3.2",
+    "react-cookie": "^2.1.4",
+    "react-dom": "^16.3.2",
+    "react-i18next": "^7.6.1",
+    "react-paginate": "^5.2.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
+    "react-scripts": "1.1.4",
     "react-select": "^1.2.0",
-    "react-tabs": "^2.1.1",
+    "react-simple-file-input": "^2.1.0",
+    "react-spinkit": "^3.0.0",
+    "react-tabs": "^2.2.1",
     "react-toastify": "^3.3.1",
-    "react-widgets": "^4.1.1",
-    "react-widgets-moment": "^4.0.4",
-    "reactstrap": "^5.0.0-alpha.4",
+    "react-widgets": "^4.2.6",
+    "react-widgets-moment": "^4.0.12",
+    "reactstrap": "^5.0.0",
     "simple-line-icons": "^2.4.1",
-    "yup": "^0.23.0"
+    "uuid": "^3.2.1",
+    "yup": "^0.24.1"
   },
-  "main": "src/electron-starter.js",
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./scss --include-path ./node_modules src/ -o src/ --watch --recursive",
-    "start": "nf start -p 3000",
-    "build": "react-scripts build",
+    "start": "shx cp -R node_modules/gawati-editor-lang-packs/locales public && react-scripts start",
+    "build": "react-scripts build && shx cp -R node_modules/gawati-editor-lang-packs/locales build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-start": "node src/electron-wait-react",
     "react-start": "react-scripts start",
-    "pack": "build --dir",
-    "dist": "npm run build && build",
     "vars": "env | grep npm_package_ | grep -v npm_lifecycle_script"
   },
-  "build": {
-    "appId": "org.gawati.client-app",
-    "win": {
-      "iconUrl": "https://cdn2.iconfinder.com/data/icons/designer-skills/128/react-256.png"
-    },
-    "directories": {
-      "buildResources": "public"
-    }
-  },
   "devDependencies": {
-    "electron": "^1.7.11",
-    "electron-builder": "^19.55.1"
+    "shx": "^0.2.2"
   }
 }

@@ -1,0 +1,8 @@
+When a document loads, we render the workflow actions bar. 
+
+The workflow actions bar has actions to transit the document. 
+
+Next transitions are provided when the document is returned back. 
+
+We need to check the logged in roles of the user, and see if the user is allowed to execute the transition. 
+

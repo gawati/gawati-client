@@ -1,0 +1,8 @@
+{
+    "items":[
+        {
+            "route": "logged-in-root",
+            "icon": "fa fa-list-alt"
+        }
+    ]
+}

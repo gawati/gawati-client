@@ -1,7 +1,71 @@
- .container-fluid .row > [class^="col"] {
+/*  .container-fluid .row > [class^="col"] {
     padding-top: .75rem;
     padding-bottom: .75rem;
     background-color: #E5EDF5;
     border: 1px solid #C9C1D5;
     color: #5F5F5F;
+} */
+
+
+.doc-toolbar-actions a {
+    color: white;
 }
+
+.doc-container-padding-0 {
+    padding: 0;
+}
+
+.doc-form-card {
+    border: 0px;
+    background-color: white;
+    margin-top:0;
+}
+
+.custom-list li {
+    margin-top: 0.5em;
+}
+.custom-list span {
+    /*background:rgba(136,197,199,.05);*/
+    /*color: #59a6a9;*/
+    /*background: rgba(136, 197, 199, 0.22);*/
+    color: #6cb9da;
+    background: rgba(108, 185, 218, 0.1);
+    padding: 0.3em 0 0.3em 0.3em;
+}
+
+.custom-list b {
+    color: white;
+    /*background: #88c5c7;*/
+    background: #6cb9da;
+    padding: 0.3em;
+}
+
+
+/** REACT-TABS*/
+.document-form-tabs {
+    margin:0 0 0px !important;
+    margin-bottom: 0px;
+}
+
+.document-form-action-current-info {
+    margin-left: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.embedded-form-action {
+    margin-top:0px;
+    margin-bottom:0px;
+    border: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+/*  .react-tabs__tab.react-tabs__tab--selected {
+    background: var(--reacttabs-selected-bg-color);
+    color: var(--reacttabs-selected-color);
+    border-bottom: 0px!important;
+    border-left: var(--reacttabs-selected-border);
+    border-right: var(--reacttabs-selected-border);
+    border-top: var(--reacttabs-selected-border);
+} */

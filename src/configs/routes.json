@@ -5,18 +5,38 @@
         "label": "Home"
     },
     {
-        "route": "/login",
+        "route": "/_lang/:lang/login",
         "name": "non-logged-in-root",
         "label": "Login"
     },
     {
-        "route": "/dashboard",
+        "route": "/_lang/:lang/dashboard",
         "name": "logged-in-root",
         "label": "Dashboard"
     },
     {
-        "route": "/document/add",
+        "route": "/_lang/:lang/document/add",
         "name": "document-add",
-        "label": "Add Document"
+        "label": "Add Document",
+        "breadcrumb": [
+            "logged-in-root"
+        ]
+    },
+    {
+        "route": "/_lang/:lang/document/edit/ident/_iri/:iri*",
+        "name": "document-ident-edit",
+        "label": "Document Identity",
+        "breadcrumb": [
+            "logged-in-root"
+        ]
+    },
+    {
+        "route": "/_lang/:lang/document/edit/comp/_iri/:iri*",
+        "name": "document-comp-edit",
+        "label": "Document Components",
+        "breadcrumb": [
+            "logged-in-root",
+            "document-ident-edit"
+        ]
     }
 ]}

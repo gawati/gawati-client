@@ -1,6 +1,6 @@
 import React from 'react';
 
-import StdDiv from '../../components/StdDiv';
+import StdDiv from '../../components/general/StdDiv';
 import IdentityMetadata from './IdentityMetadata' ;
 
 

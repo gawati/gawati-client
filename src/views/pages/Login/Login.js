@@ -1,9 +1,9 @@
 import React from 'react';
 import {Container, Row, Col, CardGroup, Card, CardBody, Button, Input, InputGroup, InputGroupAddon} from 'reactstrap';
 
-import {Aux} from '../../../utils/generalhelper';
+import {Aux} from '../../../utils/GeneralHelper';
 
-const LoginForm = ({history}) => 
+const LoginForm = ({history, login}) => 
 <Aux>
     <h1>Login</h1>
     <p className="text-muted">Sign In to your account</p>
@@ -17,7 +17,7 @@ const LoginForm = ({history}) =>
     </InputGroup>
     <Row>
         <Col xs="6">
-            <Button color="primary" className="px-4" onClick={()=>history.push("/dashboard")}>Login</Button>
+            <Button color="primary" className="px-4" onClick={()=>login(true)}>Login</Button>
         </Col>
         <Col xs="6" className="text-right">
             <Button color="link" className="px-0">Forgot password?</Button>
@@ -38,7 +38,7 @@ const SignUp = ({history}) =>
 
 class Login extends React.Component {
   render() {
-    const {history} = this.props; 
+    const {history, login} = this.props; 
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -47,7 +47,7 @@ class Login extends React.Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <LoginForm history={history} />
+                    <LoginForm history={history} login={login} />
                   </CardBody>
                 </Card>
                 <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: 44 + '%' }}>
