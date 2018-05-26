@@ -69,3 +69,7 @@
     border-right: var(--reacttabs-selected-border);
     border-top: var(--reacttabs-selected-border);
 } */
+
+/*Buttons which add a 7px space*/
+.btn-space-7 { margin-right:7px;
+}

@@ -10,6 +10,7 @@ const GAWATI_CLIENT_APIS = [
         name: "data",
         apis : {
             'documents': '/gwc/documents',
+            'documents-filter':'/gwc/documents/filter',
             'document-add': '/gwc/document/add',
             'document-open': '/gwc/document/load',
             'document-edit': '/gwc/document/edit',
