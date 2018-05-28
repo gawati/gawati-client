@@ -64,7 +64,7 @@ export const typicalDashboardPermissions = (pkg, roles) => {
 export const hasPermission = (pkg, roles, permissionName) => {
     const permMap = serverPermissions(pkg).filter( (item) => item.name === permissionName );
     // iterate the roles, if any of them matches the view permission return true.
-    if (permMap !== undefined) {
+    if (permMap !== undefined && permMap.length > 0) {
         // the below syntax is an easier way of checking nested obejct validity
         // instead of checking ( if (permMap.roles) {  if (permMaps.roles.role) ... })
         // see http://web.archive.org/web/20161108071447/http://blog.osteele.com/posts/2007/12/cheap-monads/
