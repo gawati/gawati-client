@@ -289,3 +289,35 @@ export const getFreshPkg = (pkg, newFields={}) => {
     const newPkg = Object.assign({}, pkg, {pkgIdentity});
     return newPkg;
 }
+
+/**
+ * Create the new version package
+ */
+export const getVersionPkg = (pkg, docVersionDate) => {
+    return new Promise(function(resolve, reject){
+        //Update the Version date
+        const newFields = {
+            "docVersionDate": {value: docVersionDate, error: null}
+        }
+        let newPkg = getFreshPkg(pkg, newFields);
+
+        //Init attachments
+        newPkg.pkgAttachments = [];
+
+        //Replace workflow and permissions with defaults.
+        const {docType, docAknType} = pkg.pkgIdentity;
+        axios.post(
+            apiUrl('workflows-defaults'), {
+            data: {"aknType": docAknType.value, "aknSubType": docType.value}
+            }
+        )
+        .then((res) => {
+            newPkg.workflow = res.data.workflow; 
+            newPkg.permissions = res.data.permissions;
+            resolve(newPkg);
+        })
+        .catch((err) => {
+            reject(err);
+        });
+    });
+}

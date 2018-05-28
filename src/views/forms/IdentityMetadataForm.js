@@ -82,6 +82,30 @@ class IdentityMetadataForm extends React.Component {
         );
     }
 
+    renderVersionDate(form, errors) {
+      const {mode} = this.props;
+      const {docVersionDate, docOfficialDate} = form;
+      const isLater = new Date(docVersionDate.value) > new Date(docOfficialDate.value);
+
+      if (mode === 'edit' && isLater) {
+          return (
+          <Row>
+            <Col xs="4">
+              <FieldDate
+                value={docVersionDate.value}
+                readOnly={ true }
+                name="docVersionDate"
+                label={T("Version Date")}
+                error={errors.docOfficialDate}
+              />
+            </Col>
+          </Row>
+        );
+      } else {
+        return '';
+      }
+    }
+
     render() {
       const {handleSubmit, handleReset, mode, isSubmitting} = this.props ; 
       const {pkgIdentity: form} = this.props.pkg ; 
@@ -206,6 +230,9 @@ class IdentityMetadataForm extends React.Component {
                   />
                 </Col>
               </Row>
+
+              {this.renderVersionDate(form, errors)}
+
               <Row>
                 <Col xs="6">
                   <FieldDate  

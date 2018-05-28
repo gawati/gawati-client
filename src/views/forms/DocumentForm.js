@@ -27,7 +27,8 @@ import {
     validateFormField,
     getBreadcrumb,
     generateIRI,
-    getFreshPkg
+    getFreshPkg,
+    getVersionPkg
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
@@ -125,13 +126,15 @@ class DocumentForm extends React.Component {
     }
 
     updateVersion = (docVersionDate) => {
-        const newFields = {
-            "docVersionDate": {value: docVersionDate, error: null}
-        }
-        let newPkg = getFreshPkg(this.state.pkg, newFields);
-        newPkg.pkgAttachments = [];
-        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
-        handleSubmitAdd(this, newPkg);
+        getVersionPkg(this.state.pkg, docVersionDate)
+        .then((versionPkg) => {
+            applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+            handleSubmitAdd(this, versionPkg);
+        })
+        .catch((err) => {
+            console.log(" Error in getVersionPkg ", err);
+            throw err;
+        });
     }
 
     /**
