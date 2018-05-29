@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {Card, CardBody, ButtonGroup, Button} from 'reactstrap';
+import {Card, CardBody, ButtonGroup} from 'reactstrap';
 import RRNavLink from '../../components/utils/RRNavLink';
 import {linkDocumentAdd} from '../../components/utils/QuickRoutes';
 import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docType, docAknType } from '../../utils/StatePkgHelper';
@@ -100,22 +100,6 @@ class DocumentFormActions extends React.Component {
         });
     };
 
-    publishDocument() {
-        const iri = docIri(this.props.pkg);
-        console.log("PUBLISH DOCUMENT", iri);
-        axios.post(apiUrl("document-publish"), {data: {iri}})
-            .then( (response) => {
-                // {"success":{"code":"publish_document","message":"/db/docs/gawati-client-data/akn/ke/act/legge/1970-06-03/akn_ke_act_legge_1970-06-03_Cap_44_eng_main.xml"}}
-                const data = response.data;
-                if (data.success) {
-                    notifySuccess(T(`The document ${iri} has been submitted for publishing`));
-                }
-            })
-            .catch( (err) => {
-                console.log("publishDocument ", err);
-            });
-    }
-
     render() {
         const {lang, mode, pkg} = this.props;
         const transitAllowed = this.isTransitPermissionPresent(pkg);
@@ -129,11 +113,6 @@ class DocumentFormActions extends React.Component {
                    {/** using Button here injects btn-secondary for some unknown reason so using <button> directly **/}
                    { transitAllowed ? transitionButtons : null}
                    <button className={`btn btn-primary`}><RRNavLink to={ linkDocumentAdd(lang) }><i className="fa fa-plus"></i> Add Document</RRNavLink></button>
-                   <Button type="button" size="sm" color="info" 
-                           onClick={this.publishDocument.bind(this)}>
-                    <i className="fa fa-dot-circle-o"></i> 
-                    Publish Document
-                   </Button>
                 </ButtonGroup>
                 </CardBody>
             </Card>        
