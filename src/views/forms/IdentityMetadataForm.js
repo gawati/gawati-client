@@ -242,7 +242,8 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Publication Date")}
                       onChange={
                         (field, value)=> {
-                          this.validateFormField(field, value);
+                          // we fix the time to avoid timezone issues
+                          this.validateFormField(field, fixTime(value));
                         }
                       }
                       error={errors.docPublicationDate}
@@ -256,7 +257,8 @@ class IdentityMetadataForm extends React.Component {
                       label={T("Entry Into Force Date")}
                       onChange={
                         (field, value)=> {
-                          this.validateFormField(field, value);
+                          // we fix the time to avoid timezone issues
+                          this.validateFormField(field, fixTime(value));
                         }
                       }
                       error={errors.docEntryIntoForceDate}
