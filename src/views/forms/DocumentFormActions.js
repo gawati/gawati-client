@@ -11,7 +11,7 @@ import {modeString, conditionalDocNumber, CaretSpacer} from '../../utils/FormHel
 import { SpanNormal } from '../../components/general/Spans';
 import { apiUrl } from '../../api';
 import TransitAction from './TransitAction';
-import { notifySuccess } from '../../utils/NotifHelper';
+import { notifySuccess, notifyError } from '../../utils/NotifHelper';
 //import ConfirmModal from '../utils/ConfirmModal';
 
 class DocumentFormActions extends React.Component {
@@ -81,6 +81,7 @@ class DocumentFormActions extends React.Component {
                 }
             })
             .catch( (err) => {
+                notifyError(T('The document could not be sent for publication'));
                 console.log("transitDocument ", err);
             });
     };
