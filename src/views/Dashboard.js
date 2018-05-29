@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
+import {Button, Modal, ModalBody, ModalFooter, ModalHeader, Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
 
 import { handleApiException } from './dashboard.handlers';
@@ -38,11 +38,11 @@ const showCreatedAndModified = (created, modified) => {
         `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
 };
 
-export const AllowedActions = ({docPkg}) => {
+export const AllowedActions = ({docPkg,modal,toggleModal,deleteDoc}) => {
   const roles = getRolesForCurrentClient();
   const typical = typicalDashboardPermissions(docPkg, roles);
   const documentIri = docIri(docPkg);
-  const linkIri = documentIri.startsWith("/") ? documentIri.slice(1): documentIri ; 
+  let linkIri = documentIri.startsWith("/") ? documentIri.slice(1): documentIri ;
   return typical.map( (action, i, origArr) => {
       const navLinkTo = setInRoute(
         `document-ident-${action.name}`, 
@@ -50,13 +50,35 @@ export const AllowedActions = ({docPkg}) => {
       );
       if (origArr.length - 1 ===  i) {
         // last item
-        return <RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>;
-      } else {
-        // any other item
-        return <Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>;
-      }
-    })
- ;
+        if(action.name === 'delete'){
+          return (<DeleteButton key={action.name} action={action} docPkg={docPkg} modal={modal} toggleModal={toggleModal} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+        }
+        else{
+          return (<RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>);
+        }
+      }else{
+          // any other item
+        if(action.name === 'delete'){
+          return (<DeleteButton key={action.name} action={action} docPkg={docPkg} modal={modal} toggleModal={toggleModal} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+        }else{
+          return (<Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>);
+        }
+      }  
+  })
+}
+
+export const DeleteButton = ({action,docPkg,modal,toggleModal,deleteDoc,linkIri}) => {
+  return (<span>
+          <Aux><Button className="btn btn-info" role="button" onClick= {toggleModal} >{T(action.label)}</Button>&#160;</Aux>
+          <Modal isOpen={modal} >
+          <ModalHeader >Modal title</ModalHeader>
+          <ModalBody>Are you sure you want to delete the selected document?</ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={toggleModal} >No</Button>{' '}
+              <Button color="secondary" onClick={() => deleteDoc(linkIri,docPkg.akomaNtoso.attachments.value)}>Yes</Button>
+            </ModalFooter>
+          </Modal>
+        </span>)
 }
 
 export const TitleAndDateColumn = ({docPkg}) =>  {
@@ -98,8 +120,60 @@ class Dashboard extends Component {
       docs: [],
       totalDocs: 0,
       allSelected: false,
-      isChecked: []
+      isChecked: [],
+      modal: false
     };
+  }
+
+  toggleModal() {
+    this.setState({
+      modal: !this.state.modal
+    });
+  }
+  
+  deleteDoc (linkIri,attachments) {
+    let iri = "/" + linkIri;
+    const headers = generateBearerToken(getToken());
+    const config = { headers: headers };
+    const body = {
+      data: {
+          "iri": iri
+        }
+    }
+    axios.post(apiUrl('documents-delete'), body, config)
+    .then(
+      (response) => {
+         this.setState({modal: !this.state.modal}, () => {
+          this.getFilteredDocs(1);
+          this.deleteAttachments(attachments);
+         })
+        }
+    )
+    .catch(
+      (err) => {
+        handleApiException(err);
+      }
+    );
+  }
+
+  deleteAttachments(attachments) {
+    const headers = generateBearerToken(getToken());
+    const config = { headers: headers };
+    const body = {
+      data: {
+          "attachments": attachments
+        }
+    }
+    axios.post(apiUrl('attachment-delete'), body, config)
+    .then(
+      (response) => {
+        console.log("attachment deletion call to gawati-editor-fe successful")
+      })
+    .catch(
+      (err) => {
+        handleApiException(err);
+      }
+    );
   }
 
   resetCheckboxes() {
@@ -224,7 +298,7 @@ class Dashboard extends Component {
               }
             </td>
             <td className="text-center">
-                <AllowedActions docPkg={docPkg} />
+                <AllowedActions docPkg={docPkg} modal={this.state.modal} toggleModal={this.toggleModal.bind(this)} deleteDoc={this.deleteDoc.bind(this)}/>
             </td>
             <td className="text-center">
               <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>

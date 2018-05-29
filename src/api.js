@@ -11,6 +11,7 @@ const GAWATI_CLIENT_APIS = [
         apis : {
             'documents': '/gwc/documents',
             'documents-filter':'/gwc/documents/filter',
+            'documents-delete':'/gwc/documents/delete',
             'document-add': '/gwc/document/add',
             'document-open': '/gwc/document/load',
             'document-edit': '/gwc/document/edit',
@@ -18,6 +19,7 @@ const GAWATI_CLIENT_APIS = [
             'document-exists': '/gwc/document/exists',
             'attachment-upload': '/gwc/attachments/upload',
             'attachment-remove': '/gwc/attachments/remove',
+            'attachment-delete':'/gwc/attachments/delete',
             'workflows-meta': '/gwc/workflows/meta',
             'workflows-transit': '/gwc/workflows/transit',
             'workflows-defaults': '/gwc/workflows/defaults',
