@@ -19,7 +19,6 @@ const GAWATI_CLIENT_APIS = [
             'document-exists': '/gwc/document/exists',
             'attachment-upload': '/gwc/attachments/upload',
             'attachment-remove': '/gwc/attachments/remove',
-            'attachment-delete':'/gwc/attachments/delete',
             'workflows-meta': '/gwc/workflows/meta',
             'workflows-transit': '/gwc/workflows/transit',
             'workflows-defaults': '/gwc/workflows/defaults',
