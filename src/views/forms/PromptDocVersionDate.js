@@ -1,6 +1,7 @@
 import React from 'react';
 import FieldDate from './FieldDate';
 import {T} from '../../utils/i18nHelper';
+import {fixTime} from '../../utils/DateHelper';
 import ConfirmModal from '../utils/ConfirmModal';
 
 class PromptDocVersionDate extends React.Component {
@@ -32,7 +33,8 @@ class PromptDocVersionDate extends React.Component {
   }
 
   onDocVersionDateChange(field, value) {
-    const docVersionDate = value;
+    //we fix the time to avoid timezone issues
+    const docVersionDate = fixTime(value);
     if (this.isVersionLater(docVersionDate)) {
       this.validationSchema['docVersionDate'].validate.validate(docVersionDate)
       .then((docVersionDate) => {
