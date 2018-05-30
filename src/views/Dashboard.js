@@ -12,7 +12,7 @@ import { T } from '../utils/i18nHelper';
 
 import {Aux, getWFProgress, capitalizeFirst} from '../utils/GeneralHelper';
 import {humanDate, displayXmlDateTime} from '../utils/DateHelper';
-import { getLocalTypeName } from '../utils/DocTypesHelper';
+import { getLocalTypeName, getDocTypes } from '../utils/DocTypesHelper';
 import {typicalDashboardPermissions} from "../utils/DocPermissionsHelper";
 import { setInRoute } from '../utils/RoutesHelper';
 
@@ -24,7 +24,6 @@ import SearchFilter from '../components/SearchFilter.js';
 
 import {getToken, generateBearerToken, getRolesForCurrentClient} from "../utils/GawatiAuthClient";
 import { docIri } from '../utils/ServerPkgHelper';
-import docTypes from '../configs/docTypes.json';
 
 export const StateColumn = ({ stateInfo }) =>  {
   return (
@@ -251,7 +250,7 @@ class Dashboard extends Component {
   handleChangeDocType (docTypeSelected) {
     let docTypeChange = [];
     let subTypeChange = [];
-    for(let dType of docTypes.docTypes){
+    for(let dType of getDocTypes()){
       if(dType['localTypeName'] === docTypeSelected){
         docTypeChange.push(dType['aknType']);
         subTypeChange.push(dType['localTypeNameNormalized']); 
