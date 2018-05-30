@@ -1,4 +1,3 @@
-import docTypes from '../configs/docTypes.json';
 
 /**
  * {"docTypes": [
@@ -11,7 +10,7 @@ import docTypes from '../configs/docTypes.json';
     },
  */
 export const getDocTypes = () => {
-    return docTypes.docTypes ;
+    return window.gawatEditorConfig.docTypes ;
 };
 
 /**
