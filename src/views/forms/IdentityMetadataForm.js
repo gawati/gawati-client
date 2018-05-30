@@ -114,18 +114,17 @@ class IdentityMetadataForm extends React.Component {
       const formValid = isEmpty(errors);
 
       if(mode === "view") {
-        var Footer = <div><Button type="reset" size="sm" disabled={ mode === "edit" || mode === "view" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
-                     { " " }
-                     <Button type="button" size="sm" disabled={ isSubmitting || !formValid || mode === "add" || mode === "view"} color="info" onClick={() => {this.setState({versionOpen: true})}}><i className="fa fa-dot-circle-o"></i> New Legal Version</Button>
-                     { " " }</div>
+        var Footer = <div></div>
       }else{
 
-        Footer = <div><Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid || mode === "view"}><i className="fa fa-dot-circle-o"></i> Save</Button>
-                { " " }
-                <Button type="reset" size="sm" disabled={ mode === "edit" || mode === "view" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
-                { " " }
-                <Button type="button" size="sm" disabled={ isSubmitting || !formValid || mode === "add" || mode === "view"} color="info" onClick={() => {this.setState({versionOpen: true})}}><i className="fa fa-dot-circle-o"></i> New Legal Version</Button>
-                { " " } </div>
+        Footer = <div> 
+                 { " " }
+                   <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
+                 { " " }
+                   <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
+                 { " " }
+                   <Button type="button" size="sm" disabled={ isSubmitting || !formValid || mode === "add" } color="info" onClick={() => {this.setState({versionOpen: true})}}><i className="fa fa-dot-circle-o"></i> New Legal Version</Button>
+                 </div>
       }
 
       return (

@@ -1,36 +1,31 @@
 import React from 'react';
-
-import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
-import {Aux} from '../utils/GeneralHelper';
 import { T } from '../utils/i18nHelper';
+import ConfirmModal from './utils/ConfirmModal';
+import {Button} from 'reactstrap';
 
 class DeleteAction extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-        modal: false
+        isOpen: false
     }
   }
 
   toggleModal() {
     this.setState({
-      modal: !this.state.modal
+      isOpen: !this.state.isOpen
     });
   }
   render() {
-    const {action,docPkg,deleteDoc,linkIri} = this.props;
-    return (<span>
-              <Aux><Button className="btn btn-info" role="button" onClick= {this.toggleModal.bind(this)} >{T(action.label)}</Button>&#160;</Aux>
-              <Modal isOpen={this.state.modal} >
-               <ModalHeader >Modal title</ModalHeader>
-               <ModalBody>Are you sure you want to delete the selected document?</ModalBody>
-               <ModalFooter>
-                 <Button color="primary" onClick={this.toggleModal.bind(this)} >No</Button>{' '}
-                 <Button color="secondary" onClick={() => deleteDoc(linkIri,docPkg.akomaNtoso.attachments.value)}>Yes</Button>
-               </ModalFooter>
-              </Modal>
-            </span>
+    const {action,deleteDoc,linkIri} = this.props;
+    return (<span><Button className="btn btn-info" role="button" onClick= {this.toggleModal.bind(this)} >{T(action.label)}</Button>
+            <ConfirmModal show={this.state.isOpen}
+                          onClose={this.toggleModal.bind(this)}
+                          title={T("Are you sure you want to delete the selected document?")}
+                          onOK={() => deleteDoc(linkIri)}
+                          onOKLabel={T("Ok")} 
+                          onCloseLabel={T("Cancel")} /></span>
     )        
   }
 }

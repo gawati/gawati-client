@@ -52,7 +52,7 @@ export const AllowedActions = ({docPkg,deleteDoc}) => {
       if (origArr.length - 1 ===  i) {
         // last item
         if(action.name === 'delete'){
-          return (<DeleteAction key={action.name} action={action} docPkg={docPkg} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+          return (<DeleteAction key={action.name} action={action} deleteDoc={deleteDoc} linkIri={linkIri}/>);
         }
         else{
           return (<RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>);
@@ -60,7 +60,7 @@ export const AllowedActions = ({docPkg,deleteDoc}) => {
       }else{
           // any other item
         if(action.name === 'delete'){
-          return (<DeleteAction key={action.name} action={action} docPkg={docPkg} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+          return (<DeleteAction key={action.name} action={action} deleteDoc={deleteDoc} linkIri={linkIri}/>);
         }else{
           return (<Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>);
         }
@@ -111,15 +111,14 @@ class Dashboard extends Component {
     };
   }
   
-  deleteDoc (linkIri,attachments) {
+  deleteDoc (linkIri) {
     let iri = "/" + linkIri;
     const headers = generateBearerToken(getToken());
     const config = { headers: headers };
     const body = {
       data: {
-          "iri": iri,
-          "attachments": attachments
-        }
+          "iri": iri
+      }
     }
     axios.post(apiUrl('documents-delete'), body, config)
     .then(
