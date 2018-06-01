@@ -120,7 +120,7 @@ class Dashboard extends Component {
           "iri": iri
       }
     }
-    axios.post(apiUrl('documents-delete'), body, config)
+    axios.post(apiUrl('document-delete'), body, config)
     .then(
       (response) => {
           this.getFilteredDocs(1);
