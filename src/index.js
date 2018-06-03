@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import axios from 'axios';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -67,11 +67,18 @@ const appLoader = () => {
 };
 
 
+// Load Editor config from server
+axios.get(apiGetCall('config', {}))
+.then((response) => {
+    window.gawatEditorConfig = response.data;
 
-/** 
- * Launch with various Sanity checks
-*/
-sanityChecker(appLoader);
+    // Launch with various Sanity checks
+    sanityChecker(appLoader);
+})
+.catch(err => console.log("Error getting config from server ", err));
+
+
+// sanityChecker(appLoader);
 
 /*         <Switch>
             <Route path="/register" name="Register" component={Register} />

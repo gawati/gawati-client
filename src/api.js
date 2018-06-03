@@ -21,7 +21,8 @@ const GAWATI_CLIENT_APIS = [
             'workflows-meta': '/gwc/workflows/meta',
             'workflows-transit': '/gwc/workflows/transit',
             'workflows-defaults': '/gwc/workflows/defaults',
-            'keycloak': '/gwc/auth/config'
+            'keycloak': '/gwc/auth/config',
+            'config': '/gwc/config'
         }
     },
     {
