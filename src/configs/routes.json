@@ -31,6 +31,14 @@
         ]
     },
     {
+        "route": "/_lang/:lang/document/view/ident/_iri/:iri*",
+        "name": "document-ident-view",
+        "label": "Document View",
+        "breadcrumb": [
+            "logged-in-root"
+        ]
+    },
+    {
         "route": "/_lang/:lang/document/edit/comp/_iri/:iri*",
         "name": "document-comp-edit",
         "label": "Document Components",

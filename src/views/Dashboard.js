@@ -21,6 +21,7 @@ import Paginater from "../components/ui_elements/Paginater";
 import DocActions from "../components/DocActions";
 import Checkbox from "../components/widgets/Checkbox";
 import SearchFilter from '../components/SearchFilter.js';
+import DeleteAction from './DeleteAction.js';
 
 import {getToken, generateBearerToken, getRolesForCurrentClient} from "../utils/GawatiAuthClient";
 import { docIri } from '../utils/ServerPkgHelper';
@@ -37,25 +38,34 @@ const showCreatedAndModified = (created, modified) => {
         `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
 };
 
-export const AllowedActions = ({docPkg}) => {
+export const AllowedActions = ({docPkg,deleteDoc}) => {
   const roles = getRolesForCurrentClient();
   const typical = typicalDashboardPermissions(docPkg, roles);
   const documentIri = docIri(docPkg);
-  const linkIri = documentIri.startsWith("/") ? documentIri.slice(1): documentIri ; 
+  let linkIri = documentIri.startsWith("/") ? documentIri.slice(1): documentIri ;
   return typical.map( (action, i, origArr) => {
       const navLinkTo = setInRoute(
         `document-ident-${action.name}`, 
         {"lang": "en", "iri": linkIri }
       );
+      // ASHOK: Need to fix this strange if here -- 
       if (origArr.length - 1 ===  i) {
         // last item
-        return <RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>;
-      } else {
-        // any other item
-        return <Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>;
-      }
-    })
- ;
+        if(action.name === 'delete'){
+          return (<DeleteAction key={action.name} action={action} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+        }
+        else{
+          return (<RRNavLink key={action.name} className="btn btn-info" role="button" to={navLinkTo}>{T(action.label)}</RRNavLink>);
+        }
+      }else{
+          // any other item
+        if(action.name === 'delete'){
+          return (<DeleteAction key={action.name} action={action} deleteDoc={deleteDoc} linkIri={linkIri}/>);
+        }else{
+          return (<Aux  key={action.name}><RRNavLink to={navLinkTo}  className="btn btn-info" role="button" >{T(action.label)}</RRNavLink>&#160;</Aux>);
+        }
+      }  
+  })
 }
 
 export const TitleAndDateColumn = ({docPkg}) =>  {
@@ -99,6 +109,28 @@ class Dashboard extends Component {
       allSelected: false,
       isChecked: []
     };
+  }
+  
+  deleteDoc (linkIri) {
+    let iri = "/" + linkIri;
+    const headers = generateBearerToken(getToken());
+    const config = { headers: headers };
+    const body = {
+      data: {
+          "iri": iri
+      }
+    }
+    axios.post(apiUrl('document-delete'), body, config)
+    .then(
+      (response) => {
+          this.getFilteredDocs(1);
+        }
+    )
+    .catch(
+      (err) => {
+        handleApiException(err);
+      }
+    );
   }
 
   resetCheckboxes() {
@@ -223,7 +255,7 @@ class Dashboard extends Component {
               }
             </td>
             <td className="text-center">
-                <AllowedActions docPkg={docPkg} />
+                <AllowedActions docPkg={docPkg} deleteDoc={this.deleteDoc.bind(this)}/>
             </td>
             <td className="text-center">
               <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
