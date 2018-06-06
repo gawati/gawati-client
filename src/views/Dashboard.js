@@ -49,6 +49,7 @@ export const AllowedActions = ({docPkg,deleteDoc}) => {
         `document-ident-${action.name}`, 
         {"lang": "en", "iri": linkIri }
       );
+      // ASHOK: Need to fix this strange if here -- 
       if (origArr.length - 1 ===  i) {
         // last item
         if(action.name === 'delete'){
