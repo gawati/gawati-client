@@ -26,37 +26,41 @@ class TransitAction extends React.Component {
 
     render = () => {
         // transition props 
-        const {from, to, icon, name, title } = this.props.transition;
+        const {from, to, icon, name, title, bySystem} = this.props.transition;
         const {pkg, transitAction} = this.props;
         const {isOpen} = this.state;
-        return (
-            <Aux>
-                <ConfirmModal show={isOpen} 
-                    title={T("Transiting Document")}
-                    onClose={this.closeModal} 
-                    onOK={
-                        ()=> {
-                            this.closeModal();
-                            transitAction(pkg, from, to, name);
-                        }
-                    }
-                    onOKLabel={T("Confirm")}
-                    onCloseLabel={T("Close")}
-                    >
-                    {T(`Are you sure you want to transit the document from the state ${from} to the state ${to} ?`)}
-                </ConfirmModal>            
-                <button className={`btn btn-warning`} 
-                    onClick={
-                        () => {   
-                            this.openModal();
-                        }  
-                    }>
-                    <i className={`fa ${icon}`}></i> {T(title)}
-                </button>&#160;        
-            </Aux>
-        );
 
-    
+        //Transition can only be triggered by the system.
+        if (bySystem) {
+            return ("");
+        } else {
+            return (
+                <Aux>
+                    <ConfirmModal show={isOpen}
+                        title={T("Transiting Document")}
+                        onClose={this.closeModal}
+                        onOK={
+                            ()=> {
+                                this.closeModal();
+                                transitAction(pkg, from, to, name);
+                            }
+                        }
+                        onOKLabel={T("Confirm")}
+                        onCloseLabel={T("Close")}
+                        >
+                        {T(`Are you sure you want to transit the document from the state ${from} to the state ${to} ?`)}
+                    </ConfirmModal>
+                    <button className={`btn btn-warning`}
+                        onClick={
+                            () => {
+                                this.openModal();
+                            }
+                        }>
+                        <i className={`fa ${icon}`}></i> {T(title)}
+                    </button>&#160;
+                </Aux>
+            );
+        }
     }
 };
 
