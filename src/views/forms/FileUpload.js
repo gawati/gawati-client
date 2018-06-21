@@ -43,9 +43,6 @@ class FileUpload extends React.Component {
     }
 
     handleSaveFile() {
-        //Call Pre Save handler in the parent.
-        this.props.handlePreSave();
-
         const {index, file, title, fileType, fileName} = this.state;
         const {pkgAttachments, pkgIdentity} = this.props.pkg;
         let iri = pkgIdentity['docIri'].value;
@@ -54,6 +51,9 @@ class FileUpload extends React.Component {
         if (!file || !title) {
             notifyWarning("Please select the file to upload and enter a title");
         } else {
+            //Call Pre Save handler in the parent.
+            this.props.handlePreSave();
+
             data.append(`index`, index);
             data.append(`file`, file);
             data.append(`fileName`, fileName);
