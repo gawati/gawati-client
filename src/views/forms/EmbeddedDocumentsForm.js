@@ -19,9 +19,7 @@ class EmbeddedDocumentsForm extends React.Component {
         this.state = { attModal: false }
     }
 
-    handleRemoveAtt(e, emDoc) {
-        e.preventDefault();
-
+    getPkg() {
         //pkgAttachments on the client strips 'value'.
         //Add it back since the server expects it.
         let pkg = {
@@ -31,8 +29,18 @@ class EmbeddedDocumentsForm extends React.Component {
 
         let offDate = iriDate(pkg.pkgIdentity['docOfficialDate'].value);
         pkg.pkgIdentity['docOfficialDate'].value = offDate;
+        return pkg;
+    }
 
-        let data = { emDoc, pkg };
+    handleExtractAtt(e, emDoc) {
+        e.preventDefault();
+        let data = { emDoc, pkg: this.getPkg() };
+        this.props.handleExtract(data);
+    }
+
+    handleRemoveAtt(e, emDoc) {
+        e.preventDefault();
+        let data = { emDoc, pkg: this.getPkg() };
         this.props.handleRemove(data);
     }
 
@@ -116,6 +124,9 @@ class EmbeddedDocumentsForm extends React.Component {
                     <CardHeader>
                         {i + 1}. {emDoc.showAs}
                         <Label className="float-right mb-0">
+                        <Button type="button" size="sm" className="mr-1"
+                        onClick={(e) => this.handleExtractAtt(e, emDoc)} color="info" disabled={this.props.isSubmitting}>
+                            <i className="fa fa-dot-circle-o"></i> Extract</Button>
                         <Button type="reset" size="sm"
                         onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
                             <i className="fa fa-minus-circle"></i> Remove</Button>

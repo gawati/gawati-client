@@ -118,3 +118,26 @@ export const handleRemoveAttachment = (THIS, data, postRemove) => {
       }
     );
 }
+
+/**
+ * Extract Attachment (embedded doc)
+ */
+export const handleExtractAttachment = (THIS, data) => {
+    axios.post(
+      apiUrl('attachment-extract'), {
+        data: data
+      }
+      )
+    .then(
+      (response) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleSuccess(response.data);
+      }
+    )
+    .catch(
+      (err) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleApiException(err);
+      }
+    );
+}

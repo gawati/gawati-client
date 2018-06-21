@@ -32,7 +32,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -182,6 +182,12 @@ class DocumentForm extends React.Component {
         return;
     }
 
+    handleExtractAttachment = (data) => {
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleExtractAttachment(this, data);
+        return;
+    }
+
     handleConfirmAdd = (confirmed) => {
         if (confirmed) {
             const newPkg = getFreshPkg(this.state.pkg);
@@ -274,6 +280,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     setSubmitting={THIS.setSubmitting}
                     reload={THIS.reloadAttachments}
                     handleRemove={THIS.handleRemoveAttachment}
+                    handleExtract={THIS.handleExtractAttachment}
                 />
             </TabPanel>
         </Tabs>

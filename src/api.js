@@ -20,6 +20,7 @@ const GAWATI_CLIENT_APIS = [
             'document-publish': '/gwc/document/publish',
             'attachment-upload': '/gwc/attachments/upload',
             'attachment-remove': '/gwc/attachments/remove',
+            'attachment-extract': '/gwc/attachments/extract',
             'workflows-meta': '/gwc/workflows/meta',
             'workflows-transit': '/gwc/workflows/transit',
             'workflows-defaults': '/gwc/workflows/defaults',
