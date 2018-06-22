@@ -34,8 +34,12 @@ class EmbeddedDocumentsForm extends React.Component {
 
     handleExtractAtt(e, emDoc) {
         e.preventDefault();
-        let data = { emDoc, pkg: this.getPkg() };
-        this.props.handleExtract(data);
+        if (emDoc.fileType !== '.pdf') {
+            notifyWarning("Extraction is supported only for PDF files");
+        } else {
+            let data = { emDoc, pkg: this.getPkg() };
+            this.props.handleExtract(data);
+        }
     }
 
     handleRemoveAtt(e, emDoc) {
