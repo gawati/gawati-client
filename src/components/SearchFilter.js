@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, CardFooter,CardBody, Card, Button } from 'reactstrap';
+import { Row, Col, CardFooter,CardBody, Card, Button, Collapse } from 'reactstrap';
 import DocTypes from '../views/forms/DocTypes.js';
 import FromDate from '../views/forms/FromDate.js';
 import ToDate from '../views/forms/ToDate.js';
 import SearchTitle from '../views/forms/SearchTitle.js';
+import {Aux} from '../utils/GeneralHelper';
 
 export default class SearchFilter extends Component {
 
@@ -12,7 +13,10 @@ export default class SearchFilter extends Component {
     this.state = { titleFilter: '',
       docTypeSelected : '',
       fromDate:null,
-      toDate:null };
+      toDate:null,
+      collapse: false
+    };
+    this.toggle = this.toggle.bind(this);
   }
 
   handleTitleChange(event) {
@@ -62,38 +66,48 @@ export default class SearchFilter extends Component {
       })
   }
 
+  toggle() {
+    this.setState({ collapse: !this.state.collapse });
+  }
+
   render() {
       return (
-        <Card className="doc-form-card">
-          <CardBody>
-            <Row>
-              <Col xs="4">
-                <SearchTitle onChange={this.handleTitleChange.bind(this)} onKeyPress={this.handleKeyPressTitle.bind(this)} value={this.state.titleFilter}/>
-              </Col>
-              <Col xs="4">
-                <DocTypes name="docTypes" onChange={this.handleChangeDocType.bind(this)} value={this.state.docTypeSelected} />
-              </Col>
-            </Row>
-            <br />              
-            <Row>
-              <Col xs="4">
-                <FromDate onChange={this.handleChangeFromDate.bind(this)} value={this.state.fromDate} />
-              </Col>
-              <Col xs="4">
-                <ToDate onChange={this.handleChangeToDate.bind(this)} value={this.state.toDate} />
-              </Col>
-            </Row>
-            <CardFooter>
-            <Row>
-              <Col xs="9"/>
-              { " " }
-              <Button className="btn-space-7" type="button" onClick={this.submitForm.bind(this)} name="btnSubmit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Search </Button>
-              { " " }
-              <Button type="reset" size="sm" color="danger" onClick={this.clearForm.bind(this)}><i className="fa fa-ban"></i> Reset</Button>
-            </Row>  
-            </CardFooter>
-          </CardBody>
-        </Card>
+        <Aux>
+          <Button color="secondary" size="sm" block onClick={this.toggle} style={{ marginBottom: '1rem' }}>Search</Button>
+          <Collapse isOpen={this.state.collapse}>
+            <Card className="doc-form-card">
+              <CardBody>
+                <Row>
+                  <Col xs="4">
+                    <SearchTitle onChange={this.handleTitleChange.bind(this)} onKeyPress={this.handleKeyPressTitle.bind(this)} value={this.state.titleFilter}/>
+                  </Col>
+                  <Col xs="4">
+                    <DocTypes name="docTypes" onChange={this.handleChangeDocType.bind(this)} value={this.state.docTypeSelected} />
+                  </Col>
+                </Row>
+                <br />              
+                <Row>
+                  <Col xs="4">
+                    <FromDate onChange={this.handleChangeFromDate.bind(this)} value={this.state.fromDate} />
+                  </Col>
+                  <Col xs="4">
+                    <ToDate onChange={this.handleChangeToDate.bind(this)} value={this.state.toDate} />
+                  </Col>
+                </Row>
+                <br />
+                <CardFooter>
+                <Row>
+                  <Col xs="9"/>
+                  { " " }
+                  <Button className="btn-space-7" type="button" onClick={this.submitForm.bind(this)} name="btnSubmit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Search </Button>
+                  { " " }
+                  <Button type="reset" size="sm" color="danger" onClick={this.clearForm.bind(this)}><i className="fa fa-ban"></i> Reset</Button>
+                </Row>  
+                </CardFooter>
+              </CardBody>
+            </Card>
+          </Collapse>
+        </Aux>
       )
   }
 }
