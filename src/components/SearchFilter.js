@@ -14,9 +14,7 @@ export default class SearchFilter extends Component {
       docTypeSelected : '',
       fromDate:null,
       toDate:null,
-      collapse: false
     };
-    this.toggle = this.toggle.bind(this);
   }
 
   handleTitleChange(event) {
@@ -66,15 +64,10 @@ export default class SearchFilter extends Component {
       })
   }
 
-  toggle() {
-    this.setState({ collapse: !this.state.collapse });
-  }
-
   render() {
       return (
         <Aux>
-          <Button color="secondary" size="sm" block onClick={this.toggle} style={{ marginBottom: '1rem' }}>Search</Button>
-          <Collapse isOpen={this.state.collapse}>
+          <Collapse isOpen={this.props.collapse}>
             <Card className="doc-form-card">
               <CardBody>
                 <Row>
