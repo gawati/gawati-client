@@ -2,6 +2,7 @@ import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import IdentityMetadataForm from './IdentityMetadataForm';
 import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
+import ClassificationMetadataForm from './ClassificationMetadataForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
@@ -249,6 +250,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
+                <Tab>{T("Metadata")}</Tab>
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -274,6 +276,13 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     setSubmitting={THIS.setSubmitting}
                     reload={THIS.reloadAttachments}
                     handleRemove={THIS.handleRemoveAttachment}
+                />
+            </TabPanel>
+            <TabPanel>
+                <ClassificationMetadataForm
+                    lang={lang}
+                    mode={mode}
+                    pkg={pkg}
                 />
             </TabPanel>
         </Tabs>
