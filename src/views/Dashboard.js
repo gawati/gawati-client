@@ -433,13 +433,13 @@ class Dashboard extends Component {
                 {T("ET.Dashboard.Column.State")}&nbsp;
                 <i className={`fa fa-caret-down ${(this.state.sortOrder.state === 'desc')? 'disabled' : ''}`} 
                   onClick={(e) => {this.setSortOrder('state', 'desc')}}></i></th>
-              <th>
+              <th className="text-center">
                 <i className={`fa fa-caret-up ${(this.state.sortOrder.docTitle === 'asc')? 'disabled' : ''}`} 
                   onClick={(e) => {this.setSortOrder('docTitle', 'asc')}}></i>&nbsp;Title&nbsp;
                 <i className={`fa fa-caret-down ${(this.state.sortOrder.docTitle === 'desc')? 'disabled' : ''}`} 
                   onClick={(e) => {this.setSortOrder('docTitle', 'desc')}}></i></th>
               <th className="text-center">{T("ET.Dashboard.Column.Language")}</th>
-              <th>
+              <th className="text-center">
                 <i className={`fa fa-caret-up ${(this.state.sortOrder.workflow === 'asc')? 'disabled' : ''}`} 
                   onClick={(e) => {this.setSortOrder('workflow', 'asc')}}></i>&nbsp;Workflow&nbsp;
                 <i className={`fa fa-caret-down ${(this.state.sortOrder.workflow === 'desc')? 'disabled' : ''}`} 
