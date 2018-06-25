@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import {Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
+import lodash from 'lodash';
 
 import { handleApiException } from './dashboard.handlers';
 
@@ -107,7 +108,13 @@ class Dashboard extends Component {
       docs: [],
       totalDocs: 0,
       allSelected: false,
-      isChecked: []
+      isChecked: [],
+      sortOrder: {
+        state: '',
+        docTitle: '',
+        workflow: '',
+        nextStates: ''
+      }
     };
   }
   
@@ -258,7 +265,7 @@ class Dashboard extends Component {
                 <AllowedActions docPkg={docPkg} deleteDoc={this.deleteDoc.bind(this)}/>
             </td>
             <td className="text-center">
-              <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
+              <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index] || false} handleCheckboxChange={this.toggleCheckbox}/>
             </td>
           </tr>
         );
@@ -370,6 +377,23 @@ class Dashboard extends Component {
     })
   }
 
+  setSortOrder (field, order) {
+    let sortOrder = this.state.sortOrder;
+    sortOrder[field] = order;
+    this.setState({'sortOrder': sortOrder});
+    let sorted = lodash.orderBy(this.state.docs, el => {
+      if (field == 'docTitle') 
+        return el.akomaNtoso[field].value 
+      else if (field === 'state' )
+        return el.workflow[field].status
+      else if (field === 'nextStates') 
+        return el.workflow[field][0];
+      else if (field === 'workflow')
+        return getWFProgress(el.workflow)
+    }, order);
+    this.setState({'docs': sorted});
+  }
+
   render() {
     const {docs} = this.state;
     const {lang} = this.props.match.params; 
@@ -395,14 +419,33 @@ class Dashboard extends Component {
             <Table hover responsive>
             <thead className="thead-light">
             <tr>
-              <th className="text-center">{T("ET.Dashboard.Column.State")}</th>
-              <th>Title</th>
+              <th className="text-center">
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.state === 'asc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('state', 'asc')}}></i>&nbsp;
+                {T("ET.Dashboard.Column.State")}&nbsp;
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.state === 'desc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('state', 'desc')}}></i></th>
+              <th>
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.docTitle === 'asc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('docTitle', 'asc')}}></i>&nbsp;Title&nbsp;
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.docTitle === 'desc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('docTitle', 'desc')}}></i></th>
               <th className="text-center">{T("ET.Dashboard.Column.Language")}</th>
-              <th>Workflow</th>
-              <th className="text-center">{T("ET.Dashboard.Column.NextStates")}</th>
+              <th>
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.workflow === 'asc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('workflow', 'asc')}}></i>&nbsp;Workflow&nbsp;
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.workflow === 'desc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('workflow', 'desc')}}></i></th>
+              <th className="text-center">
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.nextStates === 'asc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('nextStates', 'asc')}}></i>&nbsp;
+                {T("ET.Dashboard.Column.NextStates")}&nbsp;
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.nextStates === 'desc')? 'disabled' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('nextStates', 'desc')}}></i>&nbsp;
+              </th>
               <th></th>
               <th></th>
-                </tr>
+              </tr>
               </thead>
               <tbody>
                 {
