@@ -382,7 +382,7 @@ class Dashboard extends Component {
     sortOrder[field] = order;
     this.setState({'sortOrder': sortOrder});
     let sorted = lodash.orderBy(this.state.docs, el => {
-      if (field == 'docTitle') 
+      if (field === 'docTitle') 
         return el.akomaNtoso[field].value 
       else if (field === 'state' )
         return el.workflow[field].status
