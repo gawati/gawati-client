@@ -102,7 +102,7 @@ class ClassificationMetadataForm extends React.Component {
     renderClassificationForm = () => {
         const docClassifications = this.props.pkg.pkgIdentity.docClassifications;
         let result;
-        if(docClassifications.keyword!==undefined && docClassifications.keyword.length>0){
+        if(docClassifications!==undefined && docClassifications.keyword!==undefined && docClassifications.keyword.length>0){
             result = this.renderClassifications(docClassifications.keyword);
         }else{
             result = this.renderNoClassifications();
@@ -114,15 +114,27 @@ class ClassificationMetadataForm extends React.Component {
         }
 
         return ( 
-            <div>
-            <h6> Add More Metadata </h6> 
-            <Select
-                name="metadata"
-                onChange={this.changeMetaData}
-                options={metadataArray}
-              />
-            <h6> Already added Metadata </h6> 
-            {result} 
+            <div className="bg-white">
+                <div className="card">
+                    <div className="card-header">
+                        <h6> Add More Metadata </h6> 
+                    </div>
+                    <div className="card-body">
+                        <Select
+                            name="metadata"
+                            onChange={this.changeMetaData}
+                            options={metadataArray}
+                          />
+                    </div>
+                </div>
+                <div className="card">
+                    <div className="card-header">
+                        <h6> Already added Metadata </h6> 
+                    </div>
+                    <div className="card-body">
+                        {result} 
+                    </div>
+                </div>
             </div>
 
         );
