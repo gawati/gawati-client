@@ -18,6 +18,7 @@ const GAWATI_CLIENT_APIS = [
             'document-auth': '/gwc/document/auth',
             'document-exists': '/gwc/document/exists',
             'document-publish': '/gwc/document/publish',
+            'document-tags-refresh': '/gwc/document/tags/refresh',
             'attachment-upload': '/gwc/attachments/upload',
             'attachment-remove': '/gwc/attachments/remove',
             'attachment-extract': '/gwc/attachments/extract',

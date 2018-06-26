@@ -32,7 +32,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -135,6 +135,12 @@ class DocumentForm extends React.Component {
             console.log(" Error in getVersionPkg ", err);
             throw err;
         });
+    }
+
+    refreshTags = () => { 
+        // applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleRefreshTags(this);
+        // Reload
     }
 
     /**
@@ -269,6 +275,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     updateIriValue={THIS.updateIriValue}
                     validateFormField={THIS.validateFormField}
                     updateVersion={THIS.updateVersion}
+                    refreshTags={THIS.refreshTags}
                     />
             </TabPanel>
             <TabPanel>

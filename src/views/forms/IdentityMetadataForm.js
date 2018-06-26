@@ -11,6 +11,7 @@ import FieldIri from './FieldIri';
 import FieldDocCountry from './FieldDocCountry';
 import FieldDocNumber from './FieldDocNumber';
 import FieldDocTitle from './FieldDocTitle';
+import FieldDocTags from './FieldDocTags';
 import FieldDocType from './FieldDocType';
 import FieldDate from './FieldDate';
 import FieldDocPart from './FieldDocPart';
@@ -289,6 +290,14 @@ class IdentityMetadataForm extends React.Component {
                           }
                         }
                       error={errors.docTitle}
+                    />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="12">
+                    <FieldDocTags value={form.docTitle.value}
+                                  onClick={this.props.refreshTags}
+                                  disabled={isSubmitting}
                     />
                 </Col>
               </Row>
