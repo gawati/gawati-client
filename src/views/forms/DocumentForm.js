@@ -138,9 +138,8 @@ class DocumentForm extends React.Component {
     }
 
     refreshTags = () => { 
-        // applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
-        handleRefreshTags(this);
-        // Reload
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleRefreshTags(this, this.refreshDocument);
     }
 
     /**

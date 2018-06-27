@@ -18,7 +18,8 @@ export const identityInitialState = () => (
         docVersionDate: {value:  null, error:null},
         docNumber: {value: '', error: null },
         docPart: {value: '', error: null },
-        docIri : {value: '', error: null }
+        docIri : {value: '', error: null },
+        docTags : {value: '', error: null }
     }
 );
 
@@ -69,6 +70,9 @@ export const identityValidationSchema = () => (
           validate: Yup.string().required("Document part is required")
         },
         docIri: {
+          validate: Yup.string()
+        },
+        docTags: {
           validate: Yup.string()
         }
     }

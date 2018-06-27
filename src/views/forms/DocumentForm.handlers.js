@@ -142,7 +142,7 @@ export const handleExtractAttachment = (THIS, data) => {
     );
 }
 
-export const handleRefreshTags = (THIS) => {
+export const handleRefreshTags = (THIS, reload) => {
     axios.post(
       apiUrl('document-tags-refresh'), {
         data: {
@@ -154,6 +154,7 @@ export const handleRefreshTags = (THIS) => {
       (response) => {
         applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
         handleSuccess(response.data);
+        reload();
       }
     )
     .catch(
