@@ -107,7 +107,8 @@ class Dashboard extends Component {
       docs: [],
       totalDocs: 0,
       allSelected: false,
-      isChecked: []
+      isChecked: [],
+      collapse: false
     };
   }
   
@@ -258,7 +259,7 @@ class Dashboard extends Component {
                 <AllowedActions docPkg={docPkg} deleteDoc={this.deleteDoc.bind(this)}/>
             </td>
             <td className="text-center">
-              <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index]} handleCheckboxChange={this.toggleCheckbox}/>
+              <Checkbox key={index} label={index} showLabel={false} isChecked={this.state.isChecked[index] || false} handleCheckboxChange={this.toggleCheckbox}/>
             </td>
           </tr>
         );
@@ -370,6 +371,11 @@ class Dashboard extends Component {
     })
   }
 
+  toggleForm() {
+    this.setState({ collapse: !this.state.collapse });
+  }
+
+
   render() {
     const {docs} = this.state;
     const {lang} = this.props.match.params; 
@@ -377,7 +383,7 @@ class Dashboard extends Component {
     return (
       <StdCompContainer breadcrumb={breadcrumb}>
         <DocActions selectedDocs={this.getSelectedDocs()} selectAll={this.selectAll.bind(this)} 
-         match={this.props.match}/>
+         match={this.props.match} toggleForm={this.toggleForm.bind(this)}/>
         <br />   
               {/*  className="table-outline mb-0 d-none d-sm-table"  */}
         <SearchFilter handleTitleChange={this.handleTitleChange.bind(this)}  
@@ -386,7 +392,9 @@ class Dashboard extends Component {
          handleChangeFromDate={this.handleChangeFromDate.bind(this)}
          handleChangeToDate={this.handleChangeToDate.bind(this)}
          submitForm={this.submitForm.bind(this)}
-         clearForm={this.clearForm.bind(this)}/>       
+         clearForm={this.clearForm.bind(this)}
+         collapse={this.state.collapse}
+         />       
         <Card>
           <CardHeader>
             <i className="fa fa-align-justify"></i> {T("ET.Dashboard.Listing.Documents")}

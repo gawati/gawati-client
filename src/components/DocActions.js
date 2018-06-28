@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { CardBody, Card, ButtonGroup, Button } from 'reactstrap';
 import { PropsRoute, setInRoute, getRoute } from '../utils/RoutesHelper';
+import { Aux } from '../utils/GeneralHelper';
 
 // Display only on the Dashboard view
-const AdditionalActions = ({linkDocumentAdd, handleSelectAll}) => (
-  <ButtonGroup>
+const AdditionalActions = ({linkDocumentAdd, handleSelectAll, toggleForm}) => (
+  <Aux>
+    <Button type="button" className={ `btn btn-link pull-left` } onClick={toggleForm}>
+          <i className="fa fa-search"></i> Search
+    </Button>
+    <ButtonGroup>
     <Button type="button" className={ `btn btn-link` } >
       <NavLink to={ linkDocumentAdd }>
             <i className="fa fa-plus"></i> Add Document
@@ -13,6 +18,7 @@ const AdditionalActions = ({linkDocumentAdd, handleSelectAll}) => (
     </Button>
     <Button type="button" className={ `btn btn-link` } onClick={handleSelectAll}>Select All</Button>
   </ButtonGroup>
+  </Aux>
 );
 
 /**
@@ -51,7 +57,10 @@ export default class DocActions extends Component {
             <Button type="button" className={ `btn btn-link` }>Action B</Button>
           </ButtonGroup> */}
 
-          <PropsRoute path={ getRoute("logged-in-root") } component={AdditionalActions} linkDocumentAdd={this.linkDocumentAdd()} handleSelectAll={this.handleSelectAll.bind(this)} />
+          <PropsRoute path={ getRoute("logged-in-root") } component={AdditionalActions} 
+            linkDocumentAdd={this.linkDocumentAdd()} handleSelectAll={this.handleSelectAll.bind(this)} 
+            toggleForm={this.props.toggleForm}
+            />
 
         </CardBody>
       </Card>
