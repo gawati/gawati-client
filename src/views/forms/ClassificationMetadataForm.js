@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import {apiGetCall} from '../../api';
+import { ToastContainer, toast } from 'react-toastify';
+import {Row, Col, Button, Input} from 'reactstrap';
 
 /**
  * This needs to be converted to use the baseformHOC
@@ -11,50 +13,164 @@ class ClassificationMetadataForm extends React.Component {
     constructor(props) {
         super(props);
         this.changeMetaData = this.changeMetaData.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        this.handleAddMoreMetadata = this.handleAddMoreMetadata.bind(this);
         this.state = {
-            metadata:[]
+            metadata:[],
+            existingMetadata: [],
+            inputValue:''
         };
     }
 
     handleChange = (e, { name, value }) => { this.setState({ [name]: value }); }
 
-    renderNoClassifications = () =>
-        <div>
-            <div>No Classfication Metadata Found</div>
-        </div>;
-
+    handleInput(e) {
+    	this.setState({
+          inputValue: e.target.value
+        });
+    }
     deleteClassification(member){
         console.log(member);
-        // let data = {
-        //     _id: member._id
-        // }
+        let metadataArray = [];
+        let isPresent = false;
+        for(let i=0; i<this.state.existingMetadata.length; i++){
+        	if(this.state.existingMetadata[i].value===member.value){
+        		isPresent = true;
+        	}else{
+        		metadataArray.push({value:this.state.existingMetadata[i].value, showAs:this.state.existingMetadata[i].showAs})
+        	}
+        }
 
-        // let apiClassification = apiGetCall(
-        //     'delete-classification', {}
-        // );
+        if(!isPresent){
+        	toast.error("Metadata does not exist");
+        	return;
+        }
         
-        // axios.delete(apiClassification, {data
-        // }) 
-        // .then(response => {
-        //     let classifications = this.state.docClassifications;
-        //     let index = classifications.indexOf(member);
-        //     this.setState({
-        //         docClassifications: this.state.docClassifications.filter((_, i) => i !== index)
-        //     });
-        //     toast.success("Classification deleted successfully");
-        // })
-        // .catch(function(error) {
-        //     console.log('There is some error' + error);
-        // });
+        let data = {
+        	metadata: metadataArray,
+        	iri: this.props.pkg.pkgIdentity.docIri.value
+        }
+
+        let apiMetadata = apiGetCall(
+            'documents-metadata-add', {}
+        );
+        
+        axios.post(apiMetadata, {data
+        }) 
+        .then(response => {
+            this.setState({existingMetadata: metadataArray});
+            toast.success("Metadata deleted successfully");
+            console.log(response);
+        })
+        .catch(function(error) {
+            console.log('There is some error' + error);
+        }); 
     }
 
     changeMetaData(e) {
-        console.log(e);
+        
+        let isPresent = false;
+        for(let i=0; i<this.state.existingMetadata.length; i++){
+        	if(this.state.existingMetadata[i].value===e.value){
+        		isPresent = true;
+        		break;
+        	}
+        }
+
+        let metadataArray = this.state.existingMetadata
+
+        if(isPresent){
+        	toast.error("Metadata is already present");
+        	return;
+        }
+
+        metadataArray.push({value:e.value, showAs:e.label});
+        
+        let data = {
+        	metadata: metadataArray,
+        	iri: this.props.pkg.pkgIdentity.docIri.value
+        }
+
+        let apiMetadata = apiGetCall(
+            'documents-metadata-add', {}
+        );
+        
+        axios.post(apiMetadata, {data
+        }) 
+        .then(response => {
+            this.setState({existingMetadata: metadataArray});
+            toast.success("Metadata added successfully");
+        })
+        .catch(function(error) {
+            console.log('There is some error' + error);
+        }); 
+
+
+    }
+
+    handleAddMoreMetadata(event) {
+    	event.preventDefault();
+        const showAs = this.state.inputValue;
+        if(showAs===''){
+        	toast.error("Enter metadata");
+        	return;
+        }
+        const value = this.state.inputValue.replace(/ /g,'');
+
+        let isInExistingList = false;
+        for(let i=0; i<this.state.existingMetadata.length; i++){
+        	if(this.state.existingMetadata[i].value===value){
+        		isInExistingList = true;
+        		break;
+        	}
+        }
+        if(isInExistingList){
+        	toast.error("Metadata is already present");
+        	return;
+        }
+        
+        let isInList = false;
+        for(let i=0; i<this.state.metadata.length; i++){
+        	if(this.state.metadata[i].value===value){
+        		isInList = true;
+        		break;
+        	}
+        }
+        if(isInList){
+        	toast.error("Metadata is present in list. Kindly choose from list");
+        	return;
+        }
+
+
+        let metadataArray = this.state.existingMetadata
+
+        metadataArray.push({value:value, showAs:showAs});
+        
+        let data = {
+        	metadata: metadataArray,
+        	iri: this.props.pkg.pkgIdentity.docIri.value
+        }
+
+        let apiMetadata = apiGetCall(
+            'documents-metadata-add', {}
+        );
+        
+        axios.post(apiMetadata, {data
+        }) 
+        .then(response => {
+            this.setState({existingMetadata: metadataArray});
+            this.setState({ inputValue: ''});
+            toast.success("Metadata added successfully");
+        })
+        .catch(function(error) {
+            console.log('There is some error' + error);
+        });
+
     }
 
     componentDidMount() {
         
-      let apiMetadata = apiGetCall(
+      	let apiMetadata = apiGetCall(
             'documents-metadata', {}
         );
         
@@ -68,26 +184,33 @@ class ClassificationMetadataForm extends React.Component {
             console.log('There is some error' + error);
         }); 
 
+        const docClassifications = this.props.pkg.pkgIdentity.docClassifications;
+        let existingMetaArray = [];
+        if(docClassifications!==undefined && docClassifications.keyword!==undefined && docClassifications.keyword.length>0){
+        	for(let i=0; i<docClassifications.keyword.length; i++){
+        		existingMetaArray.push({value: docClassifications.keyword[i].value, showAs: docClassifications.keyword[i].showAs})
+        	}
+        	console.log(existingMetaArray);
+        	this.setState({existingMetadata: existingMetaArray});
+        }
+
     }
 
-    renderClassifications = (members) => {
-        return (
+    renderClassifications = () => {
+    	if(this.state.existingMetadata.length){
+    		return (
               <div>
                   <table className="table table-hover">
                       <thead>
                           <tr>
-                              <th>Dictionary</th>
-                              <th>EId</th>
                               <th>Value</th>
                               <th>Show As</th>
                               <th>Action</th>
                           </tr>
                       </thead>
                       <tbody>
-                      {members.map(member =>
-                          <tr key={member.eId}>
-                          <td>{member.dictionary} </td>
-                          <td>{member.eId}</td>
+                      {this.state.existingMetadata.map(member =>
+                          <tr key={member.value}>
                           <td>{member.showAs}</td>
                           <td>{member.value}</td>
                           <td><a onClick={() => this.deleteClassification(member)}>Delete</a></td>
@@ -96,17 +219,19 @@ class ClassificationMetadataForm extends React.Component {
                       </tbody>
                   </table>
               </div>
-          );
+          	);
+    	}else{
+    		return(
+    			<div>
+		            <div>No Classfication Metadata Found</div>
+		        </div>
+    		);
+    	}
     }
 
     renderClassificationForm = () => {
-        const docClassifications = this.props.pkg.pkgIdentity.docClassifications;
-        let result;
-        if(docClassifications!==undefined && docClassifications.keyword!==undefined && docClassifications.keyword.length>0){
-            result = this.renderClassifications(docClassifications.keyword);
-        }else{
-            result = this.renderNoClassifications();
-        }
+        
+        let result = this.renderClassifications();
 
         let metadataArray = [];
         for(let i=0; i<this.state.metadata.length;i++){
@@ -115,9 +240,10 @@ class ClassificationMetadataForm extends React.Component {
 
         return ( 
             <div className="bg-white">
+            	<ToastContainer />
                 <div className="card">
                     <div className="card-header">
-                        <h6> Add More Metadata </h6> 
+                        <h6> Choose from existing Metadata </h6> 
                     </div>
                     <div className="card-body">
                         <Select
@@ -125,6 +251,21 @@ class ClassificationMetadataForm extends React.Component {
                             onChange={this.changeMetaData}
                             options={metadataArray}
                           />
+                    </div>
+                </div>
+                <div className="card">
+                    <div className="card-header">
+                        <h6> Add New Metadata </h6> 
+                    </div>
+                    <div className="card-body">
+                    	<Row>
+	                    	<Col sm={6}>
+	                    		<Input type="text"  value={this.state.inputValue} name="value" onChange={this.handleInput} placeholder="Metadata Name" />
+	                    	</Col>
+	                    	<Col sm={4}>
+	                    		<Button type="button" onClick={this.handleAddMoreMetadata}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add Metadata</Button>
+	                    	</Col>
+                    	</Row>
                     </div>
                 </div>
                 <div className="card">
@@ -141,7 +282,7 @@ class ClassificationMetadataForm extends React.Component {
     }
 
     render = () => {
-        return this.renderClassificationForm();
+    	return this.renderClassificationForm();
     }
   
 };
