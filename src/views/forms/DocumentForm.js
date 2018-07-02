@@ -33,7 +33,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -138,6 +138,11 @@ class DocumentForm extends React.Component {
         });
     }
 
+    refreshTags = () => { 
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleRefreshTags(this, this.refreshDocument);
+    }
+
     /**
      * Set `isSubmitting`
      * @val Boolean 
@@ -180,6 +185,12 @@ class DocumentForm extends React.Component {
     handleRemoveAttachment = (data) => {
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         handleRemoveAttachment(this, data, this.reloadAttachments);
+        return;
+    }
+
+    handleExtractAttachment = (data) => {
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        handleExtractAttachment(this, data);
         return;
     }
 
@@ -265,6 +276,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     updateIriValue={THIS.updateIriValue}
                     validateFormField={THIS.validateFormField}
                     updateVersion={THIS.updateVersion}
+                    refreshTags={THIS.refreshTags}
                     />
             </TabPanel>
             <TabPanel>
@@ -276,6 +288,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     setSubmitting={THIS.setSubmitting}
                     reload={THIS.reloadAttachments}
                     handleRemove={THIS.handleRemoveAttachment}
+                    handleExtract={THIS.handleExtractAttachment}
                 />
             </TabPanel>
             <TabPanel>

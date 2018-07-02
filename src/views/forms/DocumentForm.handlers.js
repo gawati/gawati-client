@@ -118,3 +118,49 @@ export const handleRemoveAttachment = (THIS, data, postRemove) => {
       }
     );
 }
+
+/**
+ * Extract Attachment (embedded doc)
+ */
+export const handleExtractAttachment = (THIS, data) => {
+    axios.post(
+      apiUrl('attachment-extract'), {
+        data: data
+      }
+      )
+    .then(
+      (response) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleSuccess(response.data);
+      }
+    )
+    .catch(
+      (err) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleApiException(err);
+      }
+    );
+}
+
+export const handleRefreshTags = (THIS, reload) => {
+    axios.post(
+      apiUrl('document-tags-refresh'), {
+        data: {
+          'iri': THIS.state.pkg.pkgIdentity.docIri.value
+        }
+      }
+      )
+    .then(
+      (response) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleSuccess(response.data);
+        reload();
+      }
+    )
+    .catch(
+      (err) => {
+        applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+        handleApiException(err);
+      }
+    );
+}
