@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import {Breadcrumb, BreadcrumbItem, Table, Progress, CardHeader, CardBody, Card} from 'reactstrap';
 import axios from 'axios';
-import lodash from 'lodash';
 
 import { handleApiException } from './dashboard.handlers';
 
@@ -36,7 +35,7 @@ export const StateColumn = ({ stateInfo }) =>  {
 const showCreatedAndModified = (created, modified) => {
   return (created === modified) ?
         `created: ${ displayXmlDateTime(created) }` : 
-        `created: ${ displayXmlDateTime(created) } / modified: ${ humanDate(modified) }`;
+        `created: ${ displayXmlDateTime(created) } /\nmodified: ${ humanDate(modified) }`;
 };
 
 export const AllowedActions = ({docPkg,deleteDoc}) => {
@@ -110,12 +109,7 @@ class Dashboard extends Component {
       allSelected: false,
       isChecked: [],
       collapse: false,
-      sortOrder: {
-        state: '',
-        docTitle: '',
-        workflow: '',
-        nextStates: ''
-      }
+      sortOrder: new Map( )
     };
   }
   
@@ -178,6 +172,15 @@ class Dashboard extends Component {
     }
     return selectedDocs;
   }
+
+  getSortOrder = () => {
+    const keys = Array.from(this.state.sortOrder.keys());
+    const orders = Array.from(this.state.sortOrder.values());
+    return {
+      fields: keys,
+      orders: orders
+    }
+  }
   
   getDocs = (itemsFrom) => {
     const headers = generateBearerToken(getToken());
@@ -187,7 +190,8 @@ class Dashboard extends Component {
           "docTypes": "all", 
           "itemsFrom": itemsFrom,
           "pageSize": PAGE_SIZE,
-          "roles": getRolesForCurrentClient()
+          "roles": getRolesForCurrentClient(),
+          "sortOrder": this.getSortOrder(),
         }
     }
     axios.post(apiUrl('documents'), body, config)
@@ -259,7 +263,7 @@ class Dashboard extends Component {
             </td>
             <td className="text-center">
               {
-                docPkg.workflow.nextStates.map(state => capitalizeFirst(state)).join(",")
+                docPkg.workflow.nextStates.map(state => capitalizeFirst(state)).join(", ")
               }
             </td>
             <td className="text-center">
@@ -338,7 +342,8 @@ class Dashboard extends Component {
           "docType": this.state.docType,
           "subType": this.state.subType,
           "fromDate": this.dateFormatter(this.state.fromDate,0),
-          "toDate": this.dateFormatter(this.state.toDate,1)
+          "toDate": this.dateFormatter(this.state.toDate,1),
+          "sortOrder": this.getSortOrder()
         }
     }
     console.log("data is" + JSON.stringify(body.data));
@@ -385,19 +390,18 @@ class Dashboard extends Component {
 
   setSortOrder (field, order) {
     let sortOrder = this.state.sortOrder;
-    sortOrder[field] = order;
+    if (sortOrder.has(field)) {
+      if (sortOrder.get(field) === order) {
+        sortOrder.delete(field);
+      } else {
+        sortOrder.delete(field);
+        sortOrder.set(field, order);
+      }
+    } else {
+      sortOrder.set(field, order);
+    }
     this.setState({'sortOrder': sortOrder});
-    let sorted = lodash.orderBy(this.state.docs, el => {
-      if (field === 'docTitle') 
-        return el.akomaNtoso[field].value 
-      else if (field === 'state' )
-        return el.workflow[field].status
-      else if (field === 'nextStates') 
-        return el.workflow[field][0];
-      else if (field === 'workflow')
-        return getWFProgress(el.workflow)
-    }, order);
-    this.setState({'docs': sorted});
+    this.getDocs(1);
   }
 
   render() {
@@ -424,32 +428,32 @@ class Dashboard extends Component {
             <i className="fa fa-align-justify"></i> {T("ET.Dashboard.Listing.Documents")}
           </CardHeader>
           <CardBody>
-            <Table hover responsive>
+            <Table hover responsive className="doc-list">
             <thead className="thead-light">
             <tr>
               <th className="text-center">
-                <i className={`fa fa-caret-up ${(this.state.sortOrder.state === 'asc')? 'disabled' : ''}`} 
-                  onClick={(e) => {this.setSortOrder('state', 'asc')}}></i>&nbsp;
-                {T("ET.Dashboard.Column.State")}&nbsp;
-                <i className={`fa fa-caret-down ${(this.state.sortOrder.state === 'desc')? 'disabled' : ''}`} 
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.get('state') === 'asc')? 'selected' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('state', 'asc')}}></i> 
+                {T("ET.Dashboard.Column.State")} 
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.get('state') === 'desc')? 'selected' : ''}`} 
                   onClick={(e) => {this.setSortOrder('state', 'desc')}}></i></th>
               <th className="text-center">
-                <i className={`fa fa-caret-up ${(this.state.sortOrder.docTitle === 'asc')? 'disabled' : ''}`} 
-                  onClick={(e) => {this.setSortOrder('docTitle', 'asc')}}></i>&nbsp;Title&nbsp;
-                <i className={`fa fa-caret-down ${(this.state.sortOrder.docTitle === 'desc')? 'disabled' : ''}`} 
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.get('docTitle') === 'asc')? 'selected' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('docTitle', 'asc')}}></i> Title 
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.get('docTitle') === 'desc')? 'selected' : ''}`} 
                   onClick={(e) => {this.setSortOrder('docTitle', 'desc')}}></i></th>
               <th className="text-center">{T("ET.Dashboard.Column.Language")}</th>
               <th className="text-center">
-                <i className={`fa fa-caret-up ${(this.state.sortOrder.workflow === 'asc')? 'disabled' : ''}`} 
-                  onClick={(e) => {this.setSortOrder('workflow', 'asc')}}></i>&nbsp;Workflow&nbsp;
-                <i className={`fa fa-caret-down ${(this.state.sortOrder.workflow === 'desc')? 'disabled' : ''}`} 
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.get('workflow') === 'asc')? 'selected' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('workflow', 'asc')}}></i> Workflow 
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.get('workflow') === 'desc')? 'selected' : ''}`} 
                   onClick={(e) => {this.setSortOrder('workflow', 'desc')}}></i></th>
               <th className="text-center">
-                <i className={`fa fa-caret-up ${(this.state.sortOrder.nextStates === 'asc')? 'disabled' : ''}`} 
-                  onClick={(e) => {this.setSortOrder('nextStates', 'asc')}}></i>&nbsp;
-                {T("ET.Dashboard.Column.NextStates")}&nbsp;
-                <i className={`fa fa-caret-down ${(this.state.sortOrder.nextStates === 'desc')? 'disabled' : ''}`} 
-                  onClick={(e) => {this.setSortOrder('nextStates', 'desc')}}></i>&nbsp;
+                <i className={`fa fa-caret-up ${(this.state.sortOrder.get('nextStates') === 'asc')? 'selected' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('nextStates', 'asc')}}></i> 
+                {T("ET.Dashboard.Column.NextStates")} 
+                <i className={`fa fa-caret-down ${(this.state.sortOrder.get('nextStates') === 'desc')? 'selected' : ''}`} 
+                  onClick={(e) => {this.setSortOrder('nextStates', 'desc')}}></i> 
               </th>
               <th></th>
               <th></th>

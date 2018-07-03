@@ -73,3 +73,7 @@
 /*Buttons which add a 7px space*/
 .btn-space-7 { margin-right:7px;
 }
+
+.doc-list .small.text-muted {
+    white-space: pre;
+}
