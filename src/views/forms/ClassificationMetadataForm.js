@@ -211,8 +211,8 @@ class ClassificationMetadataForm extends React.Component {
                       <tbody>
                       {this.state.existingMetadata.map(member =>
                           <tr key={member.value}>
-                          <td>{member.showAs}</td>
                           <td>{member.value}</td>
+                          <td>{member.showAs}</td>
                           <td><a onClick={() => this.deleteClassification(member)}>Delete</a></td>
                           </tr>
                       )}
