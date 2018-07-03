@@ -4,7 +4,19 @@ body {
   font-family: sans-serif;
 }
 
-.fa.disabled {
-  opacity: 0.6;
-  cursor: unset;
+.doc-list thead .fa {
+  background: #c2cfd6;
+  box-shadow: 1px 1px 5px #656667;
+  padding: 0px 3px;
+  -webkit-box-shadow: inset 0px 0px 5px #f4f4f5;
+  box-shadow: inset 0px 0px 5px #f4f4f5;
+  outline: none;
+}
+
+.doc-list thead .fa.selected {
+  padding: 0px 4px;
+  background: #c2cfd6;
+  -webkit-box-shadow: inset 0px 0px 5px #656667;
+  box-shadow: inset 0px 0px 5px #656667;
+  outline: none;
 }

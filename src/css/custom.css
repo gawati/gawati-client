@@ -74,6 +74,9 @@
 .btn-space-7 { margin-right:7px;
 }
 
+.doc-list .small.text-muted {
+    white-space: pre;
+}
 /* input type file custom */
 .fileContainer {
     overflow: hidden;
