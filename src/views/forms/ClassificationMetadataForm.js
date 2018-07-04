@@ -14,11 +14,13 @@ class ClassificationMetadataForm extends React.Component {
         super(props);
         this.changeMetaData = this.changeMetaData.bind(this);
         this.handleInput = this.handleInput.bind(this);
+        this.handleShowAs = this.handleShowAs.bind(this);
         this.handleAddMoreMetadata = this.handleAddMoreMetadata.bind(this);
         this.state = {
             metadata:[],
             existingMetadata: [],
-            inputValue:''
+            inputValue:'',
+            inputShowAs:''
         };
     }
 
@@ -26,7 +28,12 @@ class ClassificationMetadataForm extends React.Component {
 
     handleInput(e) {
     	this.setState({
-          inputValue: e.target.value
+            inputValue: e.target.value
+        });
+    }
+    handleShowAs(e) {
+        this.setState({
+            inputShowAs: e.target.value
         });
     }
     deleteClassification(member){
@@ -110,12 +117,16 @@ class ClassificationMetadataForm extends React.Component {
 
     handleAddMoreMetadata(event) {
     	event.preventDefault();
-        const showAs = this.state.inputValue;
-        if(showAs===''){
-        	toast.error("Enter metadata");
+        const value = this.state.inputValue;
+        const showAs = this.state.inputShowAs;
+        if(value===''){
+        	toast.error("Enter metadata value");
         	return;
         }
-        const value = this.state.inputValue.replace(/ /g,'');
+        if(showAs===''){
+            toast.error("Enter metadata showAs");
+            return;
+        }
 
         let isInExistingList = false;
         for(let i=0; i<this.state.existingMetadata.length; i++){
@@ -160,6 +171,7 @@ class ClassificationMetadataForm extends React.Component {
         .then(response => {
             this.setState({existingMetadata: metadataArray});
             this.setState({ inputValue: ''});
+            this.setState({ inputShowAs: ''});
             toast.success("Metadata added successfully");
         })
         .catch(function(error) {
@@ -259,10 +271,13 @@ class ClassificationMetadataForm extends React.Component {
                     </div>
                     <div className="card-body">
                     	<Row>
-	                    	<Col sm={6}>
-	                    		<Input type="text"  value={this.state.inputValue} name="value" onChange={this.handleInput} placeholder="Metadata Name" />
+	                    	<Col sm={3}>
+	                    		<Input type="text"  value={this.state.inputValue} name="value" onChange={this.handleInput} placeholder="Metadata value" />
 	                    	</Col>
-	                    	<Col sm={4}>
+                            <Col sm={3}>
+                                <Input type="text"  value={this.state.inputShowAs} name="showAs" onChange={this.handleShowAs} placeholder="Metadata showAs" />
+                            </Col>
+	                    	<Col sm={3}>
 	                    		<Button type="button" onClick={this.handleAddMoreMetadata}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add Metadata</Button>
 	                    	</Col>
                     	</Row>
