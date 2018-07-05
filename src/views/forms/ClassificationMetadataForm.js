@@ -169,9 +169,11 @@ class ClassificationMetadataForm extends React.Component {
         axios.post(apiMetadata, {data
         }) 
         .then(response => {
-            this.setState({existingMetadata: metadataArray});
-            this.setState({ inputValue: ''});
-            this.setState({ inputShowAs: ''});
+            this.setState({
+                existingMetadata: metadataArray,
+                inputValue: '',
+                inputShowAs: ''
+            });
             toast.success("Metadata added successfully");
         })
         .catch(function(error) {
