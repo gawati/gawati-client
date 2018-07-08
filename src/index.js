@@ -56,7 +56,7 @@ const appLoader = () => {
             },
             (error) => {
                 console.log("ERROR initLoginRequired ", "Error while logging in", error );
-                alert("There was an error while initializing login");
+                //alert("There was an error while initializing login");
                 siteLogout();
             }
         );

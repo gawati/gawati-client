@@ -118,6 +118,7 @@ export const siteLogout = () => {
  * @param {integer} minValidity in seconds
  */
 export const refreshToken = (minValidity = 5) => {
+    console.log(" Calling RefreshToken ", minValidity);
     return new Promise((resolve, reject) => {
         getGawatiAuth().updateToken(minValidity)
             .success(() => resolve())

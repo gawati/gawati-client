@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import {Card, CardBody, ButtonGroup} from 'reactstrap';
-import RRNavLink from '../../components/utils/RRNavLink';
-import {linkDocumentAdd} from '../../components/utils/QuickRoutes';
+//import RRNavLink from '../../components/utils/RRNavLink';
+//import {linkDocumentAdd} from '../../components/utils/QuickRoutes';
 import { docWorkflowState, docWorkflowTransitions, docWorkflowCurrentState, docWorkflowStateInfo, docIri, docType, docAknType } from '../../utils/StatePkgHelper';
 import { getRolesForCurrentClient } from '../../utils/GawatiAuthClient';
 import { T } from '../../utils/i18nHelper';
@@ -113,7 +113,7 @@ class DocumentFormActions extends React.Component {
                <ButtonGroup>
                    {/** using Button here injects btn-secondary for some unknown reason so using <button> directly **/}
                    { transitAllowed ? transitionButtons : null}
-                   <button className={`btn btn-primary`}><RRNavLink to={ linkDocumentAdd(lang) }><i className="fa fa-plus"></i> Add Document</RRNavLink></button>
+                   {/** <button className={`btn btn-primary`}><RRNavLink to={ linkDocumentAdd(lang) }><i className="fa fa-plus"></i> Add Document</RRNavLink></button> **/ }
                 </ButtonGroup>
                 </CardBody>
             </Card>        

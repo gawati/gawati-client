@@ -179,7 +179,7 @@ class DocumentForm extends React.Component {
             {"lang": "en", "iri": linkIri }
         );
         this.props.history.push(pushLink);
-        window.location.reload();
+        this.refreshDocument();
     }
 
     handleRemoveAttachment = (data) => {
@@ -233,7 +233,6 @@ class DocumentForm extends React.Component {
 
         const breadcrumb = getBreadcrumb(this, isLoading);
 
-        console.log(" RENDER_STATE == ", this.state);
         if (isLoading) {
             return (
               <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
