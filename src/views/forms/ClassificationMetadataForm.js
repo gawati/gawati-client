@@ -16,6 +16,7 @@ class ClassificationMetadataForm extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleShowAs = this.handleShowAs.bind(this);
         this.handleAddMoreMetadata = this.handleAddMoreMetadata.bind(this);
+        this.capitalizeEachWord = this.capitalizeEachWord.bind(this);
         this.state = {
             metadata:[],
             existingMetadata: [],
@@ -35,7 +36,18 @@ class ClassificationMetadataForm extends React.Component {
         this.setState({
             inputShowAs: e.target.value
         });
+        const value = this.capitalizeEachWord(e.target.value).replace(/ /g,'');
+        this.setState({
+            inputValue: value
+        });
     }
+
+    capitalizeEachWord(str) {
+        return str.replace(/\w\S*/g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
+
     deleteClassification(member){
         console.log(member);
         let metadataArray = [];
@@ -274,10 +286,10 @@ class ClassificationMetadataForm extends React.Component {
                     <div className="card-body">
                     	<Row>
 	                    	<Col sm={3}>
-	                    		<Input type="text"  value={this.state.inputValue} name="value" onChange={this.handleInput} placeholder="Metadata value" />
-	                    	</Col>
-                            <Col sm={3}>
                                 <Input type="text"  value={this.state.inputShowAs} name="showAs" onChange={this.handleShowAs} placeholder="Metadata showAs" />
+                            </Col>
+                            <Col sm={3}>
+                                <Input type="text"  value={this.state.inputValue} name="value" onChange={this.handleInput} placeholder="Metadata value" />
                             </Col>
 	                    	<Col sm={3}>
 	                    		<Button type="button" onClick={this.handleAddMoreMetadata}  name="btn" size="sm" color="primary" ><i className="fa fa-plus"></i> Add Metadata</Button>
