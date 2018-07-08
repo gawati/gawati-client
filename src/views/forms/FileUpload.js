@@ -96,11 +96,11 @@ class FileUpload extends React.Component {
                     <Col xs="12">
                         <Row>
                         <Col xs="12">
-                            <label className="fileContainer">
+                           {/*  <label className="fileContainer"> */}
                             <input type="file" className="form-control-file" forkey={index} id="file" name="file" onChange={this.handleChangeFile.bind(this)} /> 
                             {fileName != null ? fileName: "Nothing Attached"}
-                            <b>Click to Change </b>
-                            </label>
+                            {/* <b>Click to Change </b>
+                            </label> */}
                         </Col>
                         </Row>
                         <Row>
