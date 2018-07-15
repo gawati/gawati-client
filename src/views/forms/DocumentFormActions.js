@@ -27,7 +27,10 @@ class DocumentFormActions extends React.Component {
      * Checks if the current user has "transit" permission in the current state,
      * You can transit from one state to the other only if you have the "transit" permission
      */
-    isTransitPermissionPresent =  (pkg) => {
+    isTransitPermissionPresent =  (pkg, mode) => {
+        if (mode === "add") {
+            return false; // Document is still not saved
+        }
         // get current roles 
         // check if the roles have transit permission in the curerent state 
         // check if current roles can transit to transition
@@ -103,7 +106,7 @@ class DocumentFormActions extends React.Component {
 
     render() {
         const {lang, mode, pkg} = this.props;
-        const transitAllowed = this.isTransitPermissionPresent(pkg);
+        const transitAllowed = this.isTransitPermissionPresent(pkg, mode);
         const transitionButtons = this.renderTransitionActions(pkg, lang);
         return(
         <Aux>
