@@ -113,7 +113,8 @@ const actionPkg = (state, action) => {
     pkgIdentity: actionPkgIdentity(state, action),
     pkgAttachments: actionPkgAttachments(state, action),
     workflow: actionWorkflow(state, action),
-    permissions: actionPermissions(state, action)
+    permissions: actionPermissions(state, action),
+    customMeta: actionCustomMeta(state, action)
   };
   //console.log(" ACTION_PKG ", pkgObject);
   return pkgObject;
@@ -154,6 +155,14 @@ const actionPermissions = (state, action) => {
     case STATE_ACTION_LOADED_DEFAULTS: return action.params.permissions;
     case STATE_ACTION_LOADED_DATA: return action.params.permissions;
     default: return state.pkg.permissions;
+  }
+};
+
+const actionCustomMeta = (state, action) => {
+  switch(action.type) {
+    case STATE_ACTION_LOADED_DEFAULTS: return action.params.customMeta;
+    case STATE_ACTION_LOADED_DATA: return action.params.customMeta;
+    default: return state.pkg.customMeta;
   }
 };
 

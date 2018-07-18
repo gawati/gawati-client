@@ -13,6 +13,8 @@ const GAWATI_CLIENT_APIS = [
             'documents-filter':'/gwc/documents/filter',
             'documents-metadata':'/gwc/documents/metadata',
             'documents-metadata-add':'/gwc/documents/metadata/add',
+            'documents-custom-meta':'/gwc/documents/custom/meta',
+            'documents-custom-meta-add':'/gwc/documents/custom/meta/add',
             'document-delete':'/gwc/document/delete',
             'document-add': '/gwc/document/add',
             'document-open': '/gwc/document/load',

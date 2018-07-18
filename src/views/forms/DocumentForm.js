@@ -3,6 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import IdentityMetadataForm from './IdentityMetadataForm';
 import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import ClassificationMetadataForm from './ClassificationMetadataForm';
+import CustomMetadataForm from './CustomMetadataForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
@@ -20,7 +21,7 @@ import {
     identityValidationSchema
 } from './DocumentForm.formConfig';
 import {
-    workflowsInitialState,
+    docOtherInit,
     loadFormWithDocument,
     loadViewWithDocument,
     setFieldValue,
@@ -63,7 +64,9 @@ class DocumentForm extends React.Component {
             pkgIdentity: identityInitialState(),
             pkgAttachments: [],
             workflow: {state: {status: 'draft', 'label': 'Draft'}},
-            permissions: {}
+            permissions: {},
+            custMeta: {},
+            custMetaSchema: {}
           }
         };
         /** 
@@ -92,7 +95,7 @@ class DocumentForm extends React.Component {
     getWFInitialState = (docType, aknType) => {
         // add mode ... validate empty form
         validateFormFields(this);
-        workflowsInitialState(this, docType, aknType);
+        docOtherInit(this, docType, aknType);
     }
 
     updateIriValue = () => {
@@ -261,6 +264,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
                 <Tab>{T("Metadata")}</Tab>
+                <Tab>{T("Custom Metadata")}</Tab>
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -295,6 +299,14 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
+                />
+            </TabPanel>
+            <TabPanel>
+                <CustomMetadataForm
+                    lang={lang}
+                    mode={mode}
+                    pkg={pkg}
+                    validateFormField={THIS.validateFormField}
                 />
             </TabPanel>
         </Tabs>

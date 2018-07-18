@@ -14,30 +14,34 @@ import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriC
 import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
 
 /**
- * Loads a default Workflow object (along with a set of Permissions)
+ * Loads 
+ * - a default Workflow object (along with a set of Permissions)
+ * - custom default meta data for the akn type
  * @param {*} THIS the ``this`` of the calling Component.
  */
-export const workflowsInitialState = (THIS, docType, aknType) => {
-    axios.post(
-        apiUrl('workflows-defaults'), {
-        data: {"aknType": aknType, "aknSubType": docType}
-        }
-    )
-    .then((response) => {
+export const docOtherInit = (THIS, docType, aknType) => {
+    axios.all([
+        axios.post(apiUrl('workflows-defaults'), {
+            data: {"aknType": aknType, "aknSubType": docType}
+        }),
+        axios.post(apiUrl('documents-custom-meta'), {
+            data: {"aknType": aknType}
+        })
+    ])
+    .then(axios.spread(function (wfPer, custMeta) {
         setFieldValue(THIS, 'docType', docType);
         setFieldValue(THIS, 'docAknType', aknType);
-        applyActionToState(THIS,
-                    {
-                        type: STATE_ACTION_LOADED_DEFAULTS,
-                        params: {
-                            workflow: response.data.workflow,
-                            permissions: response.data.permissions
-                        }
-                    }
-                );
-    })
+        applyActionToState(THIS, {
+            type: STATE_ACTION_LOADED_DEFAULTS,
+            params: {
+                workflow: wfPer.data.workflow,
+                permissions: wfPer.data.permissions,
+                customMeta: custMeta.data
+            }
+        });
+    }))
     .catch((err) => {
-        console.log(" Error in workflows-defaults ", err);
+        console.log(" Error in setting initial (workflow, custom metadata) state ", err);
         throw err;
     });
 }
@@ -233,7 +237,6 @@ export const validateFormField = (THIS, validationSchema, fieldName, fieldValue)
         setFieldError(THIS, fieldName, err);
     });  
 };
-
 
 /**
  * Checks if a form has errors
