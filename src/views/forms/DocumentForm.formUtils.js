@@ -11,7 +11,7 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue, isEmpty } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_SET_CMETA_FIELD_VALUE, STATE_ACTION_SET_CMETA_FIELD_ERROR } from './DocumentForm.constants';
 
 /**
  * Loads 
@@ -272,7 +272,34 @@ export const setFieldError = (THIS, fieldName, err) => {
         }
     );
 };
-  
+
+/**
+ * Validates the value of the passed in field name against the type.
+ * For use with custome metadata fields.
+ */
+export const validateCustMetaField = (THIS, fieldName, fieldValue, fieldType) => {
+    setCustMetaFieldValue(THIS, fieldName, fieldValue);  
+};
+
+export const setCustMetaFieldValue = (THIS, fieldName, value) => {
+    applyActionToState(
+        THIS, 
+        {
+            type: STATE_ACTION_SET_CMETA_FIELD_VALUE, 
+            params: {fieldName: fieldName, fieldValue: value}
+        }
+    );
+};
+
+export const setCustMetaFieldError = (THIS, fieldName, err) => {
+    applyActionToState(
+        THIS,
+        {
+            type: STATE_ACTION_SET_CMETA_FIELD_ERROR,
+            params: {fieldName: fieldName, err: err}
+        }
+    );
+};  
 
 export const generateIRI = ({
     docCountry, 

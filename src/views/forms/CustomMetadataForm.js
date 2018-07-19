@@ -15,24 +15,31 @@ class CustomMetadataForm extends React.Component {
     console.log("SUBMIT!");
   }
 
+  /**
+   * Wrapper on validateCustMetaField passed in as a prop
+   */
+  validateFormField = (field, value, type) => {
+    return this.props.validateCustMetaField(field, value, type);
+  }
+
   renderFields(form, errors) {
     const {mode} = this.props;
     let items = [];
     Object.keys(form).forEach(field => {
       if (form[field].type === 'date') {
         items.push(
-          <FieldDate name={field} label={form[field].label} 
+          <FieldDate key={field} name={field} label={form[field].label} 
                      value={form[field].value} readOnly={mode === "view"}
                      error={errors[field]}
-                     onChange={(field, value) => this.validateFormField(field, fixTime(value))}
+                     onChange={(field, value) => this.validateFormField(field, fixTime(value), form[field].type)}
           />
         );
       } else if (form[field].type === 'string') {
         items.push(
-          <FieldText name={field} label={form[field].label} 
+          <FieldText key={field} name={field} label={form[field].label} 
                      value={form[field].value} error={errors[field]}
                      readOnly={mode === "view"} 
-                     onChange={(e) => this.validateFormField(field, e.target.value)}
+                     onChange={(e) => this.validateFormField(field, e.target.value, form[field].type)}
           />
         )
       }

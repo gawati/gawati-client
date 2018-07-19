@@ -27,6 +27,7 @@ import {
     setFieldValue,
     validateFormFields,
     validateFormField,
+    validateCustMetaField,
     getBreadcrumb,
     generateIRI,
     getFreshPkg,
@@ -104,6 +105,10 @@ class DocumentForm extends React.Component {
 
     validateFormField = (schema, field, value) => {
         return validateFormField(this, schema, field, value);
+    }
+
+    validateCustMetaField = (field, value, type) => {
+        return validateCustMetaField(this, field, value, type);
     }
 
     handleIdentityReset = () => {
@@ -306,7 +311,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
-                    validateFormField={THIS.validateFormField}
+                    validateCustMetaField={THIS.validateCustMetaField}
                 />
             </TabPanel>
         </Tabs>

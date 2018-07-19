@@ -1,4 +1,4 @@
-import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_CONFIRM_ADD_OPEN, STATE_ACTION_CONFIRM_ADD_CLOSE } from './DocumentForm.constants';
+import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_UNSET_DOCUMENT_LOAD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_LOADED_DATA, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_IS_NOT_LOADING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_CONFIRM_ADD_OPEN, STATE_ACTION_CONFIRM_ADD_CLOSE, STATE_ACTION_SET_CMETA_FIELD_VALUE, STATE_ACTION_SET_CMETA_FIELD_ERROR } from './DocumentForm.constants';
 import {identityInitialState} from './DocumentForm.formConfig';
 
 /**
@@ -162,6 +162,10 @@ const actionCustomMeta = (state, action) => {
   switch(action.type) {
     case STATE_ACTION_LOADED_DEFAULTS: return action.params.customMeta;
     case STATE_ACTION_LOADED_DATA: return action.params.customMeta;
+    case STATE_ACTION_SET_CMETA_FIELD_VALUE: 
+      return __customMeta(state, action.params.fieldName, action.params.fieldValue);
+    case STATE_ACTION_SET_CMETA_FIELD_ERROR:
+      return __customMeta(state, action.params.fieldName, action.params.fieldValue, action.params.err);
     default: return state.pkg.customMeta;
   }
 };
@@ -213,6 +217,43 @@ const __pkgIdentity = (state, fieldName, fieldValue, err) => {
         [fieldName]: {
           ...pkgIdent[fieldName],
           value: correctErrorValue(fieldName, err.value),
+          error: err.message
+        }
+      }
+    }
+  }
+};
+
+/**
+ * Clones custom metadata object, it has multiple levels of nesting, so to keep 
+ * things impler we use copyObject
+ * @param {object} state 
+ * @param {string} fieldName
+ * @param {object} fieldValue
+ * @param {object} err
+ */
+const __customMeta = (state, fieldName, fieldValue, err) => {
+  let custMeta = copyObject(state.pkg.customMeta);
+  if (fieldName === undefined) {
+    return custMeta;
+  } else {
+    if (err === undefined) {
+      // set field value .. no error
+      return {
+        ...custMeta,
+        [fieldName]: {
+          ...custMeta[fieldName],
+          value: fieldValue,
+          error: null
+        }
+      };
+    } else {
+      // set field error
+      return {
+        ...custMeta,
+        [fieldName]: {
+          ...custMeta[fieldName],
+          value: fieldValue,
           error: err.message
         }
       }
