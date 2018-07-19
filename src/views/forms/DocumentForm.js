@@ -66,8 +66,7 @@ class DocumentForm extends React.Component {
             pkgAttachments: [],
             workflow: {state: {status: 'draft', 'label': 'Draft'}},
             permissions: {},
-            custMeta: {},
-            custMetaSchema: {}
+            custMeta: {}
           }
         };
         /** 
@@ -268,8 +267,8 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
-                <Tab>{T("Metadata")}</Tab>
-                <Tab>{T("Custom Metadata")}</Tab>
+                <Tab>{T("Metadata")}</Tab>                
+                {pkg.customMeta ? <Tab>{T("Custom Metadata")}</Tab> : ''}
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -306,15 +305,18 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     pkg={pkg}
                 />
             </TabPanel>
-            <TabPanel>
-                <CustomMetadataForm
-                    lang={lang}
-                    mode={mode}
-                    pkg={pkg}
-                    isSubmitting={isSubmitting}
-                    validateCustMetaField={THIS.validateCustMetaField}
-                />
-            </TabPanel>
+            {pkg.customMeta 
+                ? <TabPanel>
+                    <CustomMetadataForm
+                        lang={lang}
+                        mode={mode}
+                        pkg={pkg}
+                        isSubmitting={isSubmitting}
+                        validateCustMetaField={THIS.validateCustMetaField}
+                    />
+                  </TabPanel>
+                : '' 
+            }
         </Tabs>
     </Aux>;
 
