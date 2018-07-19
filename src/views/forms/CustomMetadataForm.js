@@ -1,10 +1,12 @@
 import React from 'react';
-import {Card, CardBody, CardFooter, Row, Col, Button} from 'reactstrap';
+import {Card, CardBody, CardFooter, Button} from 'reactstrap';
 import StatefulForm from './StatefulForm';
 import FieldDate from './FieldDate';
 import FieldText from './FieldText';
+import {isEmpty} from '../../utils/GeneralHelper';
 import {formHasErrors} from './DocumentForm.formUtils';
 import {fixTime} from '../../utils/DateHelper';
+import {DynamicGrid} from '../../components/utils/DynamicGrid';
 
 class CustomMetadataForm extends React.Component {
   constructor(props) {
@@ -20,6 +22,20 @@ class CustomMetadataForm extends React.Component {
    */
   validateFormField = (field, value, type) => {
     return this.props.validateCustMetaField(field, value, type);
+  }
+
+  renderActions(formValid) {
+    const {mode, isSubmitting} = this.props;
+    if (mode === 'view') {
+      return (<div></div>)
+    } else {
+      return (
+        <div> 
+        { " " }
+          <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
+        </div>
+      )
+    }
   }
 
   renderFields(form, errors) {
@@ -44,16 +60,22 @@ class CustomMetadataForm extends React.Component {
         )
       }
     });
-    return items;
+    return DynamicGrid(items, 3);
   }
 
   render() {
     const {customMeta: form} = this.props.pkg;
     if (form) {
       const errors = formHasErrors(form);
+      const formValid = isEmpty(errors);
       return (
         <StatefulForm ref="customMetadataForm" onSubmit={this.handleSubmit.bind(this)} noValidate>
-          {this.renderFields(form, errors)}
+          <Card className="doc-form-card">
+            <CardBody>
+              {this.renderFields(form, errors)}
+              {this.renderActions(formValid)}
+            </CardBody>
+          </Card>
         </StatefulForm>
       );
     } else {

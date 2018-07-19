@@ -311,6 +311,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     lang={lang}
                     mode={mode}
                     pkg={pkg}
+                    isSubmitting={isSubmitting}
                     validateCustMetaField={THIS.validateCustMetaField}
                 />
             </TabPanel>
