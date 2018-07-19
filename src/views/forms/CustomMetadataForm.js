@@ -13,10 +13,6 @@ class CustomMetadataForm extends React.Component {
     super(props);
   }
 
-  handleSubmit() {
-    console.log("SUBMIT!");
-  }
-
   /**
    * Wrapper on validateCustMetaField passed in as a prop
    */
@@ -25,14 +21,16 @@ class CustomMetadataForm extends React.Component {
   }
 
   renderActions(formValid) {
-    const {mode, isSubmitting} = this.props;
+    const {mode, isSubmitting, handleSubmit} = this.props;
     if (mode === 'view') {
       return (<div></div>)
     } else {
       return (
         <div> 
         { " " }
-          <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
+          <Button type="submit" name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid} onClick={handleSubmit}>
+            <i className="fa fa-dot-circle-o"></i> Save
+          </Button>
         </div>
       )
     }
@@ -64,24 +62,21 @@ class CustomMetadataForm extends React.Component {
   }
 
   render() {
-    const {customMeta: form} = this.props.pkg;
-    if (form) {
-      const errors = formHasErrors(form);
-      const formValid = isEmpty(errors);
-      return (
-        <StatefulForm ref="customMetadataForm" onSubmit={this.handleSubmit.bind(this)} noValidate>
-          <Card className="doc-form-card">
-            <CardBody>
-              {this.renderFields(form, errors)}
-              {this.renderActions(formValid)}
-            </CardBody>
-          </Card>
-        </StatefulForm>
-      );
-    } else {
-      return(<div>NO CUSTOM META!!!</div>)
-    }
-    
+    const {customMeta: form, handleSubmit, mode, isSubmitting} = this.props.pkg;
+    const errors = formHasErrors(form);
+    const formValid = isEmpty(errors);
+    return (
+      <StatefulForm ref="customMetadataForm" noValidate>
+        <Card className="doc-form-card">
+          <CardBody>
+            {this.renderFields(form, errors)}
+          </CardBody>
+          <CardFooter>
+            {this.renderActions(formValid)} 
+          </CardFooter>
+        </Card>
+      </StatefulForm>
+    );
   }
 }
 

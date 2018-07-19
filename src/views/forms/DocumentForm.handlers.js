@@ -142,6 +142,9 @@ export const handleExtractAttachment = (THIS, data) => {
     );
 }
 
+/**
+ * Refresh tags for the document
+ */
 export const handleRefreshTags = (THIS, reload) => {
     axios.post(
       apiUrl('document-tags-refresh'), {
@@ -164,3 +167,29 @@ export const handleRefreshTags = (THIS, reload) => {
       }
     );
 }
+
+/**
+ * Makes a call to the custom metadata's edit API and submits the 
+ * metadata fields to be edited. 
+ */
+export const handleSubmitEditCustMeta = (THIS, pkg) => {
+    const request = axios.post(
+      apiUrl('documents-custom-meta-edit'), {
+        data: {pkg}
+      }
+    );
+    request
+      .then(
+        (response) => {
+          applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+          handleSuccess(response.data);
+        }
+      )
+      .catch(
+        (err) => {
+          applyActionToState(THIS, {type: STATE_ACTION_IS_NOT_SUBMITTING});
+          handleApiException(THIS, err);
+        }
+      );
+    return request;         
+  };

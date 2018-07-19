@@ -35,7 +35,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags, handleSubmitEditCustMeta } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -132,6 +132,19 @@ class DocumentForm extends React.Component {
           return;
         }
     }
+
+    handleCustMetaSubmit = (evt) => {
+        console.log("IN: handleCustMetaSubmit ", evt);
+        const {mode} = this.props;
+        evt.preventDefault();
+        const newPkg = getFreshPkg(this.state.pkg);
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        if (mode !== "view") {
+            handleSubmitEditCustMeta(this, newPkg)
+            return;
+        }
+    }
+
 
     updateVersion = (docVersionDate) => {
         getVersionPkg(this.state.pkg, docVersionDate)
@@ -312,6 +325,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                         mode={mode}
                         pkg={pkg}
                         isSubmitting={isSubmitting}
+                        handleSubmit={THIS.handleCustMetaSubmit} 
                         validateCustMetaField={THIS.validateCustMetaField}
                     />
                   </TabPanel>
