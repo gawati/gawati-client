@@ -9,10 +9,6 @@ import {fixTime} from '../../utils/DateHelper';
 import {DynamicGrid} from '../../components/utils/DynamicGrid';
 
 class CustomMetadataForm extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   /**
    * Wrapper on validateCustMetaField passed in as a prop
    */
@@ -62,7 +58,7 @@ class CustomMetadataForm extends React.Component {
   }
 
   render() {
-    const {customMeta: form, handleSubmit, mode, isSubmitting} = this.props.pkg;
+    const {customMeta: form} = this.props.pkg;
     const errors = formHasErrors(form);
     const formValid = isEmpty(errors);
     return (

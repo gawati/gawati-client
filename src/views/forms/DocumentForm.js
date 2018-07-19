@@ -92,7 +92,7 @@ class DocumentForm extends React.Component {
         }
     }
 
-    getWFInitialState = (docType, aknType) => {
+    getOtherInitState = (docType, aknType) => {
         // add mode ... validate empty form
         validateFormFields(this);
         docOtherInit(this, docType, aknType);
@@ -242,7 +242,7 @@ class DocumentForm extends React.Component {
     renderPrompt() {
         const {mode} = this.props;
         return (
-            <PromptDocType isOpen={mode === "add"} validationSchema={this.identityValidationSchema} sendDocTypes={this.getWFInitialState.bind(this)}/>
+            <PromptDocType isOpen={mode === "add"} validationSchema={this.identityValidationSchema} sendDocTypes={this.getOtherInitState.bind(this)}/>
         );
     }
 
