@@ -46,6 +46,37 @@ export const docOtherInit = (THIS, docType, aknType) => {
     });
 }
 
+
+/**
+ * Loads a default Workflow object (along with a set of Permissions)
+ * @param {*} THIS the ``this`` of the calling Component.
+ */
+export const workflowsInitialState = (THIS, docType, aknType) => {
+    axios.post(
+        apiUrl('workflows-defaults'), {
+        data: {"aknType": aknType, "aknSubType": docType}
+        }
+    )
+    .then((response) => {
+        setFieldValue(THIS, 'docType', docType);
+        setFieldValue(THIS, 'docAknType', aknType);
+        applyActionToState(THIS,
+                    {
+                        type: STATE_ACTION_LOADED_DEFAULTS,
+                        params: {
+                            workflow: response.data.workflow,
+                            permissions: response.data.permissions
+                        }
+                    }
+                );
+    })
+    .catch((err) => {
+        console.log(" Error in workflows-defaults ", err);
+        throw err;
+    });
+}
+
+
 /**
  * Loads a form context with  a document
  * @param {*} THIS the ``this`` of the calling Component.

@@ -21,7 +21,7 @@ import {
     identityValidationSchema
 } from './DocumentForm.formConfig';
 import {
-    docOtherInit,
+    workflowsInitialState,
     loadFormWithDocument,
     loadViewWithDocument,
     setFieldValue,
@@ -92,10 +92,10 @@ class DocumentForm extends React.Component {
         }
     }
 
-    getOtherInitState = (docType, aknType) => {
+    getWFInitialState = (docType, aknType) => {
         // add mode ... validate empty form
         validateFormFields(this);
-        docOtherInit(this, docType, aknType);
+        workflowsInitialState(this, docType, aknType);
     }
 
     updateIriValue = () => {
@@ -242,7 +242,7 @@ class DocumentForm extends React.Component {
     renderPrompt() {
         const {mode} = this.props;
         return (
-            <PromptDocType isOpen={mode === "add"} validationSchema={this.identityValidationSchema} sendDocTypes={this.getOtherInitState.bind(this)}/>
+            <PromptDocType isOpen={mode === "add"} validationSchema={this.identityValidationSchema} sendDocTypes={this.getWFInitialState.bind(this)}/>
         );
     }
 
@@ -281,7 +281,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
                 <Tab>{T("Metadata")}</Tab>                
-                {pkg.customMeta ? <Tab>{T("Custom Metadata")}</Tab> : ''}
+                {mode === 'edit' ? <Tab>{T("Custom Metadata")}</Tab> : ''}
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -318,7 +318,8 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     pkg={pkg}
                 />
             </TabPanel>
-            {pkg.customMeta 
+            {
+                mode === 'edit'
                 ? <TabPanel>
                     <CustomMetadataForm
                         lang={lang}
@@ -329,7 +330,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                         validateCustMetaField={THIS.validateCustMetaField}
                     />
                   </TabPanel>
-                : '' 
+                : ''
             }
         </Tabs>
     </Aux>;
