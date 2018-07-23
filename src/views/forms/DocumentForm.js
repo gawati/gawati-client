@@ -24,7 +24,6 @@ import {
     workflowsInitialState,
     loadFormWithDocument,
     loadViewWithDocument,
-    loadCustomMeta,
     setFieldValue,
     validateFormFields,
     validateFormField,
@@ -141,17 +140,10 @@ class DocumentForm extends React.Component {
         const newPkg = getFreshPkg(this.state.pkg);
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         if (mode !== "view") {
-            handleSubmitEditCustMeta(this, newPkg, selected)
+            handleSubmitEditCustMeta(this, newPkg, selected, this.refreshDocument);
             return;
         }
     }
-
-    loadCustomMeta = () => {
-        console.log("IN: loadCustomMeta ");
-        const {docAknType, docIri} = this.state.pkg.pkgIdentity;
-        loadCustomMeta(this, docIri.value, docAknType.value);
-    }
-
 
     updateVersion = (docVersionDate) => {
         getVersionPkg(this.state.pkg, docVersionDate)
@@ -288,7 +280,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
                 <Tab>{T("Metadata")}</Tab>                
-                {mode === 'edit' ? <Tab>{T("Custom Metadata")}</Tab> : ''}
+                {mode !== 'add' ? <Tab>{T("Custom Metadata")}</Tab> : ''}
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -326,14 +318,13 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                 />
             </TabPanel>
             {
-                mode === 'edit'
+                mode !== 'add'
                 ? <TabPanel>
                     <CustomMetadataForm
                         lang={lang}
                         mode={mode}
                         pkg={pkg}
                         isSubmitting={isSubmitting}
-                        loadCustomMeta={THIS.loadCustomMeta}
                         handleSubmit={THIS.handleCustMetaSubmit} 
                         validateCustMetaField={THIS.validateCustMetaField}
                     />

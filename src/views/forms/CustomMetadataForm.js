@@ -14,13 +14,20 @@ class CustomMetadataForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      selectedOption: []
-    }
-  }
 
-  componentDidMount() {
-    this.props.loadCustomMeta();
+    const {customMeta: form, selectedCustomMeta: scm} = this.props.pkg;
+    const options = form ? Object.keys(form).map(field => {
+      return {value: field, label: form[field].label}
+    }) : [];
+
+    const selected = scm ? scm.map(field => {
+      return {value: field, label: form[field].label}
+    }) : [];
+
+    this.state = {
+      selectedOption: selected
+    }
+    this.selectOptions = options;
   }
 
   /**
@@ -82,29 +89,29 @@ class CustomMetadataForm extends React.Component {
   }
 
   renderSelector() {
-    const {customMeta: form} = this.props.pkg;
-    const options = form ? Object.keys(form).map(field => {
-      return {value: field, label: form[field].label}
-    }) : [];
     return (
       <Select name="cust-meta-options" value={this.state.selectedOption}
               placeholder="Select the custom metadata fields"
               multi={true} closeOnSelect={false}
-              onChange={this.handleSelection} options={options}
+              onChange={this.handleSelection} options={this.selectOptions}
       />
     );
   }
 
   render() {
     const {customMeta: form} = this.props.pkg;
+    const {mode} = this.props;
     const errors = formHasErrors(form);
     const formValid = isEmpty(errors);
     return (
       <StatefulForm ref="customMetadataForm" noValidate>
         <Card className="doc-form-card">
-          <CardHeader>
-            {this.renderSelector()}
-          </CardHeader>
+          { mode === 'edit'
+            ? <CardHeader>
+                {this.renderSelector()}
+              </CardHeader>
+            : ''
+          }
           <CardBody>
             {this.renderFields(form, errors)}
           </CardBody>
