@@ -133,14 +133,14 @@ class DocumentForm extends React.Component {
         }
     }
 
-    handleCustMetaSubmit = (evt) => {
+    handleCustMetaSubmit = (evt, selected) => {
         console.log("IN: handleCustMetaSubmit ", evt);
         const {mode} = this.props;
         evt.preventDefault();
         const newPkg = getFreshPkg(this.state.pkg);
         applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
         if (mode !== "view") {
-            handleSubmitEditCustMeta(this, newPkg)
+            handleSubmitEditCustMeta(this, newPkg, selected)
             return;
         }
     }

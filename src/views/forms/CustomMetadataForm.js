@@ -1,5 +1,7 @@
 import React from 'react';
-import {Card, CardBody, CardFooter, Button} from 'reactstrap';
+import {Card, CardHeader, CardBody, CardFooter, Button} from 'reactstrap';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 import StatefulForm from './StatefulForm';
 import FieldDate from './FieldDate';
 import FieldText from './FieldText';
@@ -9,6 +11,18 @@ import {fixTime} from '../../utils/DateHelper';
 import {DynamicGrid} from '../../components/utils/DynamicGrid';
 
 class CustomMetadataForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedOption: []
+    }
+    const {customMeta: form} = this.props.pkg;
+    this.selectorOptions = Object.keys(form).map(field => {
+      return {value: field, label: form[field].label}
+    });
+  }
+
   /**
    * Wrapper on validateCustMetaField passed in as a prop
    */
@@ -16,15 +30,20 @@ class CustomMetadataForm extends React.Component {
     return this.props.validateCustMetaField(field, value, type);
   }
 
+  handleSubmit(e) {
+    const selected = this.state.selectedOption.map(op => op.value);
+    this.props.handleSubmit(e, selected);
+  }
+
   renderActions(formValid) {
-    const {mode, isSubmitting, handleSubmit} = this.props;
+    const {mode, isSubmitting} = this.props;
     if (mode === 'view') {
       return (<div></div>)
     } else {
       return (
         <div> 
         { " " }
-          <Button type="submit" name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid} onClick={handleSubmit}>
+          <Button type="submit" name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid} onClick={this.handleSubmit.bind(this)}>
             <i className="fa fa-dot-circle-o"></i> Save
           </Button>
         </div>
@@ -35,7 +54,8 @@ class CustomMetadataForm extends React.Component {
   renderFields(form, errors) {
     const {mode} = this.props;
     let items = [];
-    Object.keys(form).forEach(field => {
+    this.state.selectedOption.forEach(f => {
+      const field = f.value;
       if (form[field].type === 'date') {
         items.push(
           <FieldDate key={field} name={field} label={form[field].label} 
@@ -57,6 +77,21 @@ class CustomMetadataForm extends React.Component {
     return DynamicGrid(items, 3);
   }
 
+  handleSelection = (selectedOption) => {
+    this.setState({ selectedOption });
+  }
+
+  renderSelector() {
+    const {selectedOption} = this.state;
+    return (
+      <Select name="cust-meta-options" value={selectedOption}
+              placeholder="Select the custom metadata fields"
+              multi={true} closeOnSelect={false}
+              onChange={this.handleSelection} options={this.selectorOptions}
+      />
+    );
+  }
+
   render() {
     const {customMeta: form} = this.props.pkg;
     const errors = formHasErrors(form);
@@ -64,6 +99,9 @@ class CustomMetadataForm extends React.Component {
     return (
       <StatefulForm ref="customMetadataForm" noValidate>
         <Card className="doc-form-card">
+          <CardHeader>
+            {this.renderSelector()}
+          </CardHeader>
           <CardBody>
             {this.renderFields(form, errors)}
           </CardBody>

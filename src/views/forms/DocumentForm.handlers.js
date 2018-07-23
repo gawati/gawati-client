@@ -172,10 +172,10 @@ export const handleRefreshTags = (THIS, reload) => {
  * Makes a call to the custom metadata's edit API and submits the 
  * metadata fields to be edited. 
  */
-export const handleSubmitEditCustMeta = (THIS, pkg) => {
+export const handleSubmitEditCustMeta = (THIS, pkg, selected) => {
     const request = axios.post(
       apiUrl('documents-custom-meta-edit'), {
-        data: {pkg}
+        data: {pkg, selected}
       }
     );
     request
