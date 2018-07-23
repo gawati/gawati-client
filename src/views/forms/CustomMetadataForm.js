@@ -17,10 +17,10 @@ class CustomMetadataForm extends React.Component {
     this.state = {
       selectedOption: []
     }
-    const {customMeta: form} = this.props.pkg;
-    this.selectorOptions = Object.keys(form).map(field => {
-      return {value: field, label: form[field].label}
-    });
+  }
+
+  componentDidMount() {
+    this.props.loadCustomMeta();
   }
 
   /**
@@ -82,12 +82,15 @@ class CustomMetadataForm extends React.Component {
   }
 
   renderSelector() {
-    const {selectedOption} = this.state;
+    const {customMeta: form} = this.props.pkg;
+    const options = form ? Object.keys(form).map(field => {
+      return {value: field, label: form[field].label}
+    }) : [];
     return (
-      <Select name="cust-meta-options" value={selectedOption}
+      <Select name="cust-meta-options" value={this.state.selectedOption}
               placeholder="Select the custom metadata fields"
               multi={true} closeOnSelect={false}
-              onChange={this.handleSelection} options={this.selectorOptions}
+              onChange={this.handleSelection} options={options}
       />
     );
   }

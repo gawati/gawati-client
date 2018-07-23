@@ -11,37 +11,29 @@ import { getCrumbLinks } from '../../utils/RoutesHelper';
 import { capitalizeFirst, isInvalidValue, isEmpty } from '../../utils/GeneralHelper';
 import { isValidDate, iriDate } from '../../utils/DateHelper';
 import { aknExprIriThis, aknExprIri, aknWorkIri, normalizeDocNumber, unknownIriComponent } from '../../utils/UriHelper';
-import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_SET_CMETA_FIELD_VALUE, STATE_ACTION_SET_CMETA_FIELD_ERROR } from './DocumentForm.constants';
+import { STATE_ACTION_LOADED_DATA, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SET_FIELD_VALUE, STATE_ACTION_SET_FIELD_ERROR, STATE_ACTION_SET_DOCUMENT_LOAD_ERROR, STATE_ACTION_IS_LOADING, STATE_ACTION_LOADED_DEFAULTS, STATE_ACTION_SET_CMETA_FIELD_VALUE, STATE_ACTION_SET_CMETA_FIELD_ERROR, STATE_ACTION_LOADED_CMETA } from './DocumentForm.constants';
 
 /**
  * Loads 
- * - a default Workflow object (along with a set of Permissions)
- * - custom default meta data for the akn type
+ * - set of all custom metadata available for the akn type
+ * - selected custom metadata for the document
  * @param {*} THIS the ``this`` of the calling Component.
  */
-export const docOtherInit = (THIS, docType, aknType) => {
-    axios.all([
-        axios.post(apiUrl('workflows-defaults'), {
-            data: {"aknType": aknType, "aknSubType": docType}
-        }),
-        axios.post(apiUrl('documents-custom-meta'), {
-            data: {"aknType": aknType}
-        })
-    ])
-    .then(axios.spread(function (wfPer, custMeta) {
-        setFieldValue(THIS, 'docType', docType);
-        setFieldValue(THIS, 'docAknType', aknType);
+export const loadCustomMeta = (THIS, iri, aknType) => {
+    axios.post(apiUrl('documents-custom-meta'), {
+        data: {"aknType": aknType, "iri": iri}
+    })
+    .then(result => {
         applyActionToState(THIS, {
-            type: STATE_ACTION_LOADED_DEFAULTS,
+            type: STATE_ACTION_LOADED_CMETA,
             params: {
-                workflow: wfPer.data.workflow,
-                permissions: wfPer.data.permissions,
-                customMeta: custMeta.data
+                customMeta: result.data,
+                // selectedCustomMeta: result.data.selectedCustomMeta
             }
         });
-    }))
+    })
     .catch((err) => {
-        console.log(" Error in setting initial (workflow, custom metadata) state ", err);
+        console.log(" Error loading custom metadata ", err);
         throw err;
     });
 }

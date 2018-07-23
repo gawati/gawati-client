@@ -24,6 +24,7 @@ import {
     workflowsInitialState,
     loadFormWithDocument,
     loadViewWithDocument,
+    loadCustomMeta,
     setFieldValue,
     validateFormFields,
     validateFormField,
@@ -143,6 +144,12 @@ class DocumentForm extends React.Component {
             handleSubmitEditCustMeta(this, newPkg, selected)
             return;
         }
+    }
+
+    loadCustomMeta = () => {
+        console.log("IN: loadCustomMeta ");
+        const {docAknType, docIri} = this.state.pkg.pkgIdentity;
+        loadCustomMeta(this, docIri.value, docAknType.value);
     }
 
 
@@ -326,6 +333,7 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                         mode={mode}
                         pkg={pkg}
                         isSubmitting={isSubmitting}
+                        loadCustomMeta={THIS.loadCustomMeta}
                         handleSubmit={THIS.handleCustMetaSubmit} 
                         validateCustMetaField={THIS.validateCustMetaField}
                     />
