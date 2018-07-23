@@ -14,13 +14,14 @@ export const DynamicGrid = (items, ncols) => {
     let cols = [];
     for (let j=0; j<ncols; j++) {
       let item = items.pop();
+      let key = i + '_' + j;
       cols.push(
-        <Col xs={colSize}>
+        <Col key={key} xs={colSize}>
           {item}
         </Col>
       )
     }
-    rows.push(<Row>{cols}</Row>);
+    rows.push(<Row key={i}>{cols}</Row>);
   }
   return rows;
 };
