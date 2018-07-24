@@ -6,6 +6,7 @@ import StatefulForm from './StatefulForm';
 import FieldDate from './FieldDate';
 import FieldText from './FieldText';
 import {isEmpty} from '../../utils/GeneralHelper';
+import {convertDateData} from '../../utils/DateHelper';
 import {formHasErrors} from './DocumentForm.formUtils';
 import {fixTime} from '../../utils/DateHelper';
 import {DynamicGrid} from '../../components/utils/DynamicGrid';
@@ -64,9 +65,10 @@ class CustomMetadataForm extends React.Component {
     this.state.selectedOption.forEach(f => {
       const field = f.value;
       if (form[field].type === 'date') {
+        const value = form[field].value instanceof Date ? form[field].value : convertDateData(form[field].value)
         items.push(
           <FieldDate key={field} name={field} label={form[field].label} 
-                     value={form[field].value} readOnly={mode === "view"}
+                     value={value} readOnly={mode === "view"}
                      error={errors[field]}
                      onChange={(field, value) => this.validateFormField(field, fixTime(value), form[field].type)}
           />

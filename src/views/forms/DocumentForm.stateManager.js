@@ -261,7 +261,7 @@ const __customMeta = (state, fieldName, fieldValue, err) => {
         [fieldName]: {
           ...custMeta[fieldName],
           value: fieldValue,
-          error: err.message
+          error: err
         }
       }
     }
