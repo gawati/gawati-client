@@ -3,6 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import IdentityMetadataForm from './IdentityMetadataForm';
 import EmbeddedDocumentsForm from './EmbeddedDocumentsForm';
 import ClassificationMetadataForm from './ClassificationMetadataForm';
+import CustomMetadataForm from './CustomMetadataForm';
 import StdCompContainer from '../../components/general/StdCompContainer';
 import {Aux} from '../../utils/GeneralHelper';
 import {T} from '../../utils/i18nHelper';
@@ -26,6 +27,7 @@ import {
     setFieldValue,
     validateFormFields,
     validateFormField,
+    validateCustMetaField,
     getBreadcrumb,
     generateIRI,
     getFreshPkg,
@@ -33,7 +35,7 @@ import {
 } from './DocumentForm.formUtils' ;
 import { applyActionToState } from './DocumentForm.stateManager';
 import { STATE_ACTION_RESET_IDENTITY, STATE_ACTION_IS_SUBMITTING, STATE_ACTION_IS_NOT_SUBMITTING, STATE_ACTION_SWITCH_TAB, STATE_ACTION_CONFIRM_ADD_CLOSE, MSG_DOC_EXISTS_ON_PORTAL } from './DocumentForm.constants';
-import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags } from './DocumentForm.handlers';
+import { handleSubmitEdit, handleSubmitAdd, handleRemoveAttachment, handleExtractAttachment, handleRefreshTags, handleSubmitEditCustMeta } from './DocumentForm.handlers';
 import { DocumentInfo } from './DocumentInfo';
 
 /**
@@ -63,7 +65,8 @@ class DocumentForm extends React.Component {
             pkgIdentity: identityInitialState(),
             pkgAttachments: [],
             workflow: {state: {status: 'draft', 'label': 'Draft'}},
-            permissions: {}
+            permissions: {},
+            custMeta: {}
           }
         };
         /** 
@@ -103,6 +106,10 @@ class DocumentForm extends React.Component {
         return validateFormField(this, schema, field, value);
     }
 
+    validateCustMetaField = (field, value, type) => {
+        return validateCustMetaField(this, field, value, type);
+    }
+
     handleIdentityReset = () => {
         applyActionToState(this, {
             type: STATE_ACTION_RESET_IDENTITY, 
@@ -123,6 +130,18 @@ class DocumentForm extends React.Component {
         if (mode === "add") {
           handleSubmitAdd(this, newPkg);
           return;
+        }
+    }
+
+    handleCustMetaSubmit = (evt, selected) => {
+        console.log("IN: handleCustMetaSubmit ", evt);
+        const {mode} = this.props;
+        evt.preventDefault();
+        const newPkg = getFreshPkg(this.state.pkg);
+        applyActionToState(this, {type: STATE_ACTION_IS_SUBMITTING});
+        if (mode !== "view") {
+            handleSubmitEditCustMeta(this, newPkg, selected, this.refreshDocument);
+            return;
         }
     }
 
@@ -260,7 +279,8 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
             <TabList className={`document-form-tabs react-tabs__tab-list`}>
                 <Tab>{T("Identity")}</Tab>
                 <Tab>{T("Attachments")}</Tab>
-                <Tab>{T("Metadata")}</Tab>
+                <Tab>{T("Metadata")}</Tab>                
+                {mode !== 'add' ? <Tab>{T("Custom Metadata")}</Tab> : ''}
             </TabList>
             <TabPanel>
                 <IdentityMetadataForm 
@@ -297,6 +317,20 @@ const DocumentFormLoaded = ({lang, mode, pkg, isSubmitting, THIS}) =>
                     pkg={pkg}
                 />
             </TabPanel>
+            {
+                mode !== 'add'
+                ? <TabPanel>
+                    <CustomMetadataForm
+                        lang={lang}
+                        mode={mode}
+                        pkg={pkg}
+                        isSubmitting={isSubmitting}
+                        handleSubmit={THIS.handleCustMetaSubmit} 
+                        validateCustMetaField={THIS.validateCustMetaField}
+                    />
+                  </TabPanel>
+                : ''
+            }
         </Tabs>
     </Aux>;
 
