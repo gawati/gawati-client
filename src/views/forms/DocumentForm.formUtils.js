@@ -279,7 +279,10 @@ export const setFieldError = (THIS, fieldName, err) => {
  * For use with custome metadata fields.
  */
 export const validateCustMetaField = (THIS, fieldName, fieldValue, fieldType) => {
-    setCustMetaFieldValue(THIS, fieldName, fieldValue);  
+    if (typeof fieldValue === fieldType || fieldValue instanceof Date)
+        setCustMetaFieldValue(THIS, fieldName, fieldValue);
+    else
+        setCustMetaFieldError(THIS, fieldName, 'Value must be of type '.concat(fieldType))
 };
 
 export const setCustMetaFieldValue = (THIS, fieldName, value) => {

@@ -44,9 +44,30 @@ export const isValidDate = (date) => {
  * JS does offset in reverse so multiply by -1
  */
 export const fixTime = (jsDate) => {
+  if (!(jsDate instanceof Date))
+    return undefined;
   const offset = jsDate.getTimezoneOffset();
   const datePart = moment(jsDate).utcOffset(offset * -1).format('YYYY-MM-DD');
   const dateTime = datePart + ' 12:00:00 Z';
   const newDate = moment(dateTime, "YYYY-MM-DD HH:mm:ss Z", true).toDate();
   return newDate;
 }
+
+/**
+ * Mutates the date string into Javascript Date Object
+ * Set a time of 12:00:00 to avoid timezone related errors
+ * @param {*} dateStr 
+ */
+export const convertDateData = (dateStr) => {
+  if (dateStr) {
+    let dateTime = dateStr + ' 12:00:00 Z';
+    let dateObj = moment(
+        dateTime,
+        "YYYY-MM-DD HH:mm:ss Z",
+        true
+    ).toDate();
+    return dateObj;
+  } else {
+    return dateStr;
+  }
+};
