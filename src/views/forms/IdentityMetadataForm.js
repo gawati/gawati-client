@@ -120,7 +120,7 @@ class IdentityMetadataForm extends React.Component {
 
         Footer = <div> 
                  { " " }
-                   <Button type="submit"  name="btnSubmit" size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-dot-circle-o"></i> Save</Button>
+                   <Button type="submit"  size="sm" color="primary" disabled={isSubmitting || !formValid}><i className="fa fa-floppy-o"></i> Save</Button>
                  { " " }
                    <Button type="reset" size="sm" disabled={ mode === "edit" } color="danger" onClick={handleReset}><i className="fa fa-ban"></i> Reset</Button>
                  { " " }

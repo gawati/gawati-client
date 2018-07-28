@@ -8,6 +8,9 @@ import {MAX_ATTACHMENTS} from '../../constants';
 import StatefulForm from './StatefulForm';
 import { notifyWarning } from '../../utils/NotifHelper';
 import { iriDate } from '../../utils/DateHelper';
+import GawatiViewer from 'gawati-viewer';
+import { apiGetCall } from '../../api';
+import '../../css/Paginator.css';
 
 /**
  * This needs to be converted to use the baseformHOC
@@ -16,7 +19,12 @@ class EmbeddedDocumentsForm extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { attModal: false }
+        this.state = { 
+            attModal: false ,
+            attViewModal: false,
+            attViewerComponent: ''
+        }
+        this.toggleAttachmentView = this.toggleAttachmentView.bind(this);
     }
 
     getPkg() {
@@ -92,6 +100,12 @@ class EmbeddedDocumentsForm extends React.Component {
     }
     */
 
+   toggleAttachmentView() {
+        this.setState({
+            attViewModal: !this.state.attViewModal
+        });
+    }
+
     renderAttModal() {
         return (
             <Modal isOpen={this.state.attModal} toggle={this.toggleAttModal.bind(this)}>
@@ -106,6 +120,27 @@ class EmbeddedDocumentsForm extends React.Component {
                 <Button color="secondary" onClick={this.toggleAttModal.bind(this)}>Cancel</Button>
             </ModalFooter>
             </Modal>
+        )
+    }
+    
+
+    renderAttachmentViewModal (emDoc, pkg) {
+        const url = apiGetCall('attachment-get', {
+              iri: pkg.pkgIdentity.docIri.value,
+              originalFileName : emDoc.origFileName,
+              index: emDoc.index
+            }
+            )
+        return (
+        <Modal isOpen={this.state.attViewModal} toggle={this.toggleAttachmentView} className={this.props.className} backdrop={this.state.backdrop}>
+        <ModalHeader toggle={this.toggleAttachmentView}>{emDoc.origFileName}</ModalHeader>
+        <ModalBody>
+        <GawatiViewer attLink={url} format="PDF"/>
+        </ModalBody>
+        <ModalFooter>
+            <Button color="secondary" onClick={this.toggleAttachmentView}>Close</Button>
+        </ModalFooter>
+        </Modal>
         )
     }
 
@@ -128,11 +163,15 @@ class EmbeddedDocumentsForm extends React.Component {
                     <CardHeader>
                         {i + 1}. {emDoc.showAs}
                         <Label className="float-right mb-0">
+                        
+                        <Button color="primary"  size="sm" className="mr-1" 
+                            onClick={this.toggleAttachmentView}>View</Button>
+                            {this.renderAttachmentViewModal(emDoc, this.props.pkg)}
                         <Button type="button" size="sm" className="mr-1"
-                        onClick={(e) => this.handleExtractAtt(e, emDoc)} color="info" disabled={this.props.isSubmitting}>
+                            onClick={(e) => this.handleExtractAtt(e, emDoc)} color="info" disabled={this.props.isSubmitting}>
                             <i className="fa fa-dot-circle-o"></i> Extract</Button>
                         <Button type="reset" size="sm"
-                        onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
+                            onClick={ (e) => this.handleRemoveAtt(e, emDoc)} color="danger" disabled={this.props.isSubmitting}>
                             <i className="fa fa-minus-circle"></i> Remove</Button>
                         </Label>
                     </CardHeader>
