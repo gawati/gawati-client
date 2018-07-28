@@ -295,7 +295,7 @@ class IdentityMetadataForm extends React.Component {
               </Row>
               <Row>
                 <Col xs="12">
-                    <FieldDocTags value={form.docTags.value}
+                    <FieldDocTags value={form.docTags.value || ' '}
                                   onClick={this.props.refreshTags}
                                   disabled={isSubmitting}
                     />

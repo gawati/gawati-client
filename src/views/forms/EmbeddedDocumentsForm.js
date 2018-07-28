@@ -135,7 +135,7 @@ class EmbeddedDocumentsForm extends React.Component {
         <Modal isOpen={this.state.attViewModal} toggle={this.toggleAttachmentView} className={this.props.className} backdrop={this.state.backdrop}>
         <ModalHeader toggle={this.toggleAttachmentView}>{emDoc.origFileName}</ModalHeader>
         <ModalBody>
-        <GawatiViewer attLink={url} format="PDF"/>
+        <GawatiViewer attLink={url} format={emDoc.fileType.substring(1).toUpperCase()}/>
         </ModalBody>
         <ModalFooter>
             <Button color="secondary" onClick={this.toggleAttachmentView}>Close</Button>
