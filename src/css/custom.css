@@ -97,3 +97,8 @@
     text-align: right;
     top: 0;
 }
+
+.modal-body canvas {
+    max-width: 60em;
+    max-height: 80em;
+}

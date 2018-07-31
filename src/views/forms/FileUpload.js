@@ -134,7 +134,7 @@ class FileUpload extends React.Component {
                 <Button size="sm" color="primary" className="float-right"
                 disabled={this.props.isSubmitting}
                 onClick={this.handleSaveFile.bind(this)}>
-                    <i className="fa fa-dot-circle-o"></i> Save
+                    <i className="fa fa-floppy-o"></i> Save
                 </Button>
             </div>
         );

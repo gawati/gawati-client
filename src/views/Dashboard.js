@@ -241,7 +241,7 @@ class Dashboard extends Component {
         let doc = docPkg.akomaNtoso;
         return (
           <tr key={ `docs-${doc.docIri.value}`}>
-            <td className="text-center">
+            <td className="">
               <StateColumn stateInfo={docPkg.workflow} />
             </td>
             <td>

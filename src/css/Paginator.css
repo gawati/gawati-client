@@ -1,0 +1,38 @@
+ul.gw-pager {margin: auto; padding-bottom:40px; display: table;}
+.gw-pager>.active>a, .gw-pager>.active>a:focus, .gw-pager>.active>a:hover, .gw-pager>.active>span, 
+.gw-pager>.active>span:focus, .gw-pager>.active>span:hover {
+    z-index: 2;
+    color: #fff;
+    cursor: pointer;
+    background-color: #63c2de;
+    border-color: #6394de;
+}
+
+.gw-pager>li.next>a, .gw-pager>li.previous>a {
+    background: white;
+    color: #63c2de;
+    border-color: #ddd;
+}
+
+.gw-pager>li>a, .gw-pager>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: white;
+    text-decoration: none;
+    border: 1px solid #ddd;
+}
+
+.gw-pager>.disabled>a, .gw-pager>.disabled>a:focus, .gw-pager>.disabled>a:hover, .gw-pager>.disabled>span, .gw-pager>.disabled>span:focus, .gw-pager>.disabled>span:hover {
+    color: #bababa!important;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.gw-pager>li {
+    display: inline;
+    float: left;
+    cursor: pointer;
+}

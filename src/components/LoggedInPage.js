@@ -16,7 +16,7 @@ import { ToastContainer } from 'react-toastify';
 export const LoggedInPage = ({i18n}) => (
     <div className="app">
         <PropsRoute path="*" component={ TopNav } i18n={ i18n } />
-        <div className="app-body">
+        <div className="app-body search-result">
         <PropsRoute path="*" component={SideBar} i18n={i18n} />
         { /*
         <main className="main">
