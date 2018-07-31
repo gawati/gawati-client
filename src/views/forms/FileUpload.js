@@ -48,7 +48,7 @@ class FileUpload extends React.Component {
         let iri = pkgIdentity['docIri'].value;
 
         let data = new FormData();
-        if (!file || !title) {
+        if ((!file && !pkgAttachments.length) || !title) {
             notifyWarning("Please select the file to upload and enter a title");
         } else {
             //Call Pre Save handler in the parent.
