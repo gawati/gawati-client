@@ -255,7 +255,7 @@ class DocumentForm extends React.Component {
         if (isLoading) {
             return (
               <StdCompContainer breadcrumb={breadcrumb} isLoading={isLoading}>
-                <h1>Loading...</h1>
+                {/* <h1>Loading...</h1> */}
                 {this.renderPrompt()}
               </StdCompContainer>
               );      

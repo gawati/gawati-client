@@ -190,11 +190,7 @@ export const getBreadcrumb = (THIS, isLoading=false) => {
 
     let crumbLinks = getCrumbLinks("document-ident-edit", params);
     if (isLoading) {
-        return (
-        <Breadcrumb>
-            <BreadcrumbItem>Loading...</BreadcrumbItem>
-        </Breadcrumb>
-        )   ;     
+        return;   
     } else
     if (mode === "edit") {
         return (
