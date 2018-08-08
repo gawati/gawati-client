@@ -92,7 +92,7 @@ export const handleSubmitAdd = (THIS, pkg, skipCheck=false) => {
  * @param {object} the context "this" in the caller form 
  */
 export const handleApiException = (THIS, err) => {
-    console.log(" Error while adding ", err);
+    console.log(" Error while adding ", THIS, err);
 };
 
 /**
